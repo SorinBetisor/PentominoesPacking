@@ -55,30 +55,33 @@ public class PentominoDatabase
 
         try
         {
-            Scanner scanner = new Scanner(file);
-            while (scanner.hasNextLine()) // For each line in the CSV file
-            {
-                // Read the line, and convert the string to a list of numbers
-                String[] values = scanner.nextLine().split(",");
-
-                // If this piece has a new ID, increase the list
-                if(Integer.valueOf(values[0]) > dynamicList.size() - 1)
+            try (Scanner scanner = new Scanner(file)) {
+                while (scanner.hasNextLine()) // For each line in the CSV file
                 {
-                    dynamicList.add(new ArrayList<>());
+                    // Read the line, and convert the string to a list of numbers
+                    String[] values = scanner.nextLine().split(",");
+
+                    // If this piece has a new ID, increase the list
+                    if(Integer.valueOf(values[0]) > dynamicList.size() - 1)
+                    {
+                        dynamicList.add(new ArrayList<>());
+                    }
+
+                    int xSize = Integer.valueOf(values[2]);
+                    int ySize = Integer.valueOf(values[3]);
+                    int[][] piece = new int[xSize][ySize];
+
+                    // Convert 1D list to 2D list
+                    for(int i = 0; i < xSize * ySize; i++)
+                    {
+                        piece[i / ySize][i % ySize] = Integer.valueOf(values[4 + i]);
+                    }
+
+                    // Add piece to the dynamic list
+                    dynamicList.get(dynamicList.size() - 1).add(piece);
                 }
-
-                int xSize = Integer.valueOf(values[2]);
-                int ySize = Integer.valueOf(values[3]);
-                int[][] piece = new int[xSize][ySize];
-
-                // Convert 1D list to 2D list
-                for(int i = 0; i < xSize * ySize; i++)
-                {
-                    piece[i / ySize][i % ySize] = Integer.valueOf(values[4 + i]);
-                }
-
-                // Add piece to the dynamic list
-                dynamicList.get(dynamicList.size() - 1).add(piece);
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
             }
         }
         catch (FileNotFoundException e)
