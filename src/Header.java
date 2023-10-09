@@ -1,9 +1,9 @@
 public class Header extends Cell {
 
-    public String name;
+    public int name;
     public int size;
 
-    public Header(String name) {
+    public Header(int name) {
         super(null);
         size = 0;
         this.name = name;

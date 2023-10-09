@@ -39,7 +39,7 @@ public class Cell {
     }
 
     public static void main(String[] args) {
-        Header head = new Header("root");
+        Header head = new Header(-1);
         Cell a = new Cell(head);
         Cell b = new Cell(head);
         Cell c = new Cell(head);
