@@ -35,8 +35,9 @@ public class BruteForceSearch {
 	 * @return True if a solution is found, false otherwise.
 	 */
 
+	 public static int count = 0;
 	private static boolean bruteForceSearch(int[][] field, int i) {
-
+		count++;
 		if (i == INPUT.length) {
 			// All pentominoes have been placed on the board
 			return true;
@@ -49,8 +50,10 @@ public class BruteForceSearch {
 					int[][] pieceToPlace = PentominoDatabase.data[pentID][mutation];
 					if (Search.canPlacePiece(field, pieceToPlace, x, y)) {
 						Search.addPiece(field, pieceToPlace, i, x, y);
+						// try{
 						// ui.setState(field);
-						// Thread.sleep(10);
+						// Thread.sleep(1);}
+						// catch(Exception ie){System.out.println(1);}
 						if (bruteForceSearch(field, i + 1)) {
 							return true;
 						}

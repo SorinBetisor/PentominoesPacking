@@ -8,9 +8,9 @@
  * This class includes the methods to support the search of a solution.
  */
 public class Search {
-	public static final int HORIZONTAL_GRID_SIZE = 6;
+	public static final int HORIZONTAL_GRID_SIZE = 7;
 	public static final int VERTICAL_GRID_SIZE = 5;
-	public static final char[] INPUT = { 'V', 'Y', 'P', 'T', 'U', 'L' };
+	public static final char[] INPUT = { 'I','Y','Z','U','T','L','P' };
 
 	// Static UI class to display the board
 	public static UI ui = new UI(HORIZONTAL_GRID_SIZE, VERTICAL_GRID_SIZE, 50);
@@ -46,6 +46,7 @@ public class Search {
 			RandomSearch.randomSearch(field);
 		} else if (id == 2) {
 			BruteForceSearch.bruteForceSearchWrapper(field);
+			System.out.println(BruteForceSearch.count);
 		} else {
 			System.out.println("Invalid algorithm ID.");
 		}
