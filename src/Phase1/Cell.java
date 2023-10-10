@@ -7,6 +7,11 @@ public class Cell {
     public Cell R;
     public Header C;
 
+    public int pentID;
+    public int mutation;
+    public int x0;
+    public int y0;
+
     public Cell(Header header) {
         row = -1;
         L = this;
@@ -15,6 +20,10 @@ public class Cell {
         D = this;
         C = header;
 
+        pentID=-1;
+        mutation=-1;
+        x0=-1;
+        y0=-1;
     }
 
     public void InsertLeft(Cell cell) {
