@@ -1,3 +1,4 @@
+package Phase1;
 public class BruteForceSearch {
     private static final char[] INPUT = Search.INPUT;
 	private static final int HORIZONTAL_GRID_SIZE = Search.HORIZONTAL_GRID_SIZE;

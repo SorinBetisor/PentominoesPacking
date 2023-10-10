@@ -1,3 +1,4 @@
+package Phase1;
 
 public class RandomSearch {
 	private static final char[] INPUT = Search.INPUT;

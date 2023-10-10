@@ -1,4 +1,6 @@
+package Phase1;
 public class Cell {
+    public int row;
     public Cell U;
     public Cell D;
     public Cell L;
@@ -6,6 +8,7 @@ public class Cell {
     public Header C;
 
     public Cell(Header header) {
+        row = -1;
         L = this;
         R = this;
         U = this;

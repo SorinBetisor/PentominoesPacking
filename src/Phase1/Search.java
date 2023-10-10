@@ -1,3 +1,4 @@
+package Phase1;
 
 /**
  * @author Department of Data Science and Knowledge Engineering (DKE)
@@ -8,10 +9,13 @@
  * This class includes the methods to support the search of a solution.
  */
 public class Search {
-	public static final int HORIZONTAL_GRID_SIZE = 7;
-	public static final int VERTICAL_GRID_SIZE = 5;
-	public static final char[] INPUT = { 'I','Y','Z','U','T','L','P' };
+	public static final int HORIZONTAL_GRID_SIZE = 5;
+	public static final int VERTICAL_GRID_SIZE = 6;
+	public static final char[] INPUT = {'I','L','U','Z','T','P'};
 
+
+	// { 'I','Y','Z','U','T','L','P','X','V','W','N','F' };
+	//
 	// Static UI class to display the board
 	public static UI ui = new UI(HORIZONTAL_GRID_SIZE, VERTICAL_GRID_SIZE, 50);
 
