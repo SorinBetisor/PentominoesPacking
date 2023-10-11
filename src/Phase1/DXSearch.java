@@ -25,6 +25,7 @@ public class DXSearch {
 						if (!can) {
 							continue;
 						}
+
 						List<Integer> xs = getOccupiedCellsX(pieceToPlace, x, y);
 						List<Integer> ys = getOccupiedCellsY(pieceToPlace, x, y);
 						dance.AddRow(nr, pentID, x, y, mutation, new int[] {
@@ -34,7 +35,8 @@ public class DXSearch {
 								xs.get(3) + HORIZONTAL_GRID_SIZE * (ys.get(3)),
 								xs.get(4) + HORIZONTAL_GRID_SIZE * (ys.get(4)),
 						});
-						// System.out.println(nr + " ID" + pentID + " M" + mutation + " X" + x + " Y" + y); // y?
+						// System.out.println(nr + " ID" + pentID + " M" + mutation + " X" + x + " Y" +
+						// y); // y?
 						nr++;
 					}
 				}

@@ -21,14 +21,18 @@ public class DancingLinks {
     public Stack<Integer> yos;
     public Stack<Integer> mutations;
     public List<Integer> coppyArray;
+    public List<Integer> pentIDSList;
 
     public DancingLinks(int columns) {
         answer = new Stack<Integer>();
+
         pentIDS = new Stack<Integer>();
+        pentIDSList = new ArrayList<Integer>();
         xos = new Stack<Integer>();
         yos = new Stack<Integer>();
         coppyArray = new ArrayList<Integer>();
         mutations = new Stack<Integer>();
+
         root = new Header(-1);
         headers = new Header[columns];
         for (int j = 0; j < columns; j++) {
@@ -64,78 +68,31 @@ public class DancingLinks {
         }
     }
 
-    // public static <T> boolean hasDuplicates(Stack<T> stack) {
-    //     Set<T> seen = new HashSet<>();
-    //     for (T item : stack) {
-    //         if (!seen.add(item)) {
-    //             return true; // Duplicates found
-    //         }
-    //     }
-    //     return false; // No duplicates found
-    // }
+    public static <T> boolean hasDuplicates(Stack<T> stack) {
+        Set<T> seen = new HashSet<>();
+        for (T item : stack) {
+            if (!seen.add(item)) {
+                return true; // Duplicates found
+            }
+        }
+        return false; // No duplicates found
+    }
 
-    public void algorithmX(int step) { //TODO: FIX DUPLICATE SOLUTIONS
+    public void algorithmX(int step) { // TODO: FIX DUPLICATE SOLUTIONS
         if (root.R == root) {
-            // System.out.println("Solution found");
-            
-            for (Integer z : pentIDS) {
-                // coppyArray.add(z);
-                System.out.print(z+" ");}
-            System.out.println();
-            // if (!hasDuplicates(coppyArray)) {
-            //     System.out.println("Solution found.");}
-
-                // List<Integer> pentIDsArr = new ArrayList<Integer>();
-                // List<Integer> mutationsArr = new ArrayList<Integer>();
-                // List<Integer> xArr = new ArrayList<Integer>();
-                // List<Integer> ysArr = new ArrayList<Integer>();
-
-                // for (Integer x : pentIDS) {
-                //     pentIDsArr.add(x);
-                //     System.out.print(x+" ");
-                // }
-                // System.out.println();
-
-                // for (Integer x : mutations) {
-                //     mutationsArr.add(x);
-                //     System.out.print(x+" ");
-                // }
-                // System.out.println();
-                // for (Integer x : xos) {
-                //     xArr.add(x);
-                //     System.out.print(x+" ");
-                // }
-                // System.out.println();
-                // for (Integer x : yos) {
-                //     ysArr.add(x);
-                //     System.out.print(x+" ");
-                // }
-                // System.out.println();
-            //     // for (int k = 0; k <= 5; k++) {
-            //     //     DXSearch.drawPentominoe(pentIDsArr.get(k), mutationsArr.get(k), xArr.get(k),
-            //     //             ysArr.get(k));
-            //     // }
-
-
-            //     // ui.setState(DXSearch.field);
-                    
-
-            //     // System.out.println(Arrays.deepToString(DXSearch.field));
-
-            //     pentIDsArr.clear();
-            //     mutationsArr.clear();
-            //     xArr.clear();
-            //     ysArr.clear();
-            // }
-            // coppyArray.clear();
-            // Search.emptyBoard(DXSearch.field);
+            if (!hasDuplicates(pentIDS)) {
+            System.out.println("Solution found");
+            for (int x : pentIDS) {
+                System.out.print(x + " ");
+            }
+            System.out.println();}
 
             return;
         }
 
         Header head = (Header) root.R;
         int minSize = head.size;
-        for (Cell xCell = head; xCell != root; xCell = xCell.R) // optimising branch factor
+        for (Cell xCell = head; xCell != root; xCell = xCell.R) // optimising branching factor
         {
             if (((Header) xCell).size < minSize) {
                 minSize = ((Header) xCell).size;
@@ -150,25 +107,63 @@ public class DancingLinks {
         for (Cell rCell = head.D; rCell != head; rCell = rCell.D) {
             answer.push(rCell.row);
             pentIDS.push(rCell.pentID);
-            xos.push(rCell.x0);
-            yos.push(rCell.y0);
-            mutations.push(rCell.mutation);
+            // xos.push(rCell.x0);
+            // yos.push(rCell.y0);
+            // mutations.push(rCell.mutation);
+            deleteRowsByPentID(rCell.pentID);
             for (Cell jCell = rCell.R; jCell != rCell; jCell = jCell.R) {
                 cover(jCell.C);
             }
 
+
             algorithmX(step + 1);
             answer.pop();
             pentIDS.pop();
-            xos.pop();
-            yos.pop();
-            mutations.pop();
+            // xos.pop();
+            // yos.pop();
+            // mutations.pop();
+            uncoverUsedIds(rCell.pentID);
 
             for (Cell jCell = rCell.L; jCell != rCell; jCell = jCell.L) {
                 uncover(jCell.C);
             }
+
         }
         uncover(head);
+    }
+
+    public void deleteRowsByPentID(int pentID) {
+        List<Cell> cellsToDelete = new ArrayList<>();
+    
+        for (Cell iCell = root.D; iCell != root; iCell = iCell.D) {
+            if (iCell.pentID == pentID) {
+                // Collect all the cells in the row for deletion
+                for (Cell jCell = iCell.R; jCell != iCell; jCell = jCell.R) {
+                    cellsToDelete.add(jCell);
+                }
+            }
+        }
+    
+        // Delete the collected cells
+        for (Cell cellToDelete : cellsToDelete) {
+            deleteCell(cellToDelete);
+        }
+    }
+
+    private void deleteCell(Cell cell) {
+        // Unlink the cell from its column
+        cell.L.R = cell.R;
+        cell.R.L = cell.L;
+        cell.C.size--;
+    
+        // Unlink the cell from its row
+        for (Cell current = cell.D; current != cell; current = current.D) {
+            for (Cell jCell = current.R; jCell != current; jCell = jCell.R) {
+                jCell.D.U = jCell.U;
+                jCell.U.D = jCell.D;
+                jCell.C.size--;
+            }
+        }
     }
 
     private void cover(Header head) {
@@ -182,6 +177,39 @@ public class DancingLinks {
                 jCell.C.size--;
             }
         }
+    }
+
+    private void coverUsedId(int id) {
+        Header tempHead = (Header) root.R;
+        while (tempHead != root) {
+            for (Cell iCell = tempHead.D; iCell != tempHead; iCell = iCell.D) {
+                for (Cell jCell = iCell.R; iCell != jCell; jCell = jCell.R) {
+                    if (jCell.pentID == id) {
+                        jCell.D.U = jCell.U;
+                        jCell.U.D = jCell.D;
+                        jCell.C.size--;
+                    }
+                }
+            }
+            tempHead = (Header)tempHead.R;
+        }
+    }
+
+    private void uncoverUsedIds(int id) {
+            Header tempHead = (Header) root.R;
+            while (tempHead != root) {
+                for (Cell iCell = tempHead.D; iCell != tempHead; iCell = iCell.D) {
+                    for (Cell jCell = iCell.R; jCell != iCell; jCell = jCell.R) {
+                        if (jCell.pentID == id) {
+                            jCell.D.U = jCell;
+                            jCell.U.D = jCell;
+                            jCell.C.size++;
+                        }
+                    }
+                }
+                tempHead = (Header) tempHead.R;
+            }
+        
     }
 
     private void uncover(Header head) {
