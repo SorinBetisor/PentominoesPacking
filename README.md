@@ -8,6 +8,13 @@ The challenge is to find the right combination of these pentominoes to exactly c
 
 The Pentominoes project provides an interactive platform for solving these puzzles, enhancing your spatial reasoning skills, and offering a fun and engaging experience. It allows you to experiment with different algorithms, including random search, pruned brute force, Dancing Links Algorithm X, and Flood Fill, to tackle the exact cover problem in the world of pentomino puzzles.
 
+## Used Algorithms:
+
+* Random Search
+* Pruned Brute Force (with special case testing)
+* Flood Fill
+* Algorithm X with Dancing Links data structure
+
 ## Version or Date:
 
 Version 1.1
@@ -70,7 +77,7 @@ Once the algorithm has completed its execution, the results will be displayed. H
 
 *Figure 3: Viewing the Solutions* - The application provides a visual representation of the solutions found, with pentomino shapes placed on the grid.
 
-## Known Issues and Limitations
+## Known Issues an Limitations
 
 1. **Unique Solution Finding** : Because of the structure of Algorithm X (Dancing Links), it also return solutions that use duplicate pieces. It returns ~10^6 solutions per minute so filtering them to find the ones that don't use duplicate pieces consumes time.
 
