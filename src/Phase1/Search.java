@@ -9,13 +9,13 @@ package Phase1;
  * This class includes the methods to support the search of a solution.
  */
 public class Search {
-	public static final int HORIZONTAL_GRID_SIZE = 20;
-	public static final int VERTICAL_GRID_SIZE = 3;
+	public static final int HORIZONTAL_GRID_SIZE = 12;
+	public static final int VERTICAL_GRID_SIZE = 5;
 	public static final char[] INPUT = { 'T','U','P','V','I','L','Y','W','Z','X','N','F' };
 
-
+	// {'T','U','I','L','Z','P'};
 	// 
-	//
+
 	// Static UI class to display the board
 	public static UI ui = new UI(HORIZONTAL_GRID_SIZE, VERTICAL_GRID_SIZE, 50);
 
@@ -41,7 +41,7 @@ public class Search {
 
 		emptyBoard(field);
 		// Start the basic search
-		selectAlgorithm(2, field);
+		selectAlgorithm(3, field);
 
 	}
 
@@ -49,9 +49,14 @@ public class Search {
 		if (id == 1) {
 			RandomSearch.randomSearch(field);
 		} else if (id == 2) {
-			BruteForceSearch.bruteForceSearchWrapper(field);
-			System.out.println(BruteForceSearch.count);
-		} else {
+			try{
+			BruteForceSearch.bruteForceSearch(field,0);}
+			catch(Exception ie){}
+		} else if (id ==3)
+		{
+			DXSearch.dxSearch();
+		}
+		 else {
 			System.out.println("Invalid algorithm ID.");
 		}
 	}

@@ -1,7 +1,6 @@
 package Phase1;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -81,12 +80,13 @@ public class DancingLinks {
     public void algorithmX(int step) { // TODO: FIX DUPLICATE SOLUTIONS
         if (root.R == root) {
             if (!hasDuplicates(pentIDS)) {
-            System.out.println("Solution found");
-            for (int x : pentIDS) {
-                System.out.print(x + " ");
+                System.out.println("Solution found");
+                for (int x : pentIDS) {
+                    System.out.print(x + " ");
+                }
+                System.out.println();
+                System.exit(100);
             }
-            System.out.println();}
-
             return;
         }
 
@@ -107,22 +107,21 @@ public class DancingLinks {
         for (Cell rCell = head.D; rCell != head; rCell = rCell.D) {
             answer.push(rCell.row);
             pentIDS.push(rCell.pentID);
-            // xos.push(rCell.x0);
-            // yos.push(rCell.y0);
-            // mutations.push(rCell.mutation);
-            deleteRowsByPentID(rCell.pentID);
+            xos.push(rCell.x0);
+            yos.push(rCell.y0);
+            mutations.push(rCell.mutation);
             for (Cell jCell = rCell.R; jCell != rCell; jCell = jCell.R) {
                 cover(jCell.C);
             }
-
-
+            deleteRowsByPentID(rCell.pentID);
             algorithmX(step + 1);
             answer.pop();
             pentIDS.pop();
-            // xos.pop();
-            // yos.pop();
-            // mutations.pop();
-            uncoverUsedIds(rCell.pentID);
+
+            xos.pop();
+            yos.pop();
+            mutations.pop();
+            // uncoverUsedIds(rCell.pentID);
 
             for (Cell jCell = rCell.L; jCell != rCell; jCell = jCell.L) {
                 uncover(jCell.C);
@@ -134,7 +133,7 @@ public class DancingLinks {
 
     public void deleteRowsByPentID(int pentID) {
         List<Cell> cellsToDelete = new ArrayList<>();
-    
+
         for (Cell iCell = root.D; iCell != root; iCell = iCell.D) {
             if (iCell.pentID == pentID) {
                 // Collect all the cells in the row for deletion
@@ -143,7 +142,7 @@ public class DancingLinks {
                 }
             }
         }
-    
+
         // Delete the collected cells
         for (Cell cellToDelete : cellsToDelete) {
             deleteCell(cellToDelete);
@@ -155,7 +154,7 @@ public class DancingLinks {
         cell.L.R = cell.R;
         cell.R.L = cell.L;
         cell.C.size--;
-    
+
         // Unlink the cell from its row
         for (Cell current = cell.D; current != cell; current = current.D) {
             for (Cell jCell = current.R; jCell != current; jCell = jCell.R) {
@@ -191,25 +190,25 @@ public class DancingLinks {
                     }
                 }
             }
-            tempHead = (Header)tempHead.R;
+            tempHead = (Header) tempHead.R;
         }
     }
 
     private void uncoverUsedIds(int id) {
-            Header tempHead = (Header) root.R;
-            while (tempHead != root) {
-                for (Cell iCell = tempHead.D; iCell != tempHead; iCell = iCell.D) {
-                    for (Cell jCell = iCell.R; jCell != iCell; jCell = jCell.R) {
-                        if (jCell.pentID == id) {
-                            jCell.D.U = jCell;
-                            jCell.U.D = jCell;
-                            jCell.C.size++;
-                        }
+        Header tempHead = (Header) root.R;
+        while (tempHead != root) {
+            for (Cell iCell = tempHead.D; iCell != tempHead; iCell = iCell.D) {
+                for (Cell jCell = iCell.R; jCell != iCell; jCell = jCell.R) {
+                    if (jCell.pentID == id) {
+                        jCell.D.U = jCell;
+                        jCell.U.D = jCell;
+                        jCell.C.size++;
                     }
                 }
-                tempHead = (Header) tempHead.R;
             }
-        
+            tempHead = (Header) tempHead.R;
+        }
+
     }
 
     private void uncover(Header head) {

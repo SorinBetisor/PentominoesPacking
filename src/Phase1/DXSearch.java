@@ -3,6 +3,10 @@ package Phase1;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * DXSearch is a class that contains methods for solving pentomino puzzles using
+ * the Dancing Links algorithm.
+ */
 public class DXSearch {
 	private static final char[] INPUT = Search.INPUT;
 	private static final int HORIZONTAL_GRID_SIZE = Search.HORIZONTAL_GRID_SIZE;
@@ -10,12 +14,15 @@ public class DXSearch {
 	public static int[][] field = new int[HORIZONTAL_GRID_SIZE][VERTICAL_GRID_SIZE];
 	public static UI ui = Search.ui;
 
-	public static void main(String[] args) {
+	/**
+	 * Solves a pentomino puzzle using the Dancing Links algorithm.
+	 */
+	public static void dxSearch() {
 		Search.emptyBoard(field);
 		DancingLinks dance = new DancingLinks(HORIZONTAL_GRID_SIZE * VERTICAL_GRID_SIZE);
 		int nr = 0;
 		for (int i = 0; i < INPUT.length; i++) {
-			int pentID = characterToID(INPUT[i]);
+			int pentID = Search.characterToID(INPUT[i]);
 			for (int mutation = 0; mutation < PentominoDatabase.data[pentID].length; mutation++) {
 				int[][] pieceToPlace = PentominoDatabase.data[pentID][mutation];
 				for (int x = 0; x < HORIZONTAL_GRID_SIZE; x++) {
@@ -43,20 +50,17 @@ public class DXSearch {
 			}
 		}
 		dance.algorithmX(0);
-		// drawPentominoe(8, 6, 0, 0);
-		// drawPentominoe(3, 2, 2, 0);
-		// drawPentominoe(2, 2, 1, 1);
-		// drawPentominoe(9, 3, 0, 2);
-		// drawPentominoe(1, 0, 0, 5);
-		// drawPentominoe(4, 2, 2, 3);
-		// ui.setState(field);
 	}
 
-	public static int count = 0;
-
+	/**
+	 * Checks if a pentomino piece can be placed at a given position on the board.
+	 *
+	 * @param piece the pentomino piece to be placed
+	 * @param x     the x-coordinate of the placement position
+	 * @param y     the y-coordinate of the placement position
+	 * @return true if the piece can be placed, false otherwise
+	 */
 	public static boolean canPlacePieceBool(int[][] piece, int x, int y) {
-		// Check if the piece can be placed within the boundaries of the field
-
 		if (x + piece.length > HORIZONTAL_GRID_SIZE) {
 			return false;
 		}
@@ -67,36 +71,15 @@ public class DXSearch {
 		return true;
 	}
 
-	public static int characterToID(char character) {
-		int pentID = -1;
-		if (character == 'X') {
-			pentID = 0;
-		} else if (character == 'I') {
-			pentID = 1;
-		} else if (character == 'Z') {
-			pentID = 2;
-		} else if (character == 'T') {
-			pentID = 3;
-		} else if (character == 'U') {
-			pentID = 4;
-		} else if (character == 'V') {
-			pentID = 5;
-		} else if (character == 'W') {
-			pentID = 6;
-		} else if (character == 'Y') {
-			pentID = 7;
-		} else if (character == 'L') {
-			pentID = 8;
-		} else if (character == 'P') {
-			pentID = 9;
-		} else if (character == 'N') {
-			pentID = 10;
-		} else if (character == 'F') {
-			pentID = 11;
-		}
-		return pentID;
-	}
-
+	/**
+	 * Returns the x-coordinates of occupied cells in a pentomino piece when placed
+	 * on the board.
+	 *
+	 * @param piece the pentomino piece to be placed
+	 * @param row   the row where the pentomino piece is placed
+	 * @param col   the column where the pentomino piece is placed
+	 * @return a list of x-coordinates of occupied cells
+	 */
 	public static List<Integer> getOccupiedCellsX(int[][] pieceToplace, int row, int col) {
 		List<Integer> arrX = new ArrayList<>();
 		int distanceX = -1;
@@ -122,6 +105,15 @@ public class DXSearch {
 		return arrX;
 	}
 
+	/**
+	 * Returns the y-coordinates of occupied cells in a pentomino piece when placed
+	 * on the board.
+	 *
+	 * @param piece the pentomino piece to be placed
+	 * @param row   the row where the pentomino piece is placed
+	 * @param col   the column where the pentomino piece is placed
+	 * @return a list of y-coordinates of occupied cells
+	 */
 	public static List<Integer> getOccupiedCellsY(int[][] pieceToplace, int row, int col) {
 		List<Integer> arrY = new ArrayList<>();
 		int distanceY = -1;
@@ -147,6 +139,14 @@ public class DXSearch {
 		return arrY;
 	}
 
+	/**
+	 * Draws a pentomino piece on the board.
+	 *
+	 * @param pentID   the ID of the pentomino piece to be drawn
+	 * @param mutation the mutation of the pentomino piece
+	 * @param x0       the x-coordinate of the placement position
+	 * @param y0       the y-coordinate of the placement position
+	 */
 	public static void drawPentominoe(int pentID, int mutation, int x0, int y0) {
 		int[][] pieceToPlace = PentominoDatabase.data[pentID][mutation];
 		// System.out.println(Arrays.deepToString(pieceToPlace));
