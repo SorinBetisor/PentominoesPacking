@@ -1,5 +1,9 @@
 package Phase1.DX;
 
+/**
+ * A class representing a cell in the Dancing Links data structure.
+ */
+
 public class Cell {
     public int row;
     public Cell U;
@@ -10,6 +14,11 @@ public class Cell {
 
     public int pentID;
 
+     /**
+     * Constructs a new cell linked to the specified header.
+     *
+     * @param header The header to which the cell is linked.
+     */
     public Cell(Header header) {
         row = -1;
         L = this;
@@ -21,6 +30,11 @@ public class Cell {
         pentID=-1;
     }
 
+    /**
+     * Inserts a cell to the left of this cell.
+     *
+     * @param cell The cell to insert to the left of this cell.
+     */
     public void InsertLeft(Cell cell) {
         cell.L = L;
         L.R = cell;
@@ -28,6 +42,11 @@ public class Cell {
         cell.R = this;
     }
 
+    /**
+     * Inserts a cell above this cell.
+     *
+     * @param cell The cell to insert above this cell.
+     */
     public void InsertUp(Cell cell) {
         cell.U = U;
         U.D = cell;
@@ -35,40 +54,51 @@ public class Cell {
         cell.D = this;
     }
 
+    /**
+     * Covers this cell in the matrix by unlinking it from its left and right neighbors.
+     */
     public void coverCell() {
         this.L.R = this.R;
         this.R.L = this.L;
     }
 
+    /**
+     * Uncovers this cell by relinking it to its left and right neighbors.
+     */
     public void uncoverCell() {
         this.R.L = this;
         this.L.R = this;
     }
 
+     /**
+     * Main function for testing the Cell class.
+     *
+     * @param args Command-line arguments (not used).
+     */
     public static void main(String[] args) {
-        Header head = new Header(-1);
-        Cell a = new Cell(head);
-        Cell b = new Cell(head);
-        Cell c = new Cell(head);
-        Cell d = new Cell(head);
+        // Header head = new Header(-1);
+        // Cell a = new Cell(head);
+        // Cell b = new Cell(head);
+        // Cell c = new Cell(head);
+        // Cell d = new Cell(head);
 
-        head.InsertUp(a);
-        head.InsertUp(b);
-        head.InsertUp(c);
-        head.InsertUp(d);
+        // head.InsertUp(a);
+        // head.InsertUp(b);
+        // head.InsertUp(c);
+        // head.InsertUp(d);
 
-        System.out.println("Initial: ");
-        // traverse Left-Right
-        // for(Cell current = root.R; current!=root;current= current.R)
+        // System.out.println("Initial: ");
+        // // traverse Left-Right
+        // // for(Cell current = root.R; current!=root;current= current.R)
+        // // {
+        // // System.out.print(current.name);
+        // // }
+
+        // // traverse Up-Down
+        // for(Cell current = head.D; current!=head; current = current.D)
         // {
-        // System.out.print(current.name);
+        // System.out.println(current.C.name);
         // }
-
-        // traverse Up-Down
-        for(Cell current = head.D; current!=head; current = current.D)
-        {
-        System.out.println(current.C.name);
-        }
     }
 
     // getters and setters

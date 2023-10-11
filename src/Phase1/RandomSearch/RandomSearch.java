@@ -15,16 +15,18 @@ public class RandomSearch {
 	}
 
 	/**
-	 * Basic implementation of a search algorithm. It is not a bruto force
-	 * algorithms (it does not check all the posssible combinations)
-	 * but randomly takes possible combinations and positions to find a possible
-	 * solution.
-	 * The solution is not necessarily the most efficient one
-	 * This algorithm can be very time-consuming
-	 * 
-	 * @param field a matrix representing the board to be fulfilled with pentominoes
+	 * A basic search algorithm that attempts to find a solution to the pentomino
+	 * puzzle through
+	 * a random approach. This algorithm does not check all possible combinations,
+	 * and the solution
+	 * it finds may not be the most efficient one. It works by randomly placing
+	 * pentominoes on the board
+	 * with random rotations/flipping, repeating this process until a solution is
+	 * found or until it
+	 * exhaustively searches for a solution.
+	 *
+	 * @param field The matrix representing the board to be filled with pentominoes.
 	 */
-
 	public static void randomSearch(int[][] field) {
 		java.util.Random random = new java.util.Random();
 		boolean solutionFound = false;

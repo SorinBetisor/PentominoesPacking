@@ -41,14 +41,14 @@ public class DXSearch {
 
 						List<Integer> xs = getOccupiedCellsX(pieceToPlace, x, y);
 						List<Integer> ys = getOccupiedCellsY(pieceToPlace, x, y);
-						dance.AddRow(nr, pentID, x, y, mutation, new int[] { //TODO: SWITCH ARRAYLISTS WITH ARRAYS
+						dance.AddRow(nr, pentID, x, y, mutation, new int[] { // TODO: SWITCH ARRAYLISTS WITH ARRAYS
 								xs.get(0) + HORIZONTAL_GRID_SIZE * (ys.get(0)),
 								xs.get(1) + HORIZONTAL_GRID_SIZE * (ys.get(1)),
 								xs.get(2) + HORIZONTAL_GRID_SIZE * (ys.get(2)),
 								xs.get(3) + HORIZONTAL_GRID_SIZE * (ys.get(3)),
 								xs.get(4) + HORIZONTAL_GRID_SIZE * (ys.get(4)),
 						});
-						rows.add(new Row(nr,x,y,pentID,mutation));
+						rows.add(new Row(nr, x, y, pentID, mutation));
 						// System.out.println(nr + " ID" + pentID + " M" + mutation + " X" + x + " Y" +
 						// y); // y?
 						nr++;
@@ -56,6 +56,13 @@ public class DXSearch {
 				}
 			}
 		}
+
+		System.out.println("For bigger inputs, please wait until a solution that doesn't use duplicates is found");
+		try {
+			Thread.sleep(1000);
+		} catch (Exception ie) {
+		}
+
 		dance.algorithmX(0);
 	}
 

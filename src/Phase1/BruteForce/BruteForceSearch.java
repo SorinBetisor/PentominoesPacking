@@ -4,19 +4,30 @@ import Phase1.PentominoDatabase;
 import Phase1.Search;
 import Phase1.UI;
 
+/**
+ * This class includes the methods to support the search of a solution using a
+ * Pruned Brute Force algorithm.
+ */
 public class BruteForceSearch {
-	public static final int horizontalGridSize = Search.HORIZONTAL_GRID_SIZE;
-	public static final int verticalGridSize = Search.VERTICAL_GRID_SIZE;
+	public static final int HORIZONTAL_GRID_SIZE = Search.HORIZONTAL_GRID_SIZE;
+	public static final int VERTICAL_GRID_SIZE = Search.VERTICAL_GRID_SIZE;
 	public static int[][] field = Search.field;
 	public static final char[] INPUT = Search.INPUT;
 	public static UI ui = Search.ui;
 
+	/**
+	 * Recursively attempts to find a solution using the Brute Force algorithm.
+	 *
+	 * @param field The game board.
+	 * @param ix    The index of the pentomino to place.
+	 * @return True if a solution is found, false otherwise.
+	 */
 	private static boolean bruteForceSearch(int[][] field, int ix) {
 		if (ix >= INPUT.length)
 			return true;
 		int pentID = Search.characterToID(INPUT[ix]);
-		for (int x = 0; x < horizontalGridSize; x++) {
-			yCycle: for (int y = 0; y < verticalGridSize; y++) {
+		for (int x = 0; x < HORIZONTAL_GRID_SIZE; x++) {
+			yCycle: for (int y = 0; y < VERTICAL_GRID_SIZE; y++) {
 				mCycle: for (int mutation = 0; mutation < PentominoDatabase.data[pentID].length; mutation++) {
 					switch (pentID) {
 						case 0:
@@ -65,9 +76,15 @@ public class BruteForceSearch {
 
 	}
 
+	/**
+	 * Checks for a special case to optimize the Brute Force algorithm.
+	 *
+	 * @param field The game board.
+	 * @return True if the special case is met, false otherwise.
+	 */
 	public static boolean checkSpecialCase(int[][] field) {
-		for (int xCor = 0; xCor < horizontalGridSize; xCor++) {
-			for (int c = 0; c < verticalGridSize; c++) {
+		for (int xCor = 0; xCor < HORIZONTAL_GRID_SIZE; xCor++) {
+			for (int c = 0; c < VERTICAL_GRID_SIZE; c++) {
 				if (field[xCor][c] == -1) {
 					int value = 0;
 
@@ -83,21 +100,22 @@ public class BruteForceSearch {
 						}
 					}
 
-					if (xCor < horizontalGridSize - 1) {
+					if (xCor < HORIZONTAL_GRID_SIZE - 1) {
 						if (field[xCor + 1][c] > 0) {
 							value++;
 						}
 					}
 
-					if (c < verticalGridSize - 1) {
+					if (c < VERTICAL_GRID_SIZE - 1) {
 						if (field[xCor][c + 1] > 0) {
 							value++;
 						}
 					}
 
-					if ((xCor == 0 || xCor == horizontalGridSize - 1) && (c == 0 || c == verticalGridSize - 1)) {
+					if ((xCor == 0 || xCor == HORIZONTAL_GRID_SIZE - 1) && (c == 0 || c == VERTICAL_GRID_SIZE - 1)) {
 						value += 2;
-					} else if ((xCor == 0 || xCor == horizontalGridSize - 1) || (c == 0 || c == verticalGridSize - 1)) {
+					} else if ((xCor == 0 || xCor == HORIZONTAL_GRID_SIZE - 1)
+							|| (c == 0 || c == VERTICAL_GRID_SIZE - 1)) {
 						value++;
 					}
 
@@ -110,6 +128,13 @@ public class BruteForceSearch {
 		return true;
 	}
 
+	/**
+	 * Initiates a search for a solution using the Brute Force algorithm by clearing
+	 * the game board and
+	 * invoking the recursive Brute Force search function.
+	 *
+	 * @return True if a solution is found, false otherwise.
+	 */
 	public static boolean search() {
 		Search.emptyBoard(field);
 		if (bruteForceSearch(field, 0)) {
@@ -119,6 +144,9 @@ public class BruteForceSearch {
 		}
 	}
 
+	/**
+	 * Initiates the Brute Force search algorithm and prints the result.
+	 */
 	public static void startBFSearch() {
 		double start = System.currentTimeMillis();
 		if (search()) {
@@ -127,13 +155,14 @@ public class BruteForceSearch {
 			System.out.println("Not possible");
 		}
 		double end = System.currentTimeMillis();
-		System.out.println("Execution time: " + (end - start) / 1000);
+		System.out.println("Execution time (UI updating included): " + (end - start) / 1000);
 	}
 
 	/**
-	 * Main function. Needs to be executed to start the basic isSearch algorithm
-	 * 
-	 * @throws InterruptedException
+	 * Executes the Brute Force search algorithm and measures execution time.
+	 *
+	 * @param args Command-line arguments (not used).
+	 * @throws InterruptedException If the thread sleep encounters an error.
 	 */
 	public static void main(String[] args) throws InterruptedException {
 		startBFSearch();

@@ -4,8 +4,15 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+/**
+ * A simple graphical user interface for selecting and starting different
+ * pentomino puzzle solving algorithms.
+ */
 public class AlgorithmSelectorUI {
 
+    /**
+     * Constructs and displays the algorithm selection user interface.
+     */
     public AlgorithmSelectorUI() {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
@@ -18,7 +25,8 @@ public class AlgorithmSelectorUI {
                 JLabel algorithmLabel = new JLabel("Select Algorithm:");
                 panel.add(algorithmLabel);
 
-                String[] algorithms = {"Random Search (unreliable)", "Pruned Brute Force", "Dancing Links AlgX Search", "Flood Fill"};
+                String[] algorithms = { "Random Search (unreliable)", "Pruned Brute Force", "Dancing Links AlgX Search",
+                        "Flood Fill" };
                 JComboBox<String> algorithmComboBox = new JComboBox<>(algorithms);
                 panel.add(algorithmComboBox);
 
@@ -46,6 +54,12 @@ public class AlgorithmSelectorUI {
         });
     }
 
+    /**
+     * The entry point of the program that creates and displays the algorithm
+     * selection UI.
+     *
+     * @param args Command-line arguments (not used).
+     */
     public static void main(String[] args) {
         new AlgorithmSelectorUI();
         // Create and display the second UI in real-time on a separate EDT

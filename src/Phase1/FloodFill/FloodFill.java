@@ -18,23 +18,33 @@ public class FloodFill {
     public static final int HORIZONTAL_GRID_SIZE = Search.HORIZONTAL_GRID_SIZE;
     public static final int VERTICAL_GRID_SIZE = Search.VERTICAL_GRID_SIZE;
     public static final char[] INPUT = Search.INPUT;
+    public static double start;
 
     // Static UI class to display the board
     public static UI ui = Search.ui;
 
     /**
-     * Helper function which starts a basic search algorithm
+     * Helper function which starts the Flood Fill search algorithm.
      */
-
     public static void floodFillWrapper() {
         int[][] field = Search.field;
         Search.emptyBoard(field);
+        start = System.currentTimeMillis();
         recursive(field, 0);
     }
 
+    /**
+     * Recursively attempts to place pentominoes on the board and find a solution.
+     *
+     * @param field      The game board.
+     * @param piecePlace The index of the pentomino to place.
+     * @return True if a solution is found, false otherwise.
+     */
     private static boolean recursive(int[][] field, int piecePlace) {
         if (piecePlace == INPUT.length) {
             ui.setState(field);
+            double end = System.currentTimeMillis();
+		    System.out.println("Execution time (UI updating included): " + (end - start) / 1000);
             return true;
         }
 
@@ -42,11 +52,9 @@ public class FloodFill {
         for (int x = 0; x < HORIZONTAL_GRID_SIZE; x++) {
             for (int y = 0; y < VERTICAL_GRID_SIZE; y++) {
                 for (int mutation = 0; mutation < PentominoDatabase.data[pentID].length; mutation++) {
-                    try{Thread.sleep(1);}
-                    catch(Exception ie){}
                     int[][] pieceToPlace = PentominoDatabase.data[pentID][mutation];
                     if (Search.canPlacePiece(field, pieceToPlace, x, y)) {
-                        Search.addPiece(field,pieceToPlace,pentID,x,y);
+                        Search.addPiece(field, pieceToPlace, pentID, x, y);
                         if (checkIsland(field)) {
                             if (recursive(field, piecePlace + 1)) {
                                 return true;
@@ -66,6 +74,13 @@ public class FloodFill {
         return false;
     }
 
+    /**
+     * Checks if the game board is divided into islands, ensuring proper placement
+     * of pentominoes.
+     *
+     * @param field The game board.
+     * @return True if the board is divided into islands correctly, false otherwise.
+     */
     public static boolean checkIsland(int[][] field) {
         int occupiedArea = 1;
         int remainderCell = 0;
@@ -86,6 +101,15 @@ public class FloodFill {
         return true;
     }
 
+    /**
+     * Flood-fill algorithm to measure the size of an island.
+     *
+     * @param field        The game board.
+     * @param x            The x-coordinate to start the flood-fill.
+     * @param y            The y-coordinate to start the flood-fill.
+     * @param occupiedArea The size of the island.
+     * @return The size of the island after flood-fill.
+     */
     public static int flood(int[][] field, int x, int y, int occupiedArea) {
         if (x < 0 || field.length <= x || y < 0 || field[0].length <= y || field[x][y] != -1) {
             return 0;
@@ -101,6 +125,15 @@ public class FloodFill {
         return occupiedArea;
     }
 
+    /**
+     * Clears a pentomino from the board.
+     *
+     * @param field  The game board.
+     * @param pentID The ID of the pentomino to clear.
+     * @param x      The x-coordinate of the pentomino.
+     * @param y      The y-coordinate of the pentomino.
+     * @param m      The mutation of the pentomino.
+     */
     private static void clearPentomino(int[][] field, int pentID, int x, int y, int m) {
         int[][] piece = PentominoDatabase.data[pentID][m];
 
