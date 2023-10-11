@@ -207,7 +207,13 @@ public class Search {
 	public static void main(String[] args) {
 		Scanner scanner = new Scanner(System.in);
 
-		System.out.print("Enter the desired algorithm number: ");
+		System.out.println("Select an algorithm:");
+        System.out.println("1. Random Search");
+        System.out.println("2. Pruned Brute Force");
+        System.out.println("3. Dancing Links Algorithm X");
+        System.out.println("4. Flood Fill");
+
+        System.out.print("Enter the desired algorithm number: ");
 		int algID = scanner.nextInt();
 		scanner.close();
 		search(algID);

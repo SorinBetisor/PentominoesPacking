@@ -25,7 +25,7 @@ public class AlgorithmSelectorUI {
                 JLabel algorithmLabel = new JLabel("Select Algorithm:");
                 panel.add(algorithmLabel);
 
-                String[] algorithms = { "Random Search (unreliable)", "Pruned Brute Force", "Dancing Links AlgX Search",
+                String[] algorithms = { "Random Search (unreliable)", "Pruned Brute Force", "Dancing Links AlgX Search (multiple solutions)",
                         "Flood Fill" };
                 JComboBox<String> algorithmComboBox = new JComboBox<>(algorithms);
                 panel.add(algorithmComboBox);
