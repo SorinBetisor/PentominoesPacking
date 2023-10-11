@@ -1,1 +1,1 @@
-typeSearchIndex = [{"l":"All Classes","url":"allclasses-index.html"},{"p":"<Unnamed>","l":"PentominoBuilder"},{"p":"<Unnamed>","l":"PentominoDatabase"},{"p":"<Unnamed>","l":"Search"},{"p":"<Unnamed>","l":"UI"}]
+typeSearchIndex = [{"p":"Phase1","l":"AlgorithmSelectorUI"},{"l":"All Classes","url":"allclasses-index.html"},{"p":"Phase1","l":"Constants"},{"p":"Phase1","l":"PentominoBuilder"},{"p":"Phase1","l":"PentominoDatabase"},{"p":"Phase1","l":"Search"},{"p":"Phase1","l":"UI"}]

@@ -10,6 +10,11 @@ public class RandomSearch {
 	private static final int VERTICAL_GRID_SIZE = Search.VERTICAL_GRID_SIZE;
 	private static final UI ui = Search.ui;
 
+	
+	/** 
+	 * @param args
+	 * @throws InterruptedException
+	 */
 	public static void main(String[] args) throws InterruptedException {
 		randomSearch(Search.field);
 	}

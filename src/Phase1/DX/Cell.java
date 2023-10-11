@@ -101,6 +101,10 @@ public class Cell {
         // }
     }
 
+    
+    /** 
+     * @return Cell
+     */
     // getters and setters
     public Cell getU() {
         return U;
