@@ -11,7 +11,9 @@ The Pentominoes project provides an interactive platform for solving these puzzl
 ## Version or Date:
 
 Version 1.1
-Date: [12.10.2023]How to Start This Project:
+Date: [12.10.2023]
+
+## How to Start This Project:
 
 **1. Create a New Java Project:**
 
@@ -48,12 +50,6 @@ Date: [12.10.2023]How to Start This Project:
 
 ![Algorithm Selector](https://ibb.co/xsbdJ9F)
 
-
-```
-![alt text](https://ibb.co/xsbdJ9F)
-```
-
-
 *Figure 1: Algorithm Selector* - The project's user interface allows you to choose from various algorithms to solve pentomino puzzles.
 
 ### Running the Algorithm
@@ -62,15 +58,15 @@ Date: [12.10.2023]How to Start This Project:
 2. Select your desired algorithm (e.g., "Dancing Links Algorithm X") from the dropdown.
 3. Click the "Start" button to initiate the algorithm.
 
-![Running Dancing Links](https://chat.openai.com/c/screenshots/running_dancing_links.png)
+![Running Dancing Links](https://ibb.co/CJ6r1Md)
 
 *Figure 2: Running Dancing Links Algorithm* - This screenshot shows the application running the Dancing Links Algorithm X to solve a pentomino puzzle.
 
 ### Viewing the Results
 
-Once the algorithm has completed its execution, the results will be displayed. Here's an example of the solutions found:
+Once the algorithm has completed its execution, the results will be displayed. Here's an example of the solutions found on a 12x5 grid using the Flood Fill Algorithm:
 
-![Solutions Found](https://chat.openai.com/c/screenshots/solutions_found.png)
+![Solutions Found](https://ibb.co/Cm0s8M5)
 
 *Figure 3: Viewing the Solutions* - The application provides a visual representation of the solutions found, with pentomino shapes placed on the grid.
 
@@ -80,7 +76,7 @@ Once the algorithm has completed its execution, the results will be displayed. H
 
 ## Authors:
 
-* Sorin Betisor
+* [Sorin Betisor](https://www.linkedin.com/in/sorin-be%C8%9Bi%C8%99or-722188244/)
 * Rares Huci
 * Adrian Rusu
 * Klara Suchan
@@ -89,4 +85,4 @@ Once the algorithm has completed its execution, the results will be displayed. H
 
 ## User Instructions:
 
-* Feel free to provide feedback or report any issues to the authors for future improvements.
+* Feel free to provide feedback or report any issues for future improvements.
