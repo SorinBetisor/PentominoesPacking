@@ -7,9 +7,12 @@ public class DXSearch {
 	private static final char[] INPUT = Search.INPUT;
 	private static final int HORIZONTAL_GRID_SIZE = Search.HORIZONTAL_GRID_SIZE;
 	private static final int VERTICAL_GRID_SIZE = Search.VERTICAL_GRID_SIZE;
+	public static int[][] field = new int[HORIZONTAL_GRID_SIZE][VERTICAL_GRID_SIZE];
+	public static UI ui = Search.ui;
 
 	public static void main(String[] args) {
-		DancingLinks dance = new DancingLinks(HORIZONTAL_GRID_SIZE*VERTICAL_GRID_SIZE);
+		Search.emptyBoard(field);
+		DancingLinks dance = new DancingLinks(HORIZONTAL_GRID_SIZE * VERTICAL_GRID_SIZE);
 		int nr = 0;
 		for (int i = 0; i < INPUT.length; i++) {
 			int pentID = characterToID(INPUT[i]);
@@ -24,24 +27,31 @@ public class DXSearch {
 						}
 						List<Integer> xs = getOccupiedCellsX(pieceToPlace, x, y);
 						List<Integer> ys = getOccupiedCellsY(pieceToPlace, x, y);
-						dance.AddRow(nr, pentID,x,y,mutation, new int[] {
-							xs.get(0) + HORIZONTAL_GRID_SIZE*(ys.get(0)),
-							xs.get(1) + HORIZONTAL_GRID_SIZE*(ys.get(1)),
-							xs.get(2) + HORIZONTAL_GRID_SIZE*(ys.get(2)),
-							xs.get(3) + HORIZONTAL_GRID_SIZE*(ys.get(3)),
-							xs.get(4) + HORIZONTAL_GRID_SIZE*(ys.get(4)),
-						 });
-						System.out.println(nr + " ID" + pentID + " M" + mutation + " X"+x+" Y" + y); // y?
+						dance.AddRow(nr, pentID, x, y, mutation, new int[] {
+								xs.get(0) + HORIZONTAL_GRID_SIZE * (ys.get(0)),
+								xs.get(1) + HORIZONTAL_GRID_SIZE * (ys.get(1)),
+								xs.get(2) + HORIZONTAL_GRID_SIZE * (ys.get(2)),
+								xs.get(3) + HORIZONTAL_GRID_SIZE * (ys.get(3)),
+								xs.get(4) + HORIZONTAL_GRID_SIZE * (ys.get(4)),
+						});
+						// System.out.println(nr + " ID" + pentID + " M" + mutation + " X" + x + " Y" + y); // y?
 						nr++;
 					}
 				}
 			}
 		}
 		dance.algorithmX(0);
-
+		// drawPentominoe(8, 6, 0, 0);
+		// drawPentominoe(3, 2, 2, 0);
+		// drawPentominoe(2, 2, 1, 1);
+		// drawPentominoe(9, 3, 0, 2);
+		// drawPentominoe(1, 0, 0, 5);
+		// drawPentominoe(4, 2, 2, 3);
+		// ui.setState(field);
 	}
 
 	public static int count = 0;
+
 	public static boolean canPlacePieceBool(int[][] piece, int x, int y) {
 		// Check if the piece can be placed within the boundaries of the field
 
@@ -85,14 +95,12 @@ public class DXSearch {
 		return pentID;
 	}
 
-
-	
 	public static List<Integer> getOccupiedCellsX(int[][] pieceToplace, int row, int col) {
 		List<Integer> arrX = new ArrayList<>();
 		int distanceX = -1;
 		for (int x = 0; x < pieceToplace.length; x++) {
 			for (int j = 0; j < pieceToplace[0].length; j++) {
-				if (pieceToplace[x][j] != 0 && j==0) {
+				if (pieceToplace[x][j] != 0 && j == 0) {
 					distanceX = x;
 					break; // Exit the inner loop once the first occupied cell is found
 				}
@@ -117,7 +125,7 @@ public class DXSearch {
 		int distanceY = -1;
 		for (int x = 0; x < pieceToplace.length; x++) {
 			for (int j = 0; j < pieceToplace[0].length; j++) {
-				if (pieceToplace[x][j] != 0 && x==0) {
+				if (pieceToplace[x][j] != 0 && x == 0) {
 					distanceY = j;
 					break; // Exit the inner loop once the first occupied cell is found
 				}
@@ -135,5 +143,19 @@ public class DXSearch {
 			}
 		}
 		return arrY;
+	}
+
+	public static void drawPentominoe(int pentID, int mutation, int x0, int y0) {
+		int[][] pieceToPlace = PentominoDatabase.data[pentID][mutation];
+		// System.out.println(Arrays.deepToString(pieceToPlace));
+		for (int x = 0; x < pieceToPlace.length; x++) {
+			for (int j = 0; j < pieceToPlace[0].length; j++) {
+				if (pieceToPlace[x][j] != 0) {
+					field[x + x0][j + y0] = pentID;
+					// try{Thread.sleep(20);}
+					// catch(Exception ie){System.out.println(1);}
+				}
+			}
+		}
 	}
 }
