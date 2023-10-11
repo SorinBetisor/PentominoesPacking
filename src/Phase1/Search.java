@@ -1,5 +1,10 @@
 package Phase1;
 
+import Phase1.BruteForce.BruteForceSearch;
+import Phase1.DX.DXSearch;
+import Phase1.FloodFill.FloodFill;
+import Phase1.RandomSearch.RandomSearch;
+
 /**
  * @author Department of Data Science and Knowledge Engineering (DKE)
  * @version 2022.0
@@ -9,12 +14,12 @@ package Phase1;
  * This class includes the methods to support the search of a solution.
  */
 public class Search {
-	public static final int HORIZONTAL_GRID_SIZE = 12;
+	public static final int HORIZONTAL_GRID_SIZE = 6;
 	public static final int VERTICAL_GRID_SIZE = 5;
-	public static final char[] INPUT = { 'T','U','P','V','I','L','Y','W','Z','X','N','F' };
+	public static final char[] INPUT = {'T','U','I','L','Z','P'};
 
 	// {'T','U','I','L','Z','P'};
-	// 
+	// { 'T','U','P','V','I','L','Y','W','Z','X','N','F' };
 
 	// Static UI class to display the board
 	public static UI ui = new UI(HORIZONTAL_GRID_SIZE, VERTICAL_GRID_SIZE, 50);
@@ -41,20 +46,21 @@ public class Search {
 
 		emptyBoard(field);
 		// Start the basic search
-		selectAlgorithm(3, field);
+		selectAlgorithm(2, field);
 
 	}
 
-	private static void selectAlgorithm(int id, int[][] field) {
+	public static void selectAlgorithm(int id, int[][] field) {
 		if (id == 1) {
 			RandomSearch.randomSearch(field);
 		} else if (id == 2) {
-			try{
-			BruteForceSearch.bruteForceSearch(field,0);}
-			catch(Exception ie){}
+			BruteForceSearch.startBFSearch();
 		} else if (id ==3)
 		{
 			DXSearch.dxSearch();
+		} else if( id == 4)
+		{
+			FloodFill.floodFillWrapper();
 		}
 		 else {
 			System.out.println("Invalid algorithm ID.");

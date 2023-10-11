@@ -1,4 +1,8 @@
-package Phase1;
+package Phase1.RandomSearch;
+
+import Phase1.PentominoDatabase;
+import Phase1.Search;
+import Phase1.UI;
 
 public class RandomSearch {
 	private static final char[] INPUT = Search.INPUT;

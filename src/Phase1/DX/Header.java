@@ -1,4 +1,5 @@
-package Phase1;
+package Phase1.DX;
+
 public class Header extends Cell {
 
     public int name;

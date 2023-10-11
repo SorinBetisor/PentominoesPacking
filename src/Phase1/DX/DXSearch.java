@@ -1,7 +1,11 @@
-package Phase1;
+package Phase1.DX;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import Phase1.PentominoDatabase;
+import Phase1.Search;
+import Phase1.UI;
 
 /**
  * DXSearch is a class that contains methods for solving pentomino puzzles using
@@ -11,8 +15,10 @@ public class DXSearch {
 	private static final char[] INPUT = Search.INPUT;
 	private static final int HORIZONTAL_GRID_SIZE = Search.HORIZONTAL_GRID_SIZE;
 	private static final int VERTICAL_GRID_SIZE = Search.VERTICAL_GRID_SIZE;
-	public static int[][] field = new int[HORIZONTAL_GRID_SIZE][VERTICAL_GRID_SIZE];
+	public static int[][] field = Search.field;
 	public static UI ui = Search.ui;
+
+	public static List<Row> rows = new ArrayList<Row>();
 
 	/**
 	 * Solves a pentomino puzzle using the Dancing Links algorithm.
@@ -35,13 +41,14 @@ public class DXSearch {
 
 						List<Integer> xs = getOccupiedCellsX(pieceToPlace, x, y);
 						List<Integer> ys = getOccupiedCellsY(pieceToPlace, x, y);
-						dance.AddRow(nr, pentID, x, y, mutation, new int[] {
+						dance.AddRow(nr, pentID, x, y, mutation, new int[] { //TODO: SWITCH ARRAYLISTS WITH ARRAYS
 								xs.get(0) + HORIZONTAL_GRID_SIZE * (ys.get(0)),
 								xs.get(1) + HORIZONTAL_GRID_SIZE * (ys.get(1)),
 								xs.get(2) + HORIZONTAL_GRID_SIZE * (ys.get(2)),
 								xs.get(3) + HORIZONTAL_GRID_SIZE * (ys.get(3)),
 								xs.get(4) + HORIZONTAL_GRID_SIZE * (ys.get(4)),
 						});
+						rows.add(new Row(nr,x,y,pentID,mutation));
 						// System.out.println(nr + " ID" + pentID + " M" + mutation + " X" + x + " Y" +
 						// y); // y?
 						nr++;

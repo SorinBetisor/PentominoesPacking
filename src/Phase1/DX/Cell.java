@@ -1,4 +1,5 @@
-package Phase1;
+package Phase1.DX;
+
 public class Cell {
     public int row;
     public Cell U;
@@ -8,9 +9,6 @@ public class Cell {
     public Header C;
 
     public int pentID;
-    public int mutation;
-    public int x0;
-    public int y0;
 
     public Cell(Header header) {
         row = -1;
@@ -21,9 +19,6 @@ public class Cell {
         C = header;
 
         pentID=-1;
-        mutation=-1;
-        x0=-1;
-        y0=-1;
     }
 
     public void InsertLeft(Cell cell) {
