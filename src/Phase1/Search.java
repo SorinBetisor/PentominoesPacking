@@ -27,19 +27,25 @@ public class Search {
 	/**
 	 * Helper function which starts a basic search algorithm.
 	 */
-	public static void search(int selectedAlgorithm) {
+	public static boolean checkBaseCases()
+	{
 		if (INPUT == null || HORIZONTAL_GRID_SIZE * VERTICAL_GRID_SIZE == 0) {
-			System.out.println("Solution can't be found. ");
-			return;
+			System.out.println("Solution can't be found. Either the INPUT or sizes are null. Check Constants.java .");
+			return false;
 		}
 
 		if (INPUT.length != HORIZONTAL_GRID_SIZE * VERTICAL_GRID_SIZE / 5) {
-			System.out.println("Solution can't be found. Either the pieces are too many, or the grid is too small");
-			return;
+			System.out.println("Solution can't be found. Either the pieces are too many/few, or the grid is too small. Check Constants.java .");
+			return false;
 		}
+		return true;
+	}
+
+	public static void search(int selectedAlgorithm) {
 
 		emptyBoard(field);
 		// Start the basic search
+		checkBaseCases();
 		selectAlgorithm(selectedAlgorithm, field);
 	}
 

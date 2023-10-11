@@ -41,6 +41,10 @@ public class AlgorithmSelectorUI {
                         new Thread(new Runnable() {
                             @Override
                             public void run() {
+                                if(!Search.checkBaseCases())
+                                {
+                                    System.exit(404);
+                                }
                                 Search.selectAlgorithm(selectedAlgorithmIndex, Search.field);
                             }
                         }).start();

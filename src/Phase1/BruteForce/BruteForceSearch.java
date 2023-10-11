@@ -155,7 +155,7 @@ public class BruteForceSearch {
 			System.out.println("Not possible");
 		}
 		double end = System.currentTimeMillis();
-		System.out.println("Execution time (UI updating included): " + (end - start) / 1000);
+		System.out.println("(Brute Force) Execution time (UI updating included): " + (end - start) / 1000);
 	}
 
 	/**

@@ -44,7 +44,7 @@ public class FloodFill {
         if (piecePlace == INPUT.length) {
             ui.setState(field);
             double end = System.currentTimeMillis();
-		    System.out.println("Execution time (UI updating included): " + (end - start) / 1000);
+		    System.out.println("(Flood Fill) Execution time (UI updating included): " + (end - start) / 1000);
             return true;
         }
 
