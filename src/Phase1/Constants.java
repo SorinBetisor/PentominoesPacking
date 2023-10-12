@@ -1,23 +1,35 @@
 package Phase1;
+import java.util.Scanner;
 
-/**
- * This class defines constants related to the game board and pentomino pieces.
- */
 public class Constants {
-	/**
-	 * The horizontal size of the game board (number of columns).
-	 */
-	public static final int HORIZONTAL_GRID_SIZE = 6;
+	public static int HORIZONTAL_GRID_SIZE = 6;
+	public static int VERTICAL_GRID_SIZE = 5;
+	public static char[] INPUT = { 'T', 'U', 'P', 'I', 'V', 'L' };
 
-	/**
-	 * The vertical size of the game board (number of rows).
-	 */
-	public static final int VERTICAL_GRID_SIZE = 5;
+	public static void inputGameInfo() {
+		Scanner scanner = new Scanner(System.in);
 
-	/**
-	 * An array representing the pentomino pieces available for the game.
-	 * Each character in the array represents a pentomino
-	 */
-	public static final char[] INPUT = {'T','U','P','I','V','L'};
-	//{'L', 'V', 'T', 'N', 'X', 'Z', 'P', 'F', 'I', 'U','W','Y'};
+		// Ask the user for the horizontal size
+		System.out.print("Enter the horizontal size of the game board (number of columns): ");
+		HORIZONTAL_GRID_SIZE = scanner.nextInt();
+
+		// Consume the newline character
+		scanner.nextLine();
+
+		// Ask the user for the vertical size
+		System.out.print("Enter the vertical size of the game board (number of rows): ");
+		VERTICAL_GRID_SIZE = scanner.nextInt();
+
+		// Consume the newline character
+		scanner.nextLine();
+
+		// Ask the user for the array of pentomino pieces
+		System.out.println();
+		System.out.println("All possible pieces: T U P I V L F W X Y Z N ");
+		System.out.print("Enter the pentomino pieces (characters separated by spaces): ");
+		String inputString = scanner.nextLine();
+		INPUT = inputString.replaceAll("\\s+", "").toCharArray();
+
+	}
+
 }

@@ -35,22 +35,19 @@ Date: [12.10.2023]
 
 * After copying the project files, run `PentominoesBuilder.java` in your IDE to generate the pentominoes database (`pentominoes.csv`).
 
-**4. Set Constants in Constants.java:**
-
-* In the `Constants.java` file, set the constants (like `INPUT`) to appropriate values.
-
-**5. Run AlgorithmSelectorUI.java:**
+**4. Run AlgorithmSelectorUI.java:**
 
 * Run `AlgorithmSelectorUI.java` in your IDE.
+* Input the grid sizes and desired pentomino letters.
 * This will open the algorithm selection window where you can choose the desired algorithm.
 
 **Alternatively, run Search.java and input the desired Algorithm number.**
 
-**6. Select the Desired Algorithm:**
+**5. Select the Desired Algorithm:**
 
 * In the UI, select the algorithm you want to run (e.g., "FloodFill").
 
-**7. Follow the Application Flow:**
+**6. Follow the Application Flow:**
 
 * Follow the UI interactions in your program to execute the selected algorithm.
 

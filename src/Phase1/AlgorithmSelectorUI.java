@@ -25,7 +25,8 @@ public class AlgorithmSelectorUI {
                 JLabel algorithmLabel = new JLabel("Select Algorithm:");
                 panel.add(algorithmLabel);
 
-                String[] algorithms = { "Random Search (unreliable)", "Pruned Brute Force", "Dancing Links AlgX Search (multiple solutions)",
+                String[] algorithms = { "Random Search (unreliable)", "Pruned Brute Force",
+                        "Dancing Links AlgX Search (multiple solutions)",
                         "Flood Fill" };
                 JComboBox<String> algorithmComboBox = new JComboBox<>(algorithms);
                 panel.add(algorithmComboBox);
@@ -41,8 +42,7 @@ public class AlgorithmSelectorUI {
                         new Thread(new Runnable() {
                             @Override
                             public void run() {
-                                if(!Search.checkBaseCases())
-                                {
+                                if (!Search.checkBaseCases()) {
                                     System.exit(404);
                                 }
                                 Search.selectAlgorithm(selectedAlgorithmIndex, Search.field);
@@ -65,6 +65,7 @@ public class AlgorithmSelectorUI {
      * @param args Command-line arguments (not used).
      */
     public static void main(String[] args) {
+        Constants.inputGameInfo();
         new AlgorithmSelectorUI();
         // Create and display the second UI in real-time on a separate EDT
         SwingUtilities.invokeLater(new Runnable() {

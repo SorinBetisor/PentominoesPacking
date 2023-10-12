@@ -30,12 +30,12 @@ public class Search {
 	public static boolean checkBaseCases()
 	{
 		if (INPUT == null || HORIZONTAL_GRID_SIZE * VERTICAL_GRID_SIZE == 0) {
-			System.out.println("Solution can't be found. Either the INPUT or sizes are null. Check Constants.java .");
+			System.out.println("Solution can't be found. Either the INPUT or sizes are null.");
 			return false;
 		}
 
 		if (INPUT.length != HORIZONTAL_GRID_SIZE * VERTICAL_GRID_SIZE / 5) {
-			System.out.println("Solution can't be found. Either the pieces are too many/few, or the grid is too small. Check Constants.java .");
+			System.out.println("Solution can't be found. Either the pieces are too many/few, or the grid is too small.");
 			return false;
 		}
 		return true;
@@ -212,6 +212,9 @@ public class Search {
 	 */
 	public static void main(String[] args) {
 		Scanner scanner = new Scanner(System.in);
+		//!!! IF USING THIS CLASS, PLEASE SET UP THE INPUT AND GRID SIZES MANUALLY IN CONSTANTS.JAVA !!!
+
+		Constants.inputGameInfo();
 
 		System.out.println("Select an algorithm:");
         System.out.println("1. Random Search");
