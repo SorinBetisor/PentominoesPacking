@@ -64,10 +64,10 @@ public class BruteForceSearch {
 						Search.removePiece(field, pieceToPlace, x, y);
 
 						ui.setState(field);
-						try {
-							Thread.sleep(1);
-						} catch (Exception ie) {
-						}
+						// try {
+						// 	Thread.sleep(1);
+						// } catch (Exception ie) {
+						// }
 					}
 				}
 			}
@@ -155,7 +155,7 @@ public class BruteForceSearch {
 			System.out.println("Not possible");
 		}
 		double end = System.currentTimeMillis();
-		System.out.println("(Brute Force) Execution time (UI updating included): " + (end - start) / 1000);
+		System.out.println("(Brute Force) Execution time (ms): " + (end - start) / 1000);
 	}
 
 	/**

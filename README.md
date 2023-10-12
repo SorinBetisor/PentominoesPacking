@@ -24,30 +24,33 @@ Date: [12.10.2023]
 
 **1. Create a New Java Project:**
 
-* Open your Java Integrated Development Environment (IDE) like Eclipse, IntelliJ IDEA, or NetBeans or VSC.
+* Open your Java Integrated Development Environment (IDE) like Eclipse, IntelliJ IDEA, NetBeans, or Visual Studio Code.
 * Create a new Java project.
 
 **2. Copy Project Files:**
 
 * Copy all the project files into the project directory.
 
-**3. Set Constants in Constants.java:**
+**3. Generate Pentominoes Database:**
 
-* In the `Constants.java` file, set the constants like `INPUT` to appropriate values.
+* After copying the project files, run `PentominoesBuilder.java` in your IDE to generate the pentominoes database (`pentominoes.csv`).
 
-**4. Run AlgorithmSelectorUI.java:**
+**4. Set Constants in Constants.java:**
+
+* In the `Constants.java` file, set the constants (like `INPUT`) to appropriate values.
+
+**5. Run AlgorithmSelectorUI.java:**
 
 * Run `AlgorithmSelectorUI.java` in your IDE.
 * This will open the algorithm selection window where you can choose the desired algorithm.
 
 **Alternatively, run Search.java and input the desired Algorithm number.**
 
-
-**5. Select the Desired Algorithm:**
+**6. Select the Desired Algorithm:**
 
 * In the UI, select the algorithm you want to run (e.g., "FloodFill").
 
-**6. Follow the Application Flow:**
+**7. Follow the Application Flow:**
 
 * Follow the UI interactions in your program to execute the selected algorithm.
 

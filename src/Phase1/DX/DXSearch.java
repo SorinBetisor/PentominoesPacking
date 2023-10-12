@@ -20,6 +20,8 @@ public class DXSearch {
 
 	public static List<Row> rows = new ArrayList<Row>();
 
+	public static double start;
+
 	/**
 	 * Solves a pentomino puzzle using the Dancing Links algorithm.
 	 */
@@ -62,8 +64,9 @@ public class DXSearch {
 			Thread.sleep(1000);
 		} catch (Exception ie) {
 		}
-
+		
 		dance.algorithmX(0);
+		
 	}
 
 	/**

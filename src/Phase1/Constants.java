@@ -7,7 +7,7 @@ public class Constants {
 	/**
 	 * The horizontal size of the game board (number of columns).
 	 */
-	public static final int HORIZONTAL_GRID_SIZE = 6;
+	public static final int HORIZONTAL_GRID_SIZE = 12;
 
 	/**
 	 * The vertical size of the game board (number of rows).
@@ -18,5 +18,5 @@ public class Constants {
 	 * An array representing the pentomino pieces available for the game.
 	 * Each character in the array represents a pentomino
 	 */
-	public static final char[] INPUT = { 'T', 'U', 'P', 'V', 'I', 'L'};
+	public static final char[] INPUT = {'L', 'V', 'T', 'N', 'X', 'Z', 'P', 'F', 'I', 'U','W','Y'};
 }

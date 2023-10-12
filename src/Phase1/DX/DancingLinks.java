@@ -150,6 +150,7 @@ public class DancingLinks {
 
             duplicates = hasDuplicatesList(pentIDS);
             if (!duplicates) {
+                DXSearch.start = System.currentTimeMillis();
                 for (var row : rows) {
                     DXSearch.drawPentominoe(row.pentID, row.mutation, row.x0, row.y0);
                 }
@@ -159,6 +160,9 @@ public class DancingLinks {
                     Thread.sleep(1000);
                 } catch (Exception ie) {
                 }
+
+                double end = System.currentTimeMillis();
+		        System.out.println("(DX) Execution time (ms): " + (end - DXSearch.start) / 1000);
                 return;
             }
         }
