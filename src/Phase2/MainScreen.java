@@ -143,8 +143,5 @@ public class MainScreen extends JPanel {
         repaint();
     }
 
-    public static void main(String[] args) {
-        MainScreen screen = new MainScreen(5, 15, 52);
 
-    }
 }
