@@ -7,11 +7,18 @@ import Phase1.Search;
 public class Tetris {
     public static Random random = new Random();
 
+    //TODO: GENERATE JAVADOC COMMENTS FOR THE WHOLE DOCUMENT
+
     public static final int HORIZONTAL_GRID_SIZE = 5;
     public static final int VERTICAL_GRID_SIZE = 15;
+    public static final int MAXIMUM_VELOCITY = 950;
+    public static final int MINIMUM_VELOCITY = 150;
+    public static final int INITIAL_VELOCITY = 800;
+
     private static final char[] PIECES = { 'T', 'U', 'P', 'I', 'V', 'L', 'F', 'W', 'X', 'Y', 'Z', 'N' };
     public static int[][] field;
     public static MainScreen screen;
+    public static boolean gameOver = false;
 
     public static int[][] currentPiece;
     public static int currentID;
@@ -19,7 +26,7 @@ public class Tetris {
     public static int currentY;
     public static int currentRotation;
     public static boolean accelerateDown = false;
-    public static int pieceVelocity = 800;
+    public static int pieceVelocity = INITIAL_VELOCITY;
 
     public Tetris() {
         char randomPieceChar = PIECES[random.nextInt(12)];
@@ -161,13 +168,13 @@ public class Tetris {
 
     public static void accelerateMovingDown() {
         accelerateDown = true;
-        if(pieceVelocity > 150)
+        if(pieceVelocity > MINIMUM_VELOCITY)
         pieceVelocity -= 100;
     }
 
     public static void decelerateMovingDown() {
         accelerateDown = false;
-        if(pieceVelocity < 900)
+        if(pieceVelocity < MAXIMUM_VELOCITY)
         pieceVelocity += 100;
     }
 
@@ -196,6 +203,7 @@ public class Tetris {
 
                 if (checkGameOver()) {
                     System.out.println("Game Over");
+                    gameOver = true;
                     break;
                 }
             }

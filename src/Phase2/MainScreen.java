@@ -15,7 +15,7 @@ import java.io.IOException;
  * Phase 1. You will learn more about GUIs in Period 2, in the Introduction to
  * Computer Science 2 course.
  */
-public class MainScreen extends JPanel implements KeyListener{
+public class MainScreen extends JPanel implements KeyListener {
     private JFrame window;
     private int[][] state;
     private int size;
@@ -32,7 +32,7 @@ public class MainScreen extends JPanel implements KeyListener{
         size = _size;
         this.x = x;
         this.y = y;
-        this.upcomingMatrix = upcomingMatrix;  // Initialize the upcomingMatrix
+        this.upcomingMatrix = upcomingMatrix; // Initialize the upcomingMatrix
 
         try {
             leftFillerImage = ImageIO.read(getClass().getResource(
@@ -171,26 +171,21 @@ public class MainScreen extends JPanel implements KeyListener{
     public void keyPressed(KeyEvent e) {
         int keyCode = e.getKeyCode();
 
-        if (keyCode == KeyEvent.VK_LEFT) {
-            Tetris.moveLeft(); // Call your moveLeft() method when the left arrow key is pressed
-        } else if (keyCode == KeyEvent.VK_RIGHT) {
-            Tetris.moveRight(); // Call your moveRight() method when the right arrow key is pressed
-        }
-        else if (keyCode == KeyEvent.VK_D)
-        {
-            Tetris.rotateRight();
-        }
-        else if(keyCode == KeyEvent.VK_A)
-        {
-            Tetris.rotateLeft();
-        }
-        else if(keyCode == KeyEvent.VK_S)
-        {
-            Tetris.accelerateMovingDown();
-        }
-        else if(keyCode == KeyEvent.VK_W)
-        {
-            Tetris.decelerateMovingDown();
+        if (!Tetris.gameOver) {
+
+            if (keyCode == KeyEvent.VK_LEFT) {
+                Tetris.moveLeft(); // Call your moveLeft() method when the left arrow key is pressed
+            } else if (keyCode == KeyEvent.VK_RIGHT) {
+                Tetris.moveRight(); // Call your moveRight() method when the right arrow key is pressed
+            } else if (keyCode == KeyEvent.VK_D) {
+                Tetris.rotateRight();
+            } else if (keyCode == KeyEvent.VK_A) {
+                Tetris.rotateLeft();
+            } else if (keyCode == KeyEvent.VK_S) {
+                Tetris.accelerateMovingDown();
+            } else if (keyCode == KeyEvent.VK_W) {
+                Tetris.decelerateMovingDown();
+            }
         }
     }
 
