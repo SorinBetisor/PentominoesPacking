@@ -3,6 +3,8 @@ package Phase2;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -13,7 +15,7 @@ import java.io.IOException;
  * Phase 1. You will learn more about GUIs in Period 2, in the Introduction to
  * Computer Science 2 course.
  */
-public class MainScreen extends JPanel {
+public class MainScreen extends JPanel implements KeyListener{
     private JFrame window;
     private int[][] state;
     private int size;
@@ -52,6 +54,7 @@ public class MainScreen extends JPanel {
         window.add(this);
         window.pack();
         window.setVisible(true);
+        window.addKeyListener(this);
 
         state = new int[x][y];
         for (int i = 0; i < state.length; i++) {
@@ -158,6 +161,41 @@ public class MainScreen extends JPanel {
 
         // Tells the system a frame update is required
         repaint();
+    }
+
+    @Override
+    public void keyTyped(KeyEvent e) {
+    }
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+        int keyCode = e.getKeyCode();
+
+        if (keyCode == KeyEvent.VK_LEFT) {
+            Tetris.moveLeft(); // Call your moveLeft() method when the left arrow key is pressed
+        } else if (keyCode == KeyEvent.VK_RIGHT) {
+            Tetris.moveRight(); // Call your moveRight() method when the right arrow key is pressed
+        }
+        else if (keyCode == KeyEvent.VK_D)
+        {
+            Tetris.rotateRight();
+        }
+        else if(keyCode == KeyEvent.VK_A)
+        {
+            Tetris.rotateLeft();
+        }
+        else if(keyCode == KeyEvent.VK_S)
+        {
+            Tetris.accelerateMovingDown();
+        }
+        else if(keyCode == KeyEvent.VK_W)
+        {
+            Tetris.decelerateMovingDown();
+        }
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e) {
     }
 
 }

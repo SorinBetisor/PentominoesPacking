@@ -1,8 +1,6 @@
 package Phase2;
 
 import java.util.Random;
-import java.util.Timer;
-import java.util.TimerTask;
 import Phase1.PentominoDatabase;
 import Phase1.Search;
 
@@ -20,45 +18,35 @@ public class Tetris {
     public static int currentX;
     public static int currentY;
     public static int currentRotation;
-    private static Timer timer;
+    public static boolean accelerateDown = false;
+    public static int pieceVelocity = 800;
+
     public Tetris() {
         char randomPieceChar = PIECES[random.nextInt(12)];
         currentID = Search.characterToID(randomPieceChar);
         currentPiece = PentominoDatabase.data[currentID][0];
-        currentX = 0;  // Initialize currentX and currentY here
+        currentX = 0; // Initialize currentX and currentY here
         currentY = 0;
         initializeField();
-        addPiece(currentPiece, currentID, currentX, currentY);  // Add the piece after initialization
+        addPiece(currentPiece, currentID, currentX, currentY); // Add the piece after initialization
         screen = new MainScreen(5, 15, 45, field);
     }
 
-   /*  private void moveRowDownByOne(int pos) {
-        for (int j = 0; j < HORIZONTAL_GRID_SIZE; j++) {
-            field[pos][j] = -1;
-        }
-        for (int i = pos - 1; i > 0; i--) {
-            for (int j = 0; j < HORIZONTAL_GRID_SIZE; j++) {
-                if (field[i][j] != -1) {
-                    field[i + 1][j] = field[i][j];
-                    field[i][j] = -1;
-                }
-            }
-        }
-    }
-*/ 
-    public static boolean moveDown() {
-        removePiece(field, currentPiece, currentX, currentY);
-        if (canPlace(field, currentPiece, currentX, currentY+1)) {
-            addPiece(currentPiece, currentID, currentX, currentY+1);
-            currentY++;
-        } else {
-            addPiece(currentPiece, currentID, currentX, currentY);
-            screen.setState(field);
-            return false;
-        }
-        screen.setState(field);
-        return true;
-    }
+    /*
+     * private void moveRowDownByOne(int pos) {
+     * for (int j = 0; j < HORIZONTAL_GRID_SIZE; j++) {
+     * field[pos][j] = -1;
+     * }
+     * for (int i = pos - 1; i > 0; i--) {
+     * for (int j = 0; j < HORIZONTAL_GRID_SIZE; j++) {
+     * if (field[i][j] != -1) {
+     * field[i + 1][j] = field[i][j];
+     * field[i][j] = -1;
+     * }
+     * }
+     * }
+     * }
+     */
 
     public static boolean canPlace(int[][] field, int[][] piece, int row, int col) {
         if (row < 0 || col < 0 || row + piece.length > field.length || col + piece[0].length > field[0].length) {
@@ -104,11 +92,90 @@ public class Tetris {
         }
     }
 
+    /* Movement and rotation */
+    public static boolean moveDown() {
+        removePiece(field, currentPiece, currentX, currentY);
+        if (canPlace(field, currentPiece, currentX, currentY + 1)) {
+            addPiece(currentPiece, currentID, currentX, currentY + 1);
+            currentY++;
+        } else {
+            addPiece(currentPiece, currentID, currentX, currentY);
+            screen.setState(field);
+            return false;
+        }
+        screen.setState(field);
+        return true;
+    }
+
+    public static void rotateRight() {
+        removePiece(field, currentPiece, currentX, currentY);
+        int[][] rotatedPiece = new int[currentPiece[0].length][currentPiece.length];
+        for (int i = 0; i < currentPiece.length; i++) {
+            for (int j = 0; j < currentPiece[0].length; j++) {
+                rotatedPiece[j][currentPiece.length - 1 - i] = currentPiece[i][j];
+            }
+        }
+        if (canPlace(field, rotatedPiece, currentX, currentY)) {
+            currentPiece = rotatedPiece;
+        }
+        addPiece(currentPiece, currentID, currentX, currentY);
+        screen.setState(field);
+    }
+
+    public static void rotateLeft() {
+        removePiece(field, currentPiece, currentX, currentY);
+        int[][] rotatedPiece = new int[currentPiece[0].length][currentPiece.length];
+        for (int i = 0; i < currentPiece.length; i++) {
+            for (int j = 0; j < currentPiece[0].length; j++) {
+                rotatedPiece[currentPiece[0].length - 1 - j][i] = currentPiece[i][j];
+            }
+        }
+        if (canPlace(field, rotatedPiece, currentX, currentY)) {
+            currentPiece = rotatedPiece;
+        }
+        addPiece(currentPiece, currentID, currentX, currentY);
+        screen.setState(field);
+    }
+
+    public static void moveLeft() {
+        removePiece(field, currentPiece, currentX, currentY);
+        if (canPlace(field, currentPiece, currentX - 1, currentY)) {
+            addPiece(currentPiece, currentID, currentX - 1, currentY);
+            currentX--;
+        } else {
+            addPiece(currentPiece, currentID, currentX, currentY);
+        }
+        screen.setState(field);
+    }
+
+    public static void moveRight() {
+        removePiece(field, currentPiece, currentX, currentY);
+        if (canPlace(field, currentPiece, currentX + 1, currentY)) {
+            addPiece(currentPiece, currentID, currentX + 1, currentY);
+            currentX++;
+        } else {
+            addPiece(currentPiece, currentID, currentX, currentY);
+        }
+        screen.setState(field);
+    }
+
+    public static void accelerateMovingDown() {
+        accelerateDown = true;
+        if(pieceVelocity > 150)
+        pieceVelocity -= 100;
+    }
+
+    public static void decelerateMovingDown() {
+        accelerateDown = false;
+        if(pieceVelocity < 900)
+        pieceVelocity += 100;
+    }
+
     public static boolean checkGameOver() {
         return !canPlace(field, currentPiece, currentX, currentY);
     }
-    
-        private static void getNextRandomPiece() {
+
+    private static void getNextRandomPiece() {
         char randomPieceChar = PIECES[random.nextInt(12)];
         currentID = Search.characterToID(randomPieceChar);
         currentPiece = PentominoDatabase.data[currentID][0];
@@ -119,22 +186,21 @@ public class Tetris {
     public static void update() {
         while (true) {
             try {
-                Thread.sleep(100);
-                System.out.println(currentX + " " + currentY);
+                Thread.sleep(pieceVelocity); // Use pieceVelocity to control the sleep time
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-    
+
             if (!moveDown()) {
                 getNextRandomPiece();
-                System.out.println(currentX + " " + currentY);
-    
+
                 if (checkGameOver()) {
                     System.out.println("Game Over");
                     break;
                 }
             }
-        }}
+        }
+    }
 
     public static void main(String[] args) {
         new Tetris();
