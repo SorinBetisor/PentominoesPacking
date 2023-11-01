@@ -1,7 +1,8 @@
 package Phase2;
 
 import java.util.Random;
-
+import java.util.Timer;
+import java.util.TimerTask;
 import Phase1.PentominoDatabase;
 import Phase1.Search;
 
@@ -19,7 +20,7 @@ public class Tetris {
     public static int currentX;
     public static int currentY;
     public static int currentRotation;
-
+    private static Timer timer;
     public Tetris() {
         char randomPieceChar = PIECES[random.nextInt(12)];
         currentID = Search.characterToID(randomPieceChar);
@@ -31,7 +32,7 @@ public class Tetris {
         screen = new MainScreen(5, 15, 45, field);
     }
 
-    private void moveRowDownByOne(int pos) {
+   /*  private void moveRowDownByOne(int pos) {
         for (int j = 0; j < HORIZONTAL_GRID_SIZE; j++) {
             field[pos][j] = -1;
         }
@@ -44,7 +45,7 @@ public class Tetris {
             }
         }
     }
-
+*/ 
     public static boolean moveDown() {
         removePiece(field, currentPiece, currentX, currentY);
         if (canPlace(field, currentPiece, currentX, currentY+1)) {
