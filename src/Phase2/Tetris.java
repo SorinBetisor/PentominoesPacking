@@ -1,7 +1,8 @@
 package Phase2;
 
 import java.util.Random;
-
+import java.util.Timer;
+import java.util.TimerTask;
 import Phase1.PentominoDatabase;
 import Phase1.Search;
 
@@ -17,24 +18,30 @@ public class Tetris {
     public static int currentX;
     public static int currentY;
     public static int currentRotation;
-
+    private static Timer timer;
     public Tetris() {
         Random random = new Random();
         char randomPieceChar = PIECES[random.nextInt(12)];
         currentID = Search.characterToID(randomPieceChar);
         currentPiece = PentominoDatabase.data[currentID][0];
         initializeField();
-        addPiece(currentPiece, currentID, 0, 0);
+        currentX = HORIZONTAL_GRID_SIZE / 2 - 1;
+        addPiece(currentPiece, currentID, currentX, currentY);
         screen = new MainScreen(5, 15, 45);
     }
+    
 
     public static void update() {
-        while (true) {
-            moveDown();
-        }
+        timer = new Timer();
+        timer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                moveDown();
+            }
+        }, 0, 500);
     }
 
-    private void moveRowDownByOne(int pos) {
+   /*  private void moveRowDownByOne(int pos) {
         for (int j = 0; j < HORIZONTAL_GRID_SIZE; j++) {
             field[pos][j] = -1;
         }
@@ -47,20 +54,22 @@ public class Tetris {
             }
         }
     }
-
+*/ 
     public static boolean moveDown() {
-        removePiece(field, currentPiece, currentX, currentY);
-        if (canPlace(field, currentPiece, currentX + 1, currentY)) {
-            addPiece(currentPiece, currentID, currentX + 1, currentY);
-            currentX++;
-        } else {
-            addPiece(currentPiece, currentID, currentX, currentY);
-            screen.setState(field);
-            return false;
-        }
+    removePiece(field, currentPiece, currentX, currentY);
+    if (canPlace(field, currentPiece, currentX, currentY + 1)) {
+        addPiece(currentPiece, currentID, currentX, currentY + 1);
+        currentY++;
+    } else {
+        addPiece(currentPiece, currentID, currentX, currentY);
         screen.setState(field);
-        return true;
+        timer.cancel(); // Stop the timer when the piece cannot move down
+        return false;
     }
+    screen.setState(field);
+    return true;
+}
+
 
     public static boolean canPlace(int[][] field, int[][] piece, int row, int col) {
         if (row < 0 || col < 0 || row + piece.length > field.length || col + piece[0].length > field[0].length) {
