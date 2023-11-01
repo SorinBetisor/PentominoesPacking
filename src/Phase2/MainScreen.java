@@ -9,12 +9,6 @@ import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
-/**
- * This class takes care of all the graphics to display a certain state.
- * Initially, you do not need to modify (or event understand) this class in
- * Phase 1. You will learn more about GUIs in Period 2, in the Introduction to
- * Computer Science 2 course.
- */
 public class MainScreen extends JPanel implements KeyListener {
     private JFrame window;
     private int[][] state;
@@ -23,31 +17,50 @@ public class MainScreen extends JPanel implements KeyListener {
     private int rightFillerWidth = 3;
     private int x;
     private int y;
-    private int[][] upcomingMatrix; // Added field for upcoming piece
+    private int[][] upcomingMatrix;
+    public static JLabel scoreLabel;
 
     private BufferedImage leftFillerImage;
     private BufferedImage rightFillerImage;
+    private ImageIcon icon;
 
     public MainScreen(int x, int y, int _size, int[][] upcomingMatrix) {
         size = _size;
         this.x = x;
         this.y = y;
-        this.upcomingMatrix = upcomingMatrix; // Initialize the upcomingMatrix
+        this.upcomingMatrix = upcomingMatrix;
 
+    
         try {
-            leftFillerImage = ImageIO.read(getClass().getResource(
-                    "/Phase2/misc/leftfiller.jpg"));
-            rightFillerImage = ImageIO.read(getClass().getResource(
-                    "/Phase2/misc/rightfiller.jpg"));
+            leftFillerImage = ImageIO.read(getClass().getResource("/Phase2/misc/leftfiller.jpg"));
+            rightFillerImage = ImageIO.read(getClass().getResource("/Phase2/misc/rightfiller.jpg"));
+            icon = new ImageIcon(getClass().getResource("/Phase2/misc/icon.png"));  // Use ImageIcon
         } catch (IOException e) {
             System.out.println("Error reading filler image");
             e.printStackTrace();
         }
 
-        // Add fillers to the panel's width
-        int panelWidth = (x + leftFillerWidth + rightFillerWidth) * size;
-        setPreferredSize(new Dimension(panelWidth, y * size));
 
+        int panelWidth = (x + leftFillerWidth + rightFillerWidth) * size;
+        setPreferredSize(new Dimension(panelWidth, (y+1) * size));
+
+        // Set the layout manager for MainScreen to BorderLayout
+        setLayout(new BorderLayout());
+
+        // Create a panel to hold the score label and set its background to yellow
+        JPanel scorePanel = new JPanel();
+        scorePanel.setBackground(Color.MAGENTA.darker().darker().darker());
+
+        // Create the Score label and add it to the scorePanel
+        scoreLabel = new JLabel("Score: " + Tetris.score + "     Speed:"+(8 -(Tetris.pieceVelocity / 100)));
+        scoreLabel.setHorizontalAlignment(JLabel.LEFT);
+        scoreLabel.setFont(new Font("Arial", Font.BOLD, 30));
+        scoreLabel.setForeground(Color.WHITE);
+
+        scorePanel.add(scoreLabel);
+
+        // Add the scorePanel to the MainScreen panel at the bottom
+        add(scorePanel, BorderLayout.SOUTH);
         window = new JFrame("Pentomino Tetris Game");
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         window.setResizable(false);
@@ -55,6 +68,7 @@ public class MainScreen extends JPanel implements KeyListener {
         window.pack();
         window.setVisible(true);
         window.addKeyListener(this);
+        window.setIconImage(icon.getImage());
 
         state = new int[x][y];
         for (int i = 0; i < state.length; i++) {
@@ -72,12 +86,9 @@ public class MainScreen extends JPanel implements KeyListener {
         g2d.setColor(Color.LIGHT_GRAY);
         g2d.fill(getVisibleRect());
 
-        // Draw the filler image on the left side
         g2d.drawImage(leftFillerImage, 0, 0, leftFillerWidth * size, y * size, null);
-        // Draw the filler image on the right side of the grid
         g2d.drawImage(rightFillerImage, (x + leftFillerWidth) * size, 0, rightFillerWidth * size, y * size, null);
 
-        // Draw lines to separate the cells
         g2d.setColor(Color.GRAY);
 
         for (int i = leftFillerWidth; i <= (x + leftFillerWidth); i++) {
@@ -88,7 +99,6 @@ public class MainScreen extends JPanel implements KeyListener {
             g2d.drawLine(leftFillerWidth * size, i * size, (x + leftFillerWidth) * size, i * size);
         }
 
-        // Draw the game grid
         for (int i = 0; i < state.length; i++) {
             for (int j = 0; j < state[0].length; j++) {
                 g2d.setColor(GetColorOfID(state[i][j]));
@@ -98,8 +108,8 @@ public class MainScreen extends JPanel implements KeyListener {
             }
         }
 
-        // Draw a vertical line with upcomingMatrix
-        int xOffset = (x + leftFillerWidth) * size; // Determine the X offset for the vertical line
+        int xOffset = (x + leftFillerWidth) * size;
+
         for (int i = 0; i < upcomingMatrix.length; i++) {
             for (int j = 0; j < upcomingMatrix[0].length; j++) {
                 g2d.setColor(GetColorOfID(upcomingMatrix[i][j]));
@@ -110,13 +120,6 @@ public class MainScreen extends JPanel implements KeyListener {
         }
     }
 
-    /**
-     * Decodes the ID of a pentomino into a color
-     * 
-     * @param i ID of the pentomino to be colored
-     * @return the color to represent the pentomino. It uses the class Color (more
-     *         in ICS2 course in Period 2)
-     */
     private Color GetColorOfID(int i) {
         if (i == 0) {
             return Color.BLUE;
@@ -147,20 +150,25 @@ public class MainScreen extends JPanel implements KeyListener {
         }
     }
 
-    /**
-     * This function should be called to update the displayed state (makes a copy)
-     * 
-     * @param _state information about the new state of the GUI
-     */
     public void setState(int[][] _state) {
-        for (int i = 0; i < state.length; i++) {
-            for (int j = 0; j < state[i].length; j++) {
+        int rows = Math.min(state.length, _state.length);
+        int cols = Math.min(state[0].length, _state[0].length);
+
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
                 state[i][j] = _state[i][j];
             }
         }
 
-        // Tells the system a frame update is required
         repaint();
+    }
+
+    public static void updateScore() {
+        scoreLabel.setText("Score: " + Tetris.score + "     Speed:"+(10 -(Tetris.pieceVelocity / 100)));
+    }
+
+    public static void updateSpeed() {
+        scoreLabel.setText("Score: " + Tetris.score + "     Speed:"+(10 -(Tetris.pieceVelocity / 100)));
     }
 
     @Override
@@ -172,19 +180,22 @@ public class MainScreen extends JPanel implements KeyListener {
         int keyCode = e.getKeyCode();
 
         if (!Tetris.gameOver) {
-
             if (keyCode == KeyEvent.VK_LEFT) {
-                Tetris.moveLeft(); // Call your moveLeft() method when the left arrow key is pressed
+                Tetris.moveLeft();
             } else if (keyCode == KeyEvent.VK_RIGHT) {
-                Tetris.moveRight(); // Call your moveRight() method when the right arrow key is pressed
+                Tetris.moveRight();
             } else if (keyCode == KeyEvent.VK_D) {
                 Tetris.rotateRight();
             } else if (keyCode == KeyEvent.VK_A) {
                 Tetris.rotateLeft();
-            } else if (keyCode == KeyEvent.VK_S) {
+            } else if (keyCode == KeyEvent.VK_DOWN) {
                 Tetris.accelerateMovingDown();
-            } else if (keyCode == KeyEvent.VK_W) {
+            } else if (keyCode == KeyEvent.VK_UP) {
                 Tetris.decelerateMovingDown();
+            }
+            else if (keyCode == KeyEvent.VK_SPACE)
+            {
+                Tetris.dropPiece();
             }
         }
     }
@@ -192,5 +203,4 @@ public class MainScreen extends JPanel implements KeyListener {
     @Override
     public void keyReleased(KeyEvent e) {
     }
-
 }
