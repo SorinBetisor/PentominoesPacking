@@ -6,6 +6,8 @@ import Phase1.PentominoDatabase;
 import Phase1.Search;
 
 public class Tetris {
+    public static Random random = new Random();
+
     public static final int HORIZONTAL_GRID_SIZE = 5;
     public static final int VERTICAL_GRID_SIZE = 15;
     private static final char[] PIECES = { 'T', 'U', 'P', 'I', 'V', 'L', 'F', 'W', 'X', 'Y', 'Z', 'N' };
@@ -19,19 +21,14 @@ public class Tetris {
     public static int currentRotation;
 
     public Tetris() {
-        Random random = new Random();
         char randomPieceChar = PIECES[random.nextInt(12)];
         currentID = Search.characterToID(randomPieceChar);
         currentPiece = PentominoDatabase.data[currentID][0];
+        currentX = 0;  // Initialize currentX and currentY here
+        currentY = 0;
         initializeField();
-        addPiece(currentPiece, currentID, 0, 0);
-        screen = new MainScreen(5, 15, 45);
-    }
-
-    public static void update() {
-        while (true) {
-            moveDown();
-        }
+        addPiece(currentPiece, currentID, currentX, currentY);  // Add the piece after initialization
+        screen = new MainScreen(5, 15, 45, field);
     }
 
     private void moveRowDownByOne(int pos) {
@@ -50,9 +47,9 @@ public class Tetris {
 
     public static boolean moveDown() {
         removePiece(field, currentPiece, currentX, currentY);
-        if (canPlace(field, currentPiece, currentX + 1, currentY)) {
-            addPiece(currentPiece, currentID, currentX + 1, currentY);
-            currentX++;
+        if (canPlace(field, currentPiece, currentX, currentY+1)) {
+            addPiece(currentPiece, currentID, currentX, currentY+1);
+            currentY++;
         } else {
             addPiece(currentPiece, currentID, currentX, currentY);
             screen.setState(field);
@@ -106,10 +103,41 @@ public class Tetris {
         }
     }
 
+    public static boolean checkGameOver() {
+        return !canPlace(field, currentPiece, currentX, currentY);
+    }
+    
+        private static void getNextRandomPiece() {
+        char randomPieceChar = PIECES[random.nextInt(12)];
+        currentID = Search.characterToID(randomPieceChar);
+        currentPiece = PentominoDatabase.data[currentID][0];
+        currentX = 0;
+        currentY = 0;
+    }
+
+    public static void update() {
+        while (true) {
+            try {
+                Thread.sleep(100);
+                System.out.println(currentX + " " + currentY);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+    
+            if (!moveDown()) {
+                getNextRandomPiece();
+                System.out.println(currentX + " " + currentY);
+    
+                if (checkGameOver()) {
+                    System.out.println("Game Over");
+                    break;
+                }
+            }
+        }}
+
     public static void main(String[] args) {
         new Tetris();
         screen.setState(field);
-
         update();
     }
 }

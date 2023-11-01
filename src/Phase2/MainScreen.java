@@ -21,14 +21,16 @@ public class MainScreen extends JPanel {
     private int rightFillerWidth = 3;
     private int x;
     private int y;
+    private int[][] upcomingMatrix; // Added field for upcoming piece
 
     private BufferedImage leftFillerImage;
     private BufferedImage rightFillerImage;
 
-    public MainScreen(int x, int y, int _size) {
+    public MainScreen(int x, int y, int _size, int[][] upcomingMatrix) {
         size = _size;
         this.x = x;
         this.y = y;
+        this.upcomingMatrix = upcomingMatrix;  // Initialize the upcomingMatrix
 
         try {
             leftFillerImage = ImageIO.read(getClass().getResource(
@@ -59,33 +61,48 @@ public class MainScreen extends JPanel {
         }
     }
 
-    public void paintComponent(Graphics g) {
-        Graphics2D localGraphics2D = (Graphics2D) g;
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        Graphics2D g2d = (Graphics2D) g;
 
-        localGraphics2D.setColor(Color.LIGHT_GRAY);
-        localGraphics2D.fill(getVisibleRect());
+        g2d.setColor(Color.LIGHT_GRAY);
+        g2d.fill(getVisibleRect());
 
         // Draw the filler image on the left side
-        localGraphics2D.drawImage(leftFillerImage, 0, 0, leftFillerWidth*size, y * size, null);
-        //draw image on the right side of the grid
-        localGraphics2D.drawImage(rightFillerImage, size*8, 0, leftFillerWidth*size, y * size, null);
+        g2d.drawImage(leftFillerImage, 0, 0, leftFillerWidth * size, y * size, null);
+        // Draw the filler image on the right side of the grid
+        g2d.drawImage(rightFillerImage, (x + leftFillerWidth) * size, 0, rightFillerWidth * size, y * size, null);
 
         // Draw lines to separate the cells
-        localGraphics2D.setColor(Color.GRAY);
+        g2d.setColor(Color.GRAY);
 
         for (int i = leftFillerWidth; i <= (x + leftFillerWidth); i++) {
-            localGraphics2D.drawLine(i * size, 0, i * size, y * size);
+            g2d.drawLine(i * size, 0, i * size, y * size);
         }
 
         for (int i = 0; i <= y; i++) {
-            localGraphics2D.drawLine(leftFillerWidth * size, i * size, (x + leftFillerWidth) * size, i * size);
+            g2d.drawLine(leftFillerWidth * size, i * size, (x + leftFillerWidth) * size, i * size);
         }
 
+        // Draw the game grid
         for (int i = 0; i < state.length; i++) {
             for (int j = 0; j < state[0].length; j++) {
-                localGraphics2D.setColor(GetColorOfID(state[i][j]));
-                localGraphics2D.fill(
-                        new Rectangle2D.Double((i + leftFillerWidth) * size + 1, j * size + 1, size - 1, size - 1));
+                g2d.setColor(GetColorOfID(state[i][j]));
+                g2d.fill(new Rectangle2D.Double((i + leftFillerWidth) * size + 1, j * size + 1, size - 1, size - 1));
+                g2d.setColor(Color.GRAY);
+                g2d.draw(new Rectangle2D.Double((i + leftFillerWidth) * size + 1, j * size + 1, size - 1, size - 1));
+            }
+        }
+
+        // Draw a vertical line with upcomingMatrix
+        int xOffset = (x + leftFillerWidth) * size; // Determine the X offset for the vertical line
+        for (int i = 0; i < upcomingMatrix.length; i++) {
+            for (int j = 0; j < upcomingMatrix[0].length; j++) {
+                g2d.setColor(GetColorOfID(upcomingMatrix[i][j]));
+                g2d.fill(new Rectangle2D.Double((i + xOffset) * size + 1, j * size + 1, size - 1, size - 1));
+                g2d.setColor(Color.GRAY);
+                g2d.draw(new Rectangle2D.Double((i + xOffset) * size + 1, j * size + 1, size - 1, size - 1));
             }
         }
     }
@@ -142,6 +159,5 @@ public class MainScreen extends JPanel {
         // Tells the system a frame update is required
         repaint();
     }
-
 
 }
