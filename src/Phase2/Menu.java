@@ -11,9 +11,9 @@ public class Menu {
     }
     private Player player;
     public Menu(){
-        System.out.println("Please enter your name");
-        Scanner scanner = new Scanner(System.in);
-        Player player = new Player(scanner.nextLine(), 0);
+        // System.out.println("Please enter your name");
+        // Scanner scanner = new Scanner(System.in);
+        // Player player = new Player(scanner.nextLine(), 0);
 
         JFrame frame = new JFrame("Game Menu");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -37,6 +37,13 @@ public class Menu {
        /* JButton startButton = new JButton("Start");
         startButton.setFont(new Font("Arial", Font.BOLD, 18));*/
 
+        //run tetris game when random order button is clicked
+        randomOrderButton.addActionListener(e -> {
+            System.out.println("Random Order Button Clicked");
+            frame.dispose();
+            Tetris tetris = new Tetris();
+            tetris.runTetris(); // Start the game loop
+        });
 
         buttonPanel.setBorder(BorderFactory.createEmptyBorder(50, 75, 50, 75));
 

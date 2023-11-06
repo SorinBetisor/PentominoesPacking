@@ -5,6 +5,9 @@ import java.util.List;
 import java.util.Random;
 import Phase1.PentominoDatabase;
 import Phase1.Search;
+import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class Tetris {
     public static Random random = new Random();
@@ -40,6 +43,32 @@ public class Tetris {
         addPiece(currentPiece, currentID, currentX, currentY);
         screen = new MainScreen(HORIZONTAL_GRID_SIZE, VERTICAL_GRID_SIZE, 45,
                 new int[HORIZONTAL_GRID_SIZE][VERTICAL_GRID_SIZE]);
+
+        
+    }
+
+    public void startGameLoop() {
+        Timer gameTimer = new Timer(pieceVelocity, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (canClearRow())
+                    clearRow();
+
+                if (!moveDown()) {
+                    actualMatrix = rotateMatrix(field);
+                    getNextRandomPiece();
+
+                    if (checkGameOver()) {
+                        System.out.println("Game Over");
+                        gameOver = true;
+                        ((Timer) e.getSource()).stop(); // Stop the game timer
+                    }
+                }
+                screen.setState(field);
+            }
+        });
+
+        gameTimer.start();
     }
 
     private static void moveRowDownByOne(int row) {
@@ -306,9 +335,16 @@ public class Tetris {
         }
     }
 
-    public static void main(String[] args) {
-        new Tetris();
+    public void runTetris()
+    {
         screen.setState(field);
-        update();
+        startGameLoop();
     }
-}
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            Tetris tetris = new Tetris();
+            tetris.runTetris();
+        });
+    }
+    }
