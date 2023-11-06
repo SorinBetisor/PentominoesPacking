@@ -2,57 +2,91 @@ package Phase2;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.Scanner;
 
 public class Menu {
-    public static void main(String[] args) {
-        Menu menu = new Menu();
-
-    }
     private Player player;
-    public Menu(){
-        // System.out.println("Please enter your name");
-        // Scanner scanner = new Scanner(System.in);
-        // Player player = new Player(scanner.nextLine(), 0);
+    JFrame frame = new JFrame("Game Menu");
+    JTextField inputField;
 
-        JFrame frame = new JFrame("Game Menu");
+    public Menu() {
+
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(400, 300);
         frame.setLayout(new BorderLayout());
 
+        JPanel buttonPanel = createButtonPanel();
+        JPanel labelPanel = createLabelPanel();
+
+        frame.add(buttonPanel, BorderLayout.CENTER);
+        frame.add(labelPanel, BorderLayout.NORTH);
+        frame.setVisible(true);
+    }
+
+    private JPanel createButtonPanel() {
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new GridLayout(3, 1, 10, 10));
 
-        JButton randomOrderButton = new JButton("Random Order");
-        randomOrderButton.setFont(new Font("Arial", Font.BOLD, 16));
-        JButton bestOrderButton = new JButton("Best Order");
-        bestOrderButton.setFont(new Font("Arial", Font.BOLD, 16));
-        JButton botButton = new JButton("Bot");
-        botButton.setFont(new Font("Arial", Font.BOLD, 16));
+        JButton randomOrderButton = createButton("Random Order");
+        JButton bestOrderButton = createButton("Best Order");
+        JButton botButton = createButton("Bot");
 
-        buttonPanel.add(randomOrderButton);
-        buttonPanel.add(bestOrderButton);
-        buttonPanel.add(botButton);
-
-       /* JButton startButton = new JButton("Start");
-        startButton.setFont(new Font("Arial", Font.BOLD, 18));*/
-
-        //run tetris game when random order button is clicked
         randomOrderButton.addActionListener(e -> {
             System.out.println("Random Order Button Clicked");
             frame.dispose();
             Tetris tetris = new Tetris();
             tetris.runTetris(); // Start the game loop
+            savePlayerInfo();
         });
+
+        buttonPanel.add(randomOrderButton);
+        buttonPanel.add(bestOrderButton);
+        buttonPanel.add(botButton);
 
         buttonPanel.setBorder(BorderFactory.createEmptyBorder(50, 75, 50, 75));
 
-        frame.add(buttonPanel, BorderLayout.CENTER);
-        //frame.add(startButton, BorderLayout.SOUTH);
-        frame.setVisible(true);
+        return buttonPanel;
+    }
 
+    private JButton createButton(String text) {
+        JButton button = new JButton(text);
+        button.setFont(new Font("Arial", Font.BOLD, 16));
+        return button;
+    }
+
+    private JPanel createLabelPanel() {
+        JPanel labelPanel = new JPanel();
+        labelPanel.setLayout(new BorderLayout());
+
+        JPanel labelFieldPanel = new JPanel();
+        labelFieldPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+
+        JLabel inputLabel = new JLabel("Name:");
+        inputLabel.setFont(new Font("Arial", Font.BOLD, 16));
+
+        inputField = new JTextField(20);
+        inputField.setFont(new Font("Arial", Font.BOLD, 16));
+
+        labelFieldPanel.add(inputLabel);
+        labelFieldPanel.add(inputField);
+
+        // Create an empty panel for spacing
+        JPanel spacerPanel = new JPanel();
+        spacerPanel.setPreferredSize(new Dimension(10, 10)); // Adjust the size as needed
+
+        labelPanel.add(spacerPanel, BorderLayout.NORTH);
+        labelPanel.add(labelFieldPanel, BorderLayout.CENTER);
+
+        return labelPanel;
+    }
+
+    private void savePlayerInfo() {
+        String name = inputField.getText();
+        player = new Player(name);
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            new Menu();
+        });
     }
 }
-
-
-
