@@ -17,8 +17,18 @@ public class Menu {
         JPanel buttonPanel = createButtonPanel();
         JPanel labelPanel = createLabelPanel();
 
+        JFrame frame = new JFrame("Background Image Example");
+        ImageIcon backgroundImage = new ImageIcon("C:\\Users\\Armantos\\Desktop\\Uni staff\\Lab Games\\Lab Game 2\\Product\\src\\photo.jpg");
+        JLabel backgroundLabel = new JLabel(backgroundImage);
+        frame.setLayout(new BorderLayout());
+        frame.setContentPane(backgroundLabel);
+        frame.setSize(backgroundImage.getIconWidth(), backgroundImage.getIconHeight());
+
         frame.add(buttonPanel, BorderLayout.CENTER);
         frame.add(labelPanel, BorderLayout.NORTH);
+        frame.setVisible(true);
+
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
     }
 
