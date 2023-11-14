@@ -23,6 +23,7 @@ public class Tetris {
     public static MainScreen screen; // Reference to the MainScreen
     public static boolean gameOver = false;
     public static int score = 0;
+    public static int highScore = 0;
 
     public static int[][] currentPiece;
     public static int currentID;
@@ -44,7 +45,6 @@ public class Tetris {
         screen = new MainScreen(HORIZONTAL_GRID_SIZE, VERTICAL_GRID_SIZE, 45,
                 new int[HORIZONTAL_GRID_SIZE][VERTICAL_GRID_SIZE]);
 
-        
     }
 
     public void startGameLoop() {
@@ -69,6 +69,21 @@ public class Tetris {
         });
 
         gameTimer.start();
+
+        Timer updateTimerInterval = new Timer(1000, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int newPieceVelocity = getUpdatedPieceVelocity(); // Replace this with your logic to get updated
+                                                                  // pieceVelocity
+                gameTimer.setDelay(newPieceVelocity);
+            }
+        });
+
+        updateTimerInterval.start();
+    }
+
+    private int getUpdatedPieceVelocity() {
+        return pieceVelocity;
     }
 
     private static void moveRowDownByOne(int row) {
@@ -87,12 +102,9 @@ public class Tetris {
 
         MainScreen.updateScore();
 
-        
         field = rotateMatrixBack(actualMatrix);
         screen.setState(field);
     }
-
-    
 
     public static boolean canPlace(int[][] field, int[][] piece, int row, int col) {
         if (row < 0 || col < 0 || row + piece.length > field.length || col + piece[0].length > field[0].length) {
@@ -152,12 +164,8 @@ public class Tetris {
         screen.setState(field); // Update the MainScreen
         return true;
     }
-    //testcommenttopushagain
-    public static void dropPiece()
-    {
-        //implement a function that sets the current piece to the lowest possible position in an instant
-        //Make the function so that the piece is placed in the lowest possible position in an instant, not gradually
-        //The function should also update the field and the screen
+
+    public static void dropPiece() {
         removePiece(field, currentPiece, currentX, currentY);
         while (canPlace(field, currentPiece, currentX, currentY + 1)) {
             currentY++;
@@ -166,8 +174,7 @@ public class Tetris {
         screen.setState(field); // Update the MainScreen
     }
 
-    public static void rotateRight()
-    {
+    public static void rotateRight() {
         removePiece(field, currentPiece, currentX, currentY);
         int[][] rotatedPiece = new int[currentPiece[0].length][currentPiece.length];
         for (int i = 0; i < currentPiece.length; i++) {
@@ -181,7 +188,7 @@ public class Tetris {
         addPiece(currentPiece, currentID, currentX, currentY);
         screen.setState(field); // Update the MainScreen
     }
-    
+
     public static void rotateLeft() {
         removePiece(field, currentPiece, currentX, currentY);
         int[][] rotatedPiece = new int[currentPiece[0].length][currentPiece.length];
@@ -221,16 +228,18 @@ public class Tetris {
 
     public static void accelerateMovingDown() {
         accelerateDown = true;
-        if (pieceVelocity > MINIMUM_VELOCITY)
-            {pieceVelocity -= 100;
-            MainScreen.updateSpeed();}
+        if (pieceVelocity > MINIMUM_VELOCITY) {
+            pieceVelocity -= 100;
+            MainScreen.updateSpeed();
+        }
     }
 
     public static void decelerateMovingDown() {
         accelerateDown = false;
-        if (pieceVelocity < MAXIMUM_VELOCITY)
-            {pieceVelocity += 100;
-            MainScreen.updateSpeed();}
+        if (pieceVelocity < MAXIMUM_VELOCITY) {
+            pieceVelocity += 100;
+            MainScreen.updateSpeed();
+        }
     }
 
     public static int[][] rotateMatrix(int[][] matrix) {
@@ -275,8 +284,7 @@ public class Tetris {
         currentY = 0;
     }
 
-    private static boolean canClearRow()
-    {
+    private static boolean canClearRow() {
         for (int i = 0; i < actualMatrix.length; i++) {
             boolean canClear = true;
             for (int j = 0; j < actualMatrix[0].length; j++) {
@@ -310,33 +318,7 @@ public class Tetris {
         }
     }
 
-    public static void update() {
-        while (true) {
-            try {
-                Thread.sleep(pieceVelocity);
-                if(canClearRow())
-                clearRow();
-
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-
-            if (!moveDown()) {
-                // System.out.println(Arrays.deepToString(field));
-                actualMatrix = rotateMatrix(field);
-                getNextRandomPiece();
-
-                if (checkGameOver()) {
-                    System.out.println("Game Over");
-                    gameOver = true;
-                    break;
-                }
-            }
-        }
-    }
-
-    public void runTetris()
-    {
+    public void runTetris() {
         screen.setState(field);
         startGameLoop();
     }
@@ -347,4 +329,29 @@ public class Tetris {
             tetris.runTetris();
         });
     }
-    }
+}
+
+// public static void update() {
+// while (true) {
+// try {
+// Thread.sleep(pieceVelocity);
+// if(canClearRow())
+// clearRow();
+
+// } catch (InterruptedException e) {
+// e.printStackTrace();
+// }
+
+// if (!moveDown()) {
+// // System.out.println(Arrays.deepToString(field));
+// actualMatrix = rotateMatrix(field);
+// getNextRandomPiece();
+
+// if (checkGameOver()) {
+// System.out.println("Game Over");
+// gameOver = true;
+// break;
+// }
+// }
+// }
+// }
