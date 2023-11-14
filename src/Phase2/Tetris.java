@@ -20,7 +20,7 @@ public class Tetris {
 
     private static final char[] PIECES = { 'T', 'U', 'P', 'I', 'V', 'L', 'F', 'W', 'X', 'Y', 'Z', 'N' };
     public static int[][] field;
-    public static MainScreen screen; // Reference to the MainScreen
+    public static MainScreen screen;
     public static boolean gameOver = false;
     public static int score = 0;
     public static int highScore = 0;
@@ -61,6 +61,10 @@ public class Tetris {
                     if (checkGameOver()) {
                         System.out.println("Game Over");
                         gameOver = true;
+                        if (score > highScore) {
+                            highScore = score;
+                        }
+                        // screen.showGameOverLabel();
                         ((Timer) e.getSource()).stop(); // Stop the game timer
                     }
                 }
@@ -82,10 +86,6 @@ public class Tetris {
         updateTimerInterval.start();
     }
 
-    private int getUpdatedPieceVelocity() {
-        return pieceVelocity;
-    }
-
     private static void moveRowDownByOne(int row) {
         for (int j = 0; j < actualMatrix[0].length; j++) {
             actualMatrix[row][j] = -1;
@@ -101,11 +101,13 @@ public class Tetris {
         score++;
 
         MainScreen.updateScore();
+        
 
         field = rotateMatrixBack(actualMatrix);
         screen.setState(field);
     }
 
+    // PLACING AND REMOVING PIECES
     public static boolean canPlace(int[][] field, int[][] piece, int row, int col) {
         if (row < 0 || col < 0 || row + piece.length > field.length || col + piece[0].length > field[0].length) {
             return false;
@@ -141,16 +143,53 @@ public class Tetris {
         }
     }
 
-    public void initializeField() {
-        field = new int[HORIZONTAL_GRID_SIZE][VERTICAL_GRID_SIZE];
-        for (int i = 0; i < field.length; i++) {
-            for (int j = 0; j < field[0].length; j++) {
-                field[i][j] = -1;
-            }
-        }
-        actualMatrix = rotateMatrix(field);
+    public static boolean checkGameOver() {
+        return !canPlace(field, currentPiece, currentX, currentY);
     }
 
+    private static void getNextRandomPiece() {
+        char randomPieceChar = PIECES[random.nextInt(12)];
+        currentID = Search.characterToID(randomPieceChar);
+        currentPiece = PentominoDatabase.data[currentID][0];
+        currentX = 0;
+        currentY = 0;
+    }
+
+    // CLEARING ROWS
+    private static boolean canClearRow() {
+        for (int i = 0; i < actualMatrix.length; i++) {
+            boolean canClear = true;
+            for (int j = 0; j < actualMatrix[0].length; j++) {
+                if (actualMatrix[i][j] == -1) {
+                    canClear = false;
+                }
+            }
+            if (canClear) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static void clearRow() {
+        List<Integer> toClear = new ArrayList<>();
+        for (int i = 0; i < actualMatrix.length; i++) {
+            boolean canClear = true;
+            for (int j = 0; j < actualMatrix[0].length; j++) {
+                if (actualMatrix[i][j] == -1) {
+                    canClear = false;
+                }
+            }
+            if (canClear) {
+                toClear.add(i);
+            }
+        }
+        for (int i = 0; i < toClear.size(); i++) {
+            moveRowDownByOne(toClear.get(i));
+        }
+    }
+
+    // PIECE MOVEMENT AND ROTATION
     public static boolean moveDown() {
         removePiece(field, currentPiece, currentX, currentY);
         if (canPlace(field, currentPiece, currentX, currentY + 1)) {
@@ -242,6 +281,17 @@ public class Tetris {
         }
     }
 
+    // MATRIX HELPER FUNCTIONS
+    public void initializeField() {
+        field = new int[HORIZONTAL_GRID_SIZE][VERTICAL_GRID_SIZE];
+        for (int i = 0; i < field.length; i++) {
+            for (int j = 0; j < field[0].length; j++) {
+                field[i][j] = -1;
+            }
+        }
+        actualMatrix = rotateMatrix(field);
+    }
+
     public static int[][] rotateMatrix(int[][] matrix) {
         int numRows = matrix.length;
         int numCols = matrix[0].length;
@@ -272,53 +322,18 @@ public class Tetris {
         return rotatedMatrix;
     }
 
-    public static boolean checkGameOver() {
-        return !canPlace(field, currentPiece, currentX, currentY);
-    }
-
-    private static void getNextRandomPiece() {
-        char randomPieceChar = PIECES[random.nextInt(12)];
-        currentID = Search.characterToID(randomPieceChar);
-        currentPiece = PentominoDatabase.data[currentID][0];
-        currentX = 0;
-        currentY = 0;
-    }
-
-    private static boolean canClearRow() {
-        for (int i = 0; i < actualMatrix.length; i++) {
-            boolean canClear = true;
-            for (int j = 0; j < actualMatrix[0].length; j++) {
-                if (actualMatrix[i][j] == -1) {
-                    canClear = false;
-                }
-            }
-            if (canClear) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private static void clearRow() {
-        // make a clearRow function , but work on the matrix actualMatrix
-        List<Integer> toClear = new ArrayList<>();
-        for (int i = 0; i < actualMatrix.length; i++) {
-            boolean canClear = true;
-            for (int j = 0; j < actualMatrix[0].length; j++) {
-                if (actualMatrix[i][j] == -1) {
-                    canClear = false;
-                }
-            }
-            if (canClear) {
-                toClear.add(i);
-            }
-        }
-        for (int i = 0; i < toClear.size(); i++) {
-            moveRowDownByOne(toClear.get(i));
-        }
-    }
-
+    // RUNNING AND RESTARTING THE GAME
     public void runTetris() {
+        screen.setState(field);
+        startGameLoop();
+    }
+
+    public void restartTetris() {
+        gameOver = false;
+        score = 0;
+        pieceVelocity = INITIAL_VELOCITY;
+        initializeField();
+        getNextRandomPiece();
         screen.setState(field);
         startGameLoop();
     }
@@ -329,29 +344,9 @@ public class Tetris {
             tetris.runTetris();
         });
     }
+
+    // getters and setters
+    private int getUpdatedPieceVelocity() {
+        return pieceVelocity;
+    }
 }
-
-// public static void update() {
-// while (true) {
-// try {
-// Thread.sleep(pieceVelocity);
-// if(canClearRow())
-// clearRow();
-
-// } catch (InterruptedException e) {
-// e.printStackTrace();
-// }
-
-// if (!moveDown()) {
-// // System.out.println(Arrays.deepToString(field));
-// actualMatrix = rotateMatrix(field);
-// getNextRandomPiece();
-
-// if (checkGameOver()) {
-// System.out.println("Game Over");
-// gameOver = true;
-// break;
-// }
-// }
-// }
-// }

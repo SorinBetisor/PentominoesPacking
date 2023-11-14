@@ -26,6 +26,7 @@ public class MainScreen extends JPanel implements KeyListener {
     private BufferedImage rightFillerImage;
     private ImageIcon icon;
 
+    //TODO: add game over label and sublabels
     public MainScreen(int x, int y, int _size, int[][] upcomingMatrix) {
         size = _size;
         this.x = x;
@@ -49,18 +50,14 @@ public class MainScreen extends JPanel implements KeyListener {
 
 
         //TODO: work on bottom label
-        // Create a panel to hold the score label and set its background to yellow
         JPanel scorePanel = new JPanel();
         scorePanel.setBackground(Color.MAGENTA.darker().darker().darker());
-        // Create the Score label and add it to the scorePanel
         scoreLabel = new JLabel("Score: " + Tetris.score + "     Speed:" + (8 - (Tetris.pieceVelocity / 100)));
         scoreLabel.setHorizontalAlignment(JLabel.LEFT);
         scoreLabel.setFont(new Font("Arial", Font.BOLD, 30));
         scoreLabel.setForeground(Color.MAGENTA.darker().darker().darker());
         scorePanel.add(scoreLabel);
-        // Add the scorePanel to the MainScreen panel at the bottom
         add(scorePanel, BorderLayout.SOUTH);
-
 
         window = new JFrame("Pentomino Tetris Game");
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -121,58 +118,45 @@ public class MainScreen extends JPanel implements KeyListener {
         }
 
         Font font = new Font("Dialog", Font.BOLD, 18);
-        String highScoreString = "High Score: " + Tetris.highScore;
 
-        // Create a gradient for the text color
+        //Highlight the high score label
+        String highScoreString = "High Score: " + Tetris.highScore;
         GradientPaint textGradient = new GradientPaint(
                 0, 0, Color.ORANGE.brighter(),
                 font.getSize() * highScoreString.length(), 0, Color.MAGENTA);
 
         TextLayout textLayout = new TextLayout(highScoreString, font, g2d.getFontRenderContext());
-
         Stroke oldStroke = g2d.getStroke();
-        g2d.setStroke(new BasicStroke(1.0f)); // Adjust the width of the stroke as needed
-
-        // Draw the outline
+        g2d.setStroke(new BasicStroke(1.0f));
         g2d.setColor(Color.BLACK);
         g2d.draw(textLayout.getOutline(AffineTransform.getTranslateInstance(10, 40)));
-
-        // Reset the stroke
         g2d.setStroke(oldStroke);
-
         g2d.setPaint(textGradient);
         g2d.setFont(font);
-
-        // Draw the filled text with gradient
         g2d.drawString(highScoreString, 10, 40);
 
-        String scoreString = "Score: " + Tetris.score;
-        ;
 
-        // Create a gradient for the text color
+        //Highlight the score label
+        String scoreString = "Score: " + Tetris.score;
         GradientPaint scoreTextGradient = new GradientPaint(
                 0, 0, Color.GREEN.brighter(),
                 font.getSize() * scoreString.length(), 0, Color.BLUE);
 
         TextLayout scoreTextLayout = new TextLayout(scoreString, font, g2d.getFontRenderContext());
-
-        // Draw the outline for the score label
         g2d.setColor(Color.BLACK);
         g2d.draw(scoreTextLayout.getOutline(AffineTransform.getTranslateInstance(10, 65)));
         g2d.setStroke(oldStroke);
         g2d.setPaint(scoreTextGradient);
         g2d.setFont(font);
         g2d.drawString(scoreString, 10, 65);
-        String speedString = "Speed: " + (10 - (Tetris.pieceVelocity / 100));
 
-        // Create a gradient for the text color
+        //Highlight the speed label
+        String speedString = "Speed: " + (10 - (Tetris.pieceVelocity / 100));
         GradientPaint speedTextGradient = new GradientPaint(
                 0, 0, Color.CYAN.brighter(),
                 font.getSize() * speedString.length(), 0, Color.BLUE);
 
         TextLayout speedTextLayout = new TextLayout(speedString, font, g2d.getFontRenderContext());
-
-        // Draw the outline for the speed label on the right side
         g2d.setColor(Color.BLACK);
         g2d.draw(
                 speedTextLayout.getOutline(AffineTransform.getTranslateInstance(10, 87)));
@@ -181,8 +165,6 @@ public class MainScreen extends JPanel implements KeyListener {
 
         g2d.setPaint(speedTextGradient);
         g2d.setFont(font);
-
-        // Draw the filled text for the speed label on the right side with gradient
         g2d.drawString(speedString, 10, 87);
     }
 
@@ -233,6 +215,13 @@ public class MainScreen extends JPanel implements KeyListener {
         scoreLabel.setText("Score: " + Tetris.score + "     Speed:" + (10 - (Tetris.pieceVelocity / 100)));
     }
 
+
+    //TODO: Update high score dynamically
+    // public static void updateHighScore()
+    // {
+    //    highScoreLabel.setText("High Score: " + Tetris.highScore);
+    // }
+
     public static void updateSpeed() {
         scoreLabel.setText("Score: " + Tetris.score + "     Speed:" + (10 - (Tetris.pieceVelocity / 100)));
     }
@@ -260,6 +249,15 @@ public class MainScreen extends JPanel implements KeyListener {
                 Tetris.decelerateMovingDown();
             } else if (keyCode == KeyEvent.VK_SPACE) {
                 Tetris.dropPiece();
+            }
+        }
+        else {
+            if (keyCode == KeyEvent.VK_R) {
+                Tetris.gameOver = false;
+                Tetris.score = 0;
+                Tetris.pieceVelocity = 1000;
+                Tetris tetris = new Tetris();
+                tetris.restartTetris();
             }
         }
     }

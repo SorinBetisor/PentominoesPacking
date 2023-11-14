@@ -1,11 +1,14 @@
 package Phase2;
 
 public class Player {
-
-    //comment
     private String name;
     private int currentScore = 0;
     private int highScore;
+
+    public Player(String name, int highScore) {
+        this.name = name;
+        this.highScore = highScore;
+    }
 
     public int getHighScore() {
         return highScore;
