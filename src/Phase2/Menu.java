@@ -4,6 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 
 public class Menu {
+    //TODO: add player info when game is over and fix the high score in a file
     private Player player;
     JFrame frame = new JFrame("Game Menu");
     JTextField inputField;
@@ -18,7 +19,7 @@ public class Menu {
         JPanel labelPanel = createLabelPanel();
 
         JFrame frame = new JFrame("Background Image Example");
-        ImageIcon backgroundImage = new ImageIcon("C:\\Users\\Armantos\\Desktop\\Uni staff\\Lab Games\\Lab Game 2\\Product\\src\\photo.jpg");
+        ImageIcon backgroundImage = new ImageIcon("src\\Phase2\\misc\\photo.jpg");
         JLabel backgroundLabel = new JLabel(backgroundImage);
         frame.setLayout(new BorderLayout());
         frame.setContentPane(backgroundLabel);
