@@ -1,34 +1,55 @@
 package Phase2;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 
 public class Menu {
     private Player player;
-    JFrame frame = new JFrame("Game Menu");
-    JTextField inputField;
+    private JFrame frame = new JFrame("Game Menu");
+    private JTextField inputField;
+
+    class BackgroundPanel extends JPanel {
+        private BufferedImage backgroundImage;
+
+        public BackgroundPanel(String imagePath) {
+            try {
+                this.backgroundImage = ImageIO.read(new File(imagePath));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        @Override
+        protected void paintComponent(Graphics g) {
+            super.paintComponent(g);
+            if (backgroundImage != null) {
+                g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), this);
+            }
+        }
+    }
 
     public Menu() {
-
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(400, 300);
+
+        // Use BorderLayout for the frame's content pane
         frame.setLayout(new BorderLayout());
+
+        // Use the custom BackgroundPanel for the background image
+        BackgroundPanel backgroundPanel = new BackgroundPanel("src/Phase2/misc/photo.jpg");
+        frame.setContentPane(backgroundPanel);
 
         JPanel buttonPanel = createButtonPanel();
         JPanel labelPanel = createLabelPanel();
 
-        JFrame frame = new JFrame("Background Image Example");
-        ImageIcon backgroundImage = new ImageIcon("C:\\Users\\Armantos\\Desktop\\Uni staff\\Lab Games\\Lab Game 2\\Product\\src\\photo.jpg");
-        JLabel backgroundLabel = new JLabel(backgroundImage);
-        frame.setLayout(new BorderLayout());
-        frame.setContentPane(backgroundLabel);
-        frame.setSize(backgroundImage.getIconWidth(), backgroundImage.getIconHeight());
 
-        frame.add(buttonPanel, BorderLayout.CENTER);
-        frame.add(labelPanel, BorderLayout.NORTH);
-        frame.setVisible(true);
+        backgroundPanel.add(buttonPanel, BorderLayout.CENTER);
+        backgroundPanel.add(labelPanel, BorderLayout.NORTH);
 
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
     }
 
@@ -36,9 +57,25 @@ public class Menu {
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new GridLayout(3, 1, 10, 10));
 
+        Color textColour = Color.RED;
+
         JButton randomOrderButton = createButton("Random Order");
         JButton bestOrderButton = createButton("Best Order");
         JButton botButton = createButton("Bot");
+
+
+        randomOrderButton.setOpaque(false);
+        randomOrderButton.setContentAreaFilled(false);
+        randomOrderButton.setBorderPainted(false);
+
+        bestOrderButton.setOpaque(false);
+        bestOrderButton.setContentAreaFilled(false);
+        bestOrderButton.setBorderPainted(false);
+
+        botButton.setOpaque(false);
+        botButton.setContentAreaFilled(false);
+        botButton.setBorderPainted(false);
+
 
         randomOrderButton.addActionListener(e -> {
             System.out.println("Random Order Button Clicked");
@@ -53,6 +90,8 @@ public class Menu {
         buttonPanel.add(botButton);
 
         buttonPanel.setBorder(BorderFactory.createEmptyBorder(50, 75, 50, 75));
+
+        buttonPanel.setOpaque(false);
 
         return buttonPanel;
     }
@@ -69,15 +108,19 @@ public class Menu {
 
         JPanel labelFieldPanel = new JPanel();
         labelFieldPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+        //labelFieldPanel.setOpaque(false);
 
         JLabel inputLabel = new JLabel("Name:");
         inputLabel.setFont(new Font("Arial", Font.BOLD, 16));
+        //inputLabel.setOpaque(false);
+
 
         inputField = new JTextField(20);
         inputField.setFont(new Font("Arial", Font.BOLD, 16));
 
         labelFieldPanel.add(inputLabel);
         labelFieldPanel.add(inputField);
+        labelFieldPanel.setOpaque(false);
 
         // Create an empty panel for spacing
         JPanel spacerPanel = new JPanel();
@@ -85,6 +128,7 @@ public class Menu {
 
         labelPanel.add(spacerPanel, BorderLayout.NORTH);
         labelPanel.add(labelFieldPanel, BorderLayout.CENTER);
+
 
         return labelPanel;
     }
