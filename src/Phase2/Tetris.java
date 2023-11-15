@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import Phase1.PentominoDatabase;
-import Phase1.Search;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -36,16 +35,55 @@ public class Tetris {
 
     public Tetris() {
         char randomPieceChar = PIECES[random.nextInt(12)];
-        currentID = Search.characterToID(randomPieceChar);
+        currentID = characterToID(randomPieceChar);
         currentPiece = PentominoDatabase.data[currentID][0];
         currentX = 0;
         currentY = 0;
         initializeField();
         addPiece(currentPiece, currentID, currentX, currentY);
+
+        if (screen == null)
         screen = new MainScreen(HORIZONTAL_GRID_SIZE, VERTICAL_GRID_SIZE, 45,
                 new int[HORIZONTAL_GRID_SIZE][VERTICAL_GRID_SIZE]);
 
     }
+
+    /**
+	 * Get as input the character representation of a pentomino and translate it
+	 * into its corresponding numerical value (ID).
+	 * 
+	 * @param character a character representing a pentomino
+	 * @return the corresponding ID (numerical value)
+	 */
+	public static int characterToID(char character) {
+		int pentID = -1;
+		if (character == 'X') {
+			pentID = 0;
+		} else if (character == 'I') {
+			pentID = 1;
+		} else if (character == 'Z') {
+			pentID = 2;
+		} else if (character == 'T') {
+			pentID = 3;
+		} else if (character == 'U') {
+			pentID = 4;
+		} else if (character == 'V') {
+			pentID = 5;
+		} else if (character == 'W') {
+			pentID = 6;
+		} else if (character == 'Y') {
+			pentID = 7;
+		} else if (character == 'L') {
+			pentID = 8;
+		} else if (character == 'P') {
+			pentID = 9;
+		} else if (character == 'N') {
+			pentID = 10;
+		} else if (character == 'F') {
+			pentID = 11;
+		}
+		return pentID;
+	}
 
     public void startGameLoop() {
         Timer gameTimer = new Timer(pieceVelocity, new ActionListener() {
@@ -58,13 +96,15 @@ public class Tetris {
                     actualMatrix = rotateMatrix(field);
                     getNextRandomPiece();
 
+                    if (canClearRow())
+                    clearRow();
                     if (checkGameOver()) {
                         System.out.println("Game Over");
                         gameOver = true;
                         if (score > highScore) {
                             highScore = score;
                         }
-                        // screen.showGameOverLabel();
+                        screen.showGameOver();
                         ((Timer) e.getSource()).stop(); // Stop the game timer
                     }
                 }
@@ -149,7 +189,7 @@ public class Tetris {
 
     private static void getNextRandomPiece() {
         char randomPieceChar = PIECES[random.nextInt(12)];
-        currentID = Search.characterToID(randomPieceChar);
+        currentID = characterToID(randomPieceChar);
         currentPiece = PentominoDatabase.data[currentID][0];
         currentX = 0;
         currentY = 0;
