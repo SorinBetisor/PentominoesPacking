@@ -2,7 +2,6 @@ package Phase2;
 
 import javax.swing.*;
 import java.awt.*;
-
 public class Menu {
     private Player player;
     JFrame frame = new JFrame("Game Menu");
