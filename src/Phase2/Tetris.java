@@ -191,6 +191,12 @@ public class Tetris {
         char randomPieceChar = PIECES[random.nextInt(12)];
         currentID = characterToID(randomPieceChar);
         currentPiece = PentominoDatabase.data[currentID][0];
+        if (random.nextInt(2) == 1) {
+            if(randomPieceChar == 'F' || randomPieceChar == 'L' || randomPieceChar == 'P' || randomPieceChar == 'Z' || randomPieceChar == 'T' || randomPieceChar == 'Y')
+            {
+                currentPiece = flipPiece();
+            }
+        }
         currentX = 0;
         currentY = 0;
     }
@@ -266,6 +272,17 @@ public class Tetris {
         }
         addPiece(currentPiece, currentID, currentX, currentY);
         screen.setState(field); // Update the MainScreen
+    }
+
+    public static int[][] flipPiece()
+    {
+        int[][] flippedPiece = new int[currentPiece.length][currentPiece[0].length];
+        for (int i = 0; i < currentPiece.length; i++) {
+            for (int j = 0; j < currentPiece[0].length; j++) {
+                flippedPiece[i][j] = currentPiece[i][currentPiece[0].length - 1 - j];
+            }
+        }
+        return flippedPiece;
     }
 
     public static void rotateLeft() {
