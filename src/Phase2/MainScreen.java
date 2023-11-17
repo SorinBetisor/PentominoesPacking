@@ -9,6 +9,12 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.awt.font.TextLayout;
 
+/**
+ * The MainScreen class represents the main game screen of the Pentomino Tetris game.
+ * It extends JPanel and implements KeyListener to handle user input.
+ * The class is responsible for painting the game screen, updating the score and speed labels,
+ * and showing the game over message.
+ */
 public class MainScreen extends JPanel implements KeyListener {
     // Instance variables
     private JFrame window;
