@@ -19,8 +19,10 @@ public class Tetris {
 
     private static final char[] PIECES = { 'T', 'U', 'P', 'I', 'V', 'L', 'F', 'W', 'X', 'Y', 'Z', 'N' };
     public static int[][] field;
+    public int[][] fieldWithoutCurrentPiece;
     public static MainScreen screen;
     public static boolean gameOver = false;
+    public static boolean botPlaying = false;
     public static int score = 0;
     public static int highScore = 0;
 
@@ -40,6 +42,7 @@ public class Tetris {
         currentX = 0;
         currentY = 0;
         initializeField();
+        fieldWithoutCurrentPiece = rotateMatrix(field).clone();
         addPiece(currentPiece, currentID, currentX, currentY);
 
         if (screen == null)
@@ -94,6 +97,7 @@ public class Tetris {
 
                 if (!moveDown()) {
                     actualMatrix = rotateMatrix(field);
+                    fieldWithoutCurrentPiece = deepCopy(rotateMatrix(field));
                     getNextRandomPiece();
 
                     if (canClearRow())
@@ -105,7 +109,7 @@ public class Tetris {
                             highScore = score;
                         }
                         screen.showGameOver();
-                        ((Timer) e.getSource()).stop(); // Stop the game timer
+                        ((Timer) e.getSource()).stop();
                     }
                 }
                 screen.setState(field);
@@ -117,13 +121,26 @@ public class Tetris {
         Timer updateTimerInterval = new Timer(1000, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                int newPieceVelocity = getUpdatedPieceVelocity(); // Replace this with your logic to get updated
-                                                                  // pieceVelocity
+                int newPieceVelocity = getUpdatedPieceVelocity();
                 gameTimer.setDelay(newPieceVelocity);
             }
         });
 
         updateTimerInterval.start();
+    }
+
+    public int[][] getWorkingField()
+    {
+        return fieldWithoutCurrentPiece;
+    }
+
+    public static int[][] deepCopy(int[][] field)
+    {
+        int[][] copy = new int[field.length][field[0].length];
+        for (int i = 0; i < field.length; i++) {
+            System.arraycopy(field[i], 0, copy[i], 0, field[0].length);
+        }
+        return copy;
     }
 
     private static void moveRowDownByOne(int row) {
