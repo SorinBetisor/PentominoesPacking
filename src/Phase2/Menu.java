@@ -66,19 +66,23 @@ public class Menu {
         randomOrderButton.setForeground(Color.pink);
         randomOrderButton.setOpaque(false);
         randomOrderButton.setContentAreaFilled(true);
-        randomOrderButton.setBorderPainted(false);
-        
+        randomOrderButton.setBorderPainted(true);
+        randomOrderButton.setBorder(BorderFactory.createLineBorder(Color.pink, 4));
+
         bestOrderButton.setBackground(new Color(59, 89, 182));
         bestOrderButton.setForeground(Color.GREEN);
         bestOrderButton.setOpaque(false);
         bestOrderButton.setContentAreaFilled(false);
-        bestOrderButton.setBorderPainted(false);
+        bestOrderButton.setBorderPainted(true);
+        bestOrderButton.setBorder(BorderFactory.createLineBorder(Color.green, 4));
+
 
         botButton.setBackground(new Color(59, 89, 182));
         botButton.setForeground(Color.BLUE);
         botButton.setOpaque(false);
         botButton.setContentAreaFilled(false);
-        botButton.setBorderPainted(false);
+        botButton.setBorderPainted(true);
+        botButton.setBorder(BorderFactory.createLineBorder(Color.blue, 4));
            
        
     
