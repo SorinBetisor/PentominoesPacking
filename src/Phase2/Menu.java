@@ -41,7 +41,6 @@ public class Menu {
         // Use the custom BackgroundPanel for the background image
         BackgroundPanel backgroundPanel = new BackgroundPanel("src/Phase2/misc/photo.jpg");
         frame.setContentPane(backgroundPanel);
-
         JPanel buttonPanel = createButtonPanel();
         JPanel labelPanel = createLabelPanel();
 
@@ -50,22 +49,24 @@ public class Menu {
         backgroundPanel.add(labelPanel, BorderLayout.NORTH);
 
         frame.setVisible(true);
+    
     }
 
     private JPanel createButtonPanel() {
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new GridLayout(3, 1, 10, 10));
-
-        Color textColour = Color.RED;
-
+        
+        Color textColour = Color.RED;  
+        Icon icon = new ImageIcon("src/Phase2/misc/randomorder.png");      
         JButton randomOrderButton = createButton("Random Order");
         JButton bestOrderButton = createButton("Best Order");
         JButton botButton = createButton("Bot");
-
-
+        
+    
         randomOrderButton.setOpaque(false);
         randomOrderButton.setContentAreaFilled(false);
         randomOrderButton.setBorderPainted(false);
+        
 
         bestOrderButton.setOpaque(false);
         bestOrderButton.setContentAreaFilled(false);
@@ -74,8 +75,9 @@ public class Menu {
         botButton.setOpaque(false);
         botButton.setContentAreaFilled(false);
         botButton.setBorderPainted(false);
-
-
+           
+       
+    
         randomOrderButton.addActionListener(e -> {
             System.out.println("Random Order Button Clicked");
             frame.dispose();
@@ -83,7 +85,6 @@ public class Menu {
             tetris.runTetris(); // Start the game loop
             savePlayerInfo();
         });
-
         buttonPanel.add(randomOrderButton);
         buttonPanel.add(bestOrderButton);
         buttonPanel.add(botButton);
