@@ -23,7 +23,6 @@ public class Criteria {
         return maxHeight;
     }
 
-    // TODO: implement counting gaps
     public static int calculateGaps(int[][] field) {
         boolean[][] checked = new boolean[field.length][field[0].length];
         for (int i = 0; i < field.length; i++) {
@@ -61,6 +60,22 @@ public class Criteria {
         floodFillHoles(row - 1, col, field, checked);
         floodFillHoles(row, col + 1, field, checked);
         floodFillHoles(row, col - 1, field, checked);
+    }
+
+    public static boolean canClearRow(int[][] field)
+    {
+        for (int i = 0; i < field.length; i++) {
+            boolean canClear = true;
+            for (int j = 0; j < field[0].length; j++) {
+                if (field[i][j] == -1) {
+                    canClear = false;
+                    break;
+                }
+            }
+            if (canClear)
+                return true;
+        }
+        return false;
     }
     
 

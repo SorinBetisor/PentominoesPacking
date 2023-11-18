@@ -9,28 +9,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 /**
- * The Tetris class represents the game of Tetris. 
- * It contains methods for placing and removing pieces, clearing rows, and moving and rotating pieces. 
- * It also has constants for the size of the game grid and the maximum and minimum velocities of the falling pieces. 
+ * The Tetris class represents the game of Tetris.
+ * It contains methods for placing and removing pieces, clearing rows, and
+ * moving and rotating pieces.
+ * It also has constants for the size of the game grid and the maximum and
+ * minimum velocities of the falling pieces.
  * The class uses a MainScreen object to display the game to the user.
- * 
- *  Attributes:
- * - PIECES: an array of characters representing the different types of pentominoes that can be used in the game
- * - field: a 2D integer array representing the game field
- * - fieldWithoutCurrentPiece: a 2D integer array representing the game field without the current piece
- * - screen: a MainScreen object representing the game screen
- * - gameOver: a boolean indicating whether the game is over or not
- * - botPlaying: a boolean indicating whether the game is being played by a bot or not
- * - score: an integer representing the current score of the game
- * - highScore: an integer representing the highest score achieved in the game
- * - currentPiece: a 2D integer array representing the current piece being played
- * - currentID: an integer representing the ID of the current piece being played
- * - currentX: an integer representing the x-coordinate of the current piece on the game field
- * - currentY: an integer representing the y-coordinate of the current piece on the game field
- * - currentRotation: an integer representing the current rotation of the current piece
- * - accelerateDown: a boolean indicating whether the current piece should be accelerated downwards or not
- * - pieceVelocity: an integer representing the velocity of the current piece
- * - actualMatrix: a 2D integer array representing the game field after it has been rotated
  */
 
 public class Tetris {
@@ -45,6 +29,7 @@ public class Tetris {
     private static final char[] PIECES = { 'T', 'U', 'P', 'I', 'V', 'L', 'F', 'W', 'X', 'Y', 'Z', 'N' };
     public static int[][] field;
     public int[][] fieldWithoutCurrentPiece;
+    public int[][] simulatedDropField;
     public static MainScreen screen;
     public static boolean gameOver = false;
     public static boolean botPlaying = false;
@@ -55,13 +40,16 @@ public class Tetris {
     public static int currentID;
     public static int currentX;
     public static int currentY;
+    public static int currentLowestY;
     public static int currentRotation;
     public static boolean accelerateDown = false;
     public static int pieceVelocity = INITIAL_VELOCITY;
     public static int[][] actualMatrix;
 
     /**
-     * Constructs a new Tetris game instance with a randomly selected piece, initializes the game field, and creates a new MainScreen object if one does not already exist.
+     * Constructs a new Tetris game instance with a randomly selected piece,
+     * initializes the game field, and creates a new MainScreen object if one does
+     * not already exist.
      */
     public Tetris() {
         char randomPieceChar = PIECES[random.nextInt(12)];
@@ -72,68 +60,80 @@ public class Tetris {
         initializeField();
         fieldWithoutCurrentPiece = rotateMatrix(field).clone();
         addPiece(currentPiece, currentID, currentX, currentY);
+        // simulatedDropField = field.clone();
+
+        // System.out.println(Arrays.deepToString(simulateDrop()));
 
         if (screen == null)
-        screen = new MainScreen(HORIZONTAL_GRID_SIZE, VERTICAL_GRID_SIZE, 45,
-                new int[HORIZONTAL_GRID_SIZE][VERTICAL_GRID_SIZE]);
+            screen = new MainScreen(HORIZONTAL_GRID_SIZE, VERTICAL_GRID_SIZE, 45,
+                    new int[HORIZONTAL_GRID_SIZE][VERTICAL_GRID_SIZE]);
 
     }
 
     /**
-	 * Get as input the character representation of a pentomino and translate it
-	 * into its corresponding numerical value (ID).
-	 * 
-	 * @param character a character representing a pentomino
-	 * @return the corresponding ID (numerical value)
-	 */
-	public static int characterToID(char character) {
-		int pentID = -1;
-		if (character == 'X') {
-			pentID = 0;
-		} else if (character == 'I') {
-			pentID = 1;
-		} else if (character == 'Z') {
-			pentID = 2;
-		} else if (character == 'T') {
-			pentID = 3;
-		} else if (character == 'U') {
-			pentID = 4;
-		} else if (character == 'V') {
-			pentID = 5;
-		} else if (character == 'W') {
-			pentID = 6;
-		} else if (character == 'Y') {
-			pentID = 7;
-		} else if (character == 'L') {
-			pentID = 8;
-		} else if (character == 'P') {
-			pentID = 9;
-		} else if (character == 'N') {
-			pentID = 10;
-		} else if (character == 'F') {
-			pentID = 11;
-		}
-		return pentID;
-	}
+     * Get as input the character representation of a pentomino and translate it
+     * into its corresponding numerical value (ID).
+     * 
+     * @param character a character representing a pentomino
+     * @return the corresponding ID (numerical value)
+     */
+    public static int characterToID(char character) {
+        int pentID = -1;
+        if (character == 'X') {
+            pentID = 0;
+        } else if (character == 'I') {
+            pentID = 1;
+        } else if (character == 'Z') {
+            pentID = 2;
+        } else if (character == 'T') {
+            pentID = 3;
+        } else if (character == 'U') {
+            pentID = 4;
+        } else if (character == 'V') {
+            pentID = 5;
+        } else if (character == 'W') {
+            pentID = 6;
+        } else if (character == 'Y') {
+            pentID = 7;
+        } else if (character == 'L') {
+            pentID = 8;
+        } else if (character == 'P') {
+            pentID = 9;
+        } else if (character == 'N') {
+            pentID = 10;
+        } else if (character == 'F') {
+            pentID = 11;
+        }
+        return pentID;
+    }
 
     /**
-     * Starts the game loop which updates the game state and screen at a fixed interval.
-     * Uses two timers, one for the game loop and another for updating the piece velocity.
+     * Starts the game loop which updates the game state and screen at a fixed
+     * interval.
+     * Uses two timers, one for the game loop and another for updating the piece
+     * velocity.
      */
     public void startGameLoop() {
         Timer gameTimer = new Timer(pieceVelocity, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                // System.out.println(Criteria.findLowestY(field, currentPiece, currentX,
+                // currentY));
+                // simulatedDropField = Bot.simulateDrop(currentPiece);
                 if (canClearRow())
                     clearRow();
-
                 if (!moveDown()) {
                     actualMatrix = rotateMatrix(field);
                     fieldWithoutCurrentPiece = deepCopy(rotateMatrix(field));
                     getNextRandomPiece();
+                    simulatedDropField = Bot.simulateDrop(currentPiece);
 
-                    if (canClearRow())
-                    clearRow();
+                    if (canClearRow()) {
+                        clearRow();
+                        simulatedDropField = Bot.simulateDrop(currentPiece);
+                    } else {
+                        simulatedDropField = Bot.simulateDrop(currentPiece);
+                    }
                     if (checkGameOver()) {
                         System.out.println("Game Over");
                         gameOver = true;
@@ -161,14 +161,21 @@ public class Tetris {
         updateTimerInterval.start();
     }
 
+    public int[][] getSimulatedDropField() {
+        if (simulatedDropField == null) {
+            dropPiece();
+            return field;
+        }
+        return simulatedDropField;
+    }
+
     /**
      * Creates a deep copy of a 2D integer array.
      * 
      * @param field the 2D integer array to be copied
      * @return a new 2D integer array that is a deep copy of the input array
      */
-    public static int[][] deepCopy(int[][] field)
-    {
+    public static int[][] deepCopy(int[][] field) {
         int[][] copy = new int[field.length][field[0].length];
         for (int i = 0; i < field.length; i++) {
             System.arraycopy(field[i], 0, copy[i], 0, field[0].length);
@@ -178,6 +185,7 @@ public class Tetris {
 
     /**
      * Moves the specified row down by one and updates the score.
+     * 
      * @param row the row to move down
      */
     private static void moveRowDownByOne(int row) {
@@ -195,7 +203,6 @@ public class Tetris {
         score++;
 
         MainScreen.updateScore();
-        
 
         field = rotateMatrixBack(actualMatrix);
         screen.setState(field);
@@ -203,12 +210,15 @@ public class Tetris {
 
     // PLACING AND REMOVING PIECES
     /**
-     * Determines if a given piece can be placed on the field at the specified row and column.
+     * Determines if a given piece can be placed on the field at the specified row
+     * and column.
+     * 
      * @param field the field to place the piece on
      * @param piece the piece to place on the field
-     * @param row the row to place the piece at
-     * @param col the column to place the piece at
-     * @return true if the piece can be placed at the specified location, false otherwise
+     * @param row   the row to place the piece at
+     * @param col   the column to place the piece at
+     * @return true if the piece can be placed at the specified location, false
+     *         otherwise
      */
     public static boolean canPlace(int[][] field, int[][] piece, int row, int col) {
         if (row < 0 || col < 0 || row + piece.length > field.length || col + piece[0].length > field[0].length) {
@@ -230,8 +240,8 @@ public class Tetris {
      * 
      * @param field the field to remove the piece from
      * @param piece the piece to remove
-     * @param row the row to remove the piece from
-     * @param col the column to remove the piece from
+     * @param row   the row to remove the piece from
+     * @param col   the column to remove the piece from
      */
     public static void removePiece(int[][] field, int[][] piece, int row, int col) {
         for (int i = 0; i < piece.length; i++) {
@@ -246,10 +256,10 @@ public class Tetris {
     /**
      * Adds a given piece to the game field at the specified row and column.
      * 
-     * @param piece the piece to be added to the field
+     * @param piece  the piece to be added to the field
      * @param pentID the ID of the piece
-     * @param row the row where the piece will be added
-     * @param col the column where the piece will be added
+     * @param row    the row where the piece will be added
+     * @param col    the column where the piece will be added
      */
     public static void addPiece(int[][] piece, int pentID, int row, int col) {
         for (int i = 0; i < piece.length; i++) {
@@ -262,7 +272,27 @@ public class Tetris {
     }
 
     /**
-     * Checks if the game is over by determining if the current piece can be placed on the field.
+     * Adds a given piece to the game field at the specified row and column.
+     * 
+     * @param piece  the piece to be added to the field
+     * @param pentID the ID of the piece
+     * @param row    the row where the piece will be added
+     * @param col    the column where the piece will be added
+     */
+    public static void addPiece(int[][] board, int[][] piece, int pentID, int row, int col) {
+        for (int i = 0; i < piece.length; i++) {
+            for (int j = 0; j < piece[0].length; j++) {
+                if (piece[i][j] != 0) {
+                    board[i + row][j + col] = pentID;
+                }
+            }
+        }
+    }
+
+    /**
+     * Checks if the game is over by determining if the current piece can be placed
+     * on the field.
+     * 
      * @return true if the game is over, false otherwise.
      */
     public static boolean checkGameOver() {
@@ -270,16 +300,18 @@ public class Tetris {
     }
 
     /**
-     * This method selects a random piece from the PIECES array and sets the current piece, ID, and position accordingly.
-     * If the randomly selected piece is one of the pieces that can be flipped, there is a 50% chance that the piece will be flipped.
+     * This method selects a random piece from the PIECES array and sets the current
+     * piece, ID, and position accordingly.
+     * If the randomly selected piece is one of the pieces that can be flipped,
+     * there is a 50% chance that the piece will be flipped.
      */
     private static void getNextRandomPiece() {
         char randomPieceChar = PIECES[random.nextInt(12)];
         currentID = characterToID(randomPieceChar);
         currentPiece = PentominoDatabase.data[currentID][0];
         if (random.nextInt(2) == 1) {
-            if(randomPieceChar == 'F' || randomPieceChar == 'L' || randomPieceChar == 'P' || randomPieceChar == 'Z' || randomPieceChar == 'T' || randomPieceChar == 'Y')
-            {
+            if (randomPieceChar == 'F' || randomPieceChar == 'L' || randomPieceChar == 'P' || randomPieceChar == 'Z'
+                    || randomPieceChar == 'T' || randomPieceChar == 'Y') {
                 currentPiece = flipPiece();
             }
         }
@@ -327,8 +359,11 @@ public class Tetris {
 
     // PIECE MOVEMENT AND ROTATION
     /**
-     * Moves the current piece down by one row if possible, updates the game field and the MainScreen.
-     * If the piece cannot be moved down, it is added to the game field and the method returns false.
+     * Moves the current piece down by one row if possible, updates the game field
+     * and the MainScreen.
+     * If the piece cannot be moved down, it is added to the game field and the
+     * method returns false.
+     * 
      * @return true if the piece was successfully moved down, false otherwise.
      */
     public static boolean moveDown() {
@@ -357,9 +392,46 @@ public class Tetris {
         screen.setState(field); // Update the MainScreen
     }
 
+    public static int getLowestY() {
+        int[][] copy = deepCopy(field);
+        removePiece(copy, currentPiece, currentX, currentY);
+        int lowestY = 0;
+        while (canPlace(copy, currentPiece, currentX, lowestY + 1)) {
+            if(lowestY + 1 > VERTICAL_GRID_SIZE - currentPiece.length) {
+                lowestY++;
+                break;
+            }
+            lowestY++;
+            // System.out.println("SUI");
+        }
+        System.out.println(15-lowestY);
+        return 15-lowestY;
+    }
+
+    // private int getMaxX() {
+
+    // int[][] cop = new int[game.VERTICAL_GRID_SIZE][game.HORIZONTAL_GRID_SIZE];
+    // for (int i = 0; i < game.VERTICAL_GRID_SIZE; i++) {
+    // cop[i] = Arrays.copyOf(state[i], state[i].length);
+    // }
+
+    // game.removePiece(cop, game.acticeShape, game.actualX, game.actualY);
+
+    // int x = 0;
+    // while (game.canPlace(cop, game.acticeShape, x, game.actualY)) {
+    // if (x + 1 > game.VERTICAL_GRID_SIZE - game.acticeShape.length) {
+    // x++;
+    // break;
+    // }
+    // x++;
+    // }
+    // return x - 1;
+    // }
+
     /**
      * Rotates the current piece 90 degrees clockwise and updates the game field.
-     * If the rotated piece can be placed in the current position, it becomes the new current piece.
+     * If the rotated piece can be placed in the current position, it becomes the
+     * new current piece.
      * Otherwise, the original piece remains in place.
      */
     public static void rotateRight() {
@@ -379,10 +451,10 @@ public class Tetris {
 
     /**
      * Flips the current piece horizontally.
+     * 
      * @return the flipped piece as a 2D integer array.
      */
-    public static int[][] flipPiece()
-    {
+    public static int[][] flipPiece() {
         int[][] flippedPiece = new int[currentPiece.length][currentPiece[0].length];
         for (int i = 0; i < currentPiece.length; i++) {
             for (int j = 0; j < currentPiece[0].length; j++) {
@@ -394,8 +466,10 @@ public class Tetris {
 
     /**
      * Rotates the current piece to the left.
-     * Removes the current piece from the field, rotates it, and checks if it can be placed in the new position.
-     * If it can be placed, updates the current piece with the rotated piece and adds it to the field.
+     * Removes the current piece from the field, rotates it, and checks if it can be
+     * placed in the new position.
+     * If it can be placed, updates the current piece with the rotated piece and
+     * adds it to the field.
      * Finally, updates the MainScreen with the new state of the field.
      */
     public static void rotateLeft() {
@@ -446,8 +520,10 @@ public class Tetris {
     }
 
     /**
-     * Sets the accelerateDown flag to true and decreases the pieceVelocity by 100 if it is greater than the minimum velocity.
-     * Calls the updateSpeed method of the MainScreen class to update the speed of the game.
+     * Sets the accelerateDown flag to true and decreases the pieceVelocity by 100
+     * if it is greater than the minimum velocity.
+     * Calls the updateSpeed method of the MainScreen class to update the speed of
+     * the game.
      */
     public static void accelerateMovingDown() {
         accelerateDown = true;
@@ -459,7 +535,8 @@ public class Tetris {
 
     /**
      * Decelerates the falling speed of the tetromino piece.
-     * Sets accelerateDown to false and increases the pieceVelocity by 100 if it is less than MAXIMUM_VELOCITY.
+     * Sets accelerateDown to false and increases the pieceVelocity by 100 if it is
+     * less than MAXIMUM_VELOCITY.
      * Updates the speed on the MainScreen.
      */
     public static void decelerateMovingDown() {
@@ -472,7 +549,8 @@ public class Tetris {
 
     // MATRIX HELPER FUNCTIONS
     /**
-     * Initializes the field by creating a new 2D integer array with the dimensions of HORIZONTAL_GRID_SIZE and VERTICAL_GRID_SIZE.
+     * Initializes the field by creating a new 2D integer array with the dimensions
+     * of HORIZONTAL_GRID_SIZE and VERTICAL_GRID_SIZE.
      * Then, it sets all the values of the array to -1.
      * Finally, it rotates the matrix and sets it as the actual matrix.
      */
@@ -488,6 +566,7 @@ public class Tetris {
 
     /**
      * Rotates a given matrix by 90 degrees clockwise.
+     * 
      * @param matrix the matrix to be rotated
      * @return the rotated matrix
      */
@@ -508,6 +587,7 @@ public class Tetris {
 
     /**
      * Rotates the given matrix 90 degrees counter-clockwise.
+     * 
      * @param matrix the matrix to be rotated
      * @return the rotated matrix
      */
@@ -537,8 +617,10 @@ public class Tetris {
 
     /**
      * Resets the game state and starts a new game of Tetris.
-     * Sets the game over flag to false, score to 0, piece velocity to initial velocity,
-     * initializes the game field, gets the next random piece, sets the screen state to the field,
+     * Sets the game over flag to false, score to 0, piece velocity to initial
+     * velocity,
+     * initializes the game field, gets the next random piece, sets the screen state
+     * to the field,
      * and starts the game loop.
      */
     public void restartTetris() {
@@ -559,12 +641,11 @@ public class Tetris {
     }
 
     // getters and setters
-    private int getUpdatedPieceVelocity() {
+    public int getUpdatedPieceVelocity() {
         return pieceVelocity;
     }
 
-    public int[][] getWorkingField()
-    {
+    public int[][] getWorkingField() {
         return fieldWithoutCurrentPiece;
     }
 }

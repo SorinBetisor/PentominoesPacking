@@ -10,9 +10,11 @@ import java.io.IOException;
 import java.awt.font.TextLayout;
 
 /**
- * The MainScreen class represents the main game screen of the Pentomino Tetris game.
+ * The MainScreen class represents the main game screen of the Pentomino Tetris
+ * game.
  * It extends JPanel and implements KeyListener to handle user input.
- * The class is responsible for painting the game screen, updating the score and speed labels,
+ * The class is responsible for painting the game screen, updating the score and
+ * speed labels,
  * and showing the game over message.
  */
 public class MainScreen extends JPanel implements KeyListener {
@@ -168,6 +170,31 @@ public class MainScreen extends JPanel implements KeyListener {
         g2d.setPaint(speedTextGradient);
         g2d.setFont(font);
         g2d.drawString(speedString, 10, 87);
+
+        for (int i = 0; i < Tetris.currentPiece.length; i++) {
+            for (int j = 0; j < Tetris.currentPiece[0].length; j++) {
+                if (Tetris.currentPiece[i][j] != 0) {
+                    int y = Tetris.getLowestY();
+                    // System.out.println(y);
+                    // if (Tetris.field[i + Tetris.currentY][j + y] != -1) {
+                    if(Tetris.field[i + Tetris.currentX][j + (15-y)] != -1){
+                    g2d.setColor(Color.WHITE);
+                    g2d.setStroke(new BasicStroke(3.0f));}
+                    else{
+                    // } else {
+                        Color pieceColor = new Color(GetColorOfID(Tetris.currentID).getRed(),
+                        GetColorOfID(Tetris.currentID).getGreen(),
+                        GetColorOfID(Tetris.currentID).getBlue(),
+                        200);
+                    g2d.setColor(pieceColor.darker());
+                    g2d.setStroke(new BasicStroke(3.0f));
+                    // }
+                    
+                }
+                g2d.draw(new Rectangle2D.Double((i + leftFillerWidth + Tetris.currentX) * size+1,
+                            (j+(15-y)) * size, size, size));}
+            }
+        }
     }
 
     // Returns the color associated with a given ID
@@ -233,7 +260,8 @@ public class MainScreen extends JPanel implements KeyListener {
 
     // Key listener methods
     @Override
-    public void keyTyped(KeyEvent e) {}
+    public void keyTyped(KeyEvent e) {
+    }
 
     @Override
     public void keyPressed(KeyEvent e) {
@@ -242,8 +270,10 @@ public class MainScreen extends JPanel implements KeyListener {
         if (!Tetris.gameOver) {
             if (keyCode == KeyEvent.VK_LEFT) {
                 Tetris.moveLeft();
+                System.out.println(Tetris.getLowestY());
             } else if (keyCode == KeyEvent.VK_RIGHT) {
                 Tetris.moveRight();
+                System.out.println(Tetris.getLowestY());
             } else if (keyCode == KeyEvent.VK_D) {
                 Tetris.rotateRight();
             } else if (keyCode == KeyEvent.VK_A) {
@@ -267,5 +297,6 @@ public class MainScreen extends JPanel implements KeyListener {
     }
 
     @Override
-    public void keyReleased(KeyEvent e) {}
+    public void keyReleased(KeyEvent e) {
+    }
 }
