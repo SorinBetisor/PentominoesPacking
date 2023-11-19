@@ -1,15 +1,17 @@
 package Phase2;
 import javax.imageio.ImageIO;
+import javax.sound.sampled.LineUnavailableException;
 import javax.swing.*;
+import Phase2.helperClasses.SoundPlayerUsingClip;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.IOException;
 
 public class Menu {
     private Player player;
     private JFrame frame = new JFrame("Game Menu");
     private JTextField inputField;
+    private SoundPlayerUsingClip soundPlayer;
 
     class BackgroundPanel extends JPanel {
         private BufferedImage backgroundImage;
@@ -17,7 +19,7 @@ public class Menu {
         public BackgroundPanel(String imagePath) {
             try {
                 this.backgroundImage = ImageIO.read(new File(imagePath));
-            } catch (IOException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
@@ -32,32 +34,37 @@ public class Menu {
     }
 
     public Menu() {
+
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(400, 300);
-
-        // Use BorderLayout for the frame's content pane
+        frame.setSize(800, 600);
+        frame.setLocationRelativeTo(null);
         frame.setLayout(new BorderLayout());
-
-        // Use the custom BackgroundPanel for the background image
-        BackgroundPanel backgroundPanel = new BackgroundPanel("src/Phase2/misc/photo.jpg");
+        BackgroundPanel backgroundPanel = new BackgroundPanel("src/Phase2/misc/91655.jpg");
         frame.setContentPane(backgroundPanel);
         JPanel buttonPanel = createButtonPanel();
         JPanel labelPanel = createLabelPanel();
-
-
         backgroundPanel.add(buttonPanel, BorderLayout.CENTER);
         backgroundPanel.add(labelPanel, BorderLayout.NORTH);
-
         frame.setVisible(true);
-    
+
+        Thread musicThread = new Thread(() -> {
+            try {
+                soundPlayer = new SoundPlayerUsingClip();
+                soundPlayer.playMusic("Phase2/misc/8bit-music-menu8.wav");
+            } catch (LineUnavailableException e) {
+                e.printStackTrace();
+            }
+        }, "MenuMusicThread");
+
+        musicThread.start();
     }
 
     private JPanel createButtonPanel() {
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new GridLayout(3, 1, 10, 10));
         
-        Color textColour = Color.RED;  
-        Icon icon = new ImageIcon("src/Phase2/misc/randomorder.png");      
+        // Color textColour = Color.RED;  
+        // Icon icon = new ImageIcon("src/Phase2/misc/randomorder.png");      
         JButton randomOrderButton = createButton("Random Order");
         JButton bestOrderButton = createButton("Best Order");
         JButton botButton = createButton("Bot");
@@ -76,7 +83,6 @@ public class Menu {
         bestOrderButton.setBorderPainted(true);
         bestOrderButton.setBorder(BorderFactory.createLineBorder(Color.green, 4));
 
-
         botButton.setBackground(new Color(59, 89, 182));
         botButton.setForeground(Color.BLUE);
         botButton.setOpaque(false);
@@ -84,10 +90,10 @@ public class Menu {
         botButton.setBorderPainted(true);
         botButton.setBorder(BorderFactory.createLineBorder(Color.blue, 4));
            
-       
-    
         randomOrderButton.addActionListener(e -> {
             System.out.println("Random Order Button Clicked");
+            soundPlayer.pause();
+            
             frame.dispose();
             Tetris tetris = new Tetris();
             tetris.runTetris(); // Start the game loop
@@ -132,7 +138,7 @@ public class Menu {
 
         // Create an empty panel for spacing
         JPanel spacerPanel = new JPanel();
-        spacerPanel.setPreferredSize(new Dimension(10, 10)); // Adjust the size as needed
+        spacerPanel.setPreferredSize(new Dimension(10, 10));
         labelPanel.add(spacerPanel, BorderLayout.NORTH);
         labelPanel.add(labelFieldPanel, BorderLayout.CENTER);
 

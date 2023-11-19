@@ -1,5 +1,8 @@
 package Phase2.helperClasses;
 
+/**
+ * The Matrix class provides utility methods for manipulating 2D matrices.
+ */
 public class Matrix {
      /**
      * Rotates a given matrix by 90 degrees clockwise.
