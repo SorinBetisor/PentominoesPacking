@@ -1,4 +1,4 @@
-package Phase2;
+package Phase2.helperClasses;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;

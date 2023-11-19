@@ -6,6 +6,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import Phase2.helperClasses.Criteria;
+import Phase2.helperClasses.Matrix;
+
 // Here is the algorithm:
 
 // For each figure rotation and for each horizontal position, simulate “spacebar” and check the height of our new tower and the number of “holes”.
@@ -46,7 +49,7 @@ public class Bot {
 
 
     public void getOptimalDrop(int[][] afield, int[][] currentPiece) {
-        int[][] field = Tetris.deepCopy((afield));
+        // int[][] field = Tetris.deepCopy((afield));
         List<int[][]> rotations = new ArrayList<>();
         rotations.add(currentPiece);
         rotations.add(rotatePiece90(currentPiece));
@@ -56,7 +59,7 @@ public class Bot {
         List<Map<String, Object>> drops = new ArrayList<>();
         for (int rotation = 0; rotation <=0 ; rotation++) { //rotations.size()
             int[][] piece = Tetris.currentPiece;
-            int[][] simulatedBoard = Tetris.rotateMatrix(botGame.getSimulatedDropField());
+            int[][] simulatedBoard = Matrix.rotateMatrix(botGame.getSimulatedDropField());
             Tetris.currentPiece = piece;
             drops.add(new HashMap<String, Object>() {{
                 put("simulatedBoard", simulatedBoard);
@@ -74,7 +77,7 @@ public class Bot {
      * @return The array with the piece dropped.
      */
     public static int[][] simulateDrop(int[][] piece) {
-        int[][] simulatedField = Tetris.deepCopy(Tetris.field); // Create a copy of the current field
+        int[][] simulatedField = Matrix.deepCopy(Tetris.field); // Create a copy of the current field
         int simulatedX = Tetris.currentX;
         int simulatedY = Tetris.currentY;
 

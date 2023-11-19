@@ -1,7 +1,4 @@
-package Phase2;
-
-import java.util.Arrays;
-
+package Phase2.helperClasses;
 public class Criteria {
 
     public static int calculateHeight(int[][] field) {
@@ -103,4 +100,5 @@ public class Criteria {
         // System.out.println(calculateHeight(matrix));
         System.out.println(calculateGaps(matrix));
     }
+
 }

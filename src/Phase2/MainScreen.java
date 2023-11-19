@@ -2,6 +2,9 @@ package Phase2;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
+
+import Phase2.helperClasses.ImagePanel;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.*;
@@ -270,10 +273,8 @@ public class MainScreen extends JPanel implements KeyListener {
         if (!Tetris.gameOver) {
             if (keyCode == KeyEvent.VK_LEFT) {
                 Tetris.moveLeft();
-                System.out.println(Tetris.getLowestY());
             } else if (keyCode == KeyEvent.VK_RIGHT) {
                 Tetris.moveRight();
-                System.out.println(Tetris.getLowestY());
             } else if (keyCode == KeyEvent.VK_D) {
                 Tetris.rotateRight();
             } else if (keyCode == KeyEvent.VK_A) {

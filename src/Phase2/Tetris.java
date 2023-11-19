@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import Phase1.PentominoDatabase;
+import Phase2.helperClasses.Matrix;
+
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -58,11 +60,8 @@ public class Tetris {
         currentX = 0;
         currentY = 0;
         initializeField();
-        fieldWithoutCurrentPiece = rotateMatrix(field).clone();
+        fieldWithoutCurrentPiece = Matrix.rotateMatrix(field).clone();
         addPiece(currentPiece, currentID, currentX, currentY);
-        // simulatedDropField = field.clone();
-
-        // System.out.println(Arrays.deepToString(simulateDrop()));
 
         if (screen == null)
             screen = new MainScreen(HORIZONTAL_GRID_SIZE, VERTICAL_GRID_SIZE, 45,
@@ -70,41 +69,31 @@ public class Tetris {
 
     }
 
+    // RUNNING AND RESTARTING THE GAME
     /**
-     * Get as input the character representation of a pentomino and translate it
-     * into its corresponding numerical value (ID).
-     * 
-     * @param character a character representing a pentomino
-     * @return the corresponding ID (numerical value)
+     * Sets the state of the screen to the current field and starts the game loop.
      */
-    public static int characterToID(char character) {
-        int pentID = -1;
-        if (character == 'X') {
-            pentID = 0;
-        } else if (character == 'I') {
-            pentID = 1;
-        } else if (character == 'Z') {
-            pentID = 2;
-        } else if (character == 'T') {
-            pentID = 3;
-        } else if (character == 'U') {
-            pentID = 4;
-        } else if (character == 'V') {
-            pentID = 5;
-        } else if (character == 'W') {
-            pentID = 6;
-        } else if (character == 'Y') {
-            pentID = 7;
-        } else if (character == 'L') {
-            pentID = 8;
-        } else if (character == 'P') {
-            pentID = 9;
-        } else if (character == 'N') {
-            pentID = 10;
-        } else if (character == 'F') {
-            pentID = 11;
-        }
-        return pentID;
+    public void runTetris() {
+        screen.setState(field);
+        startGameLoop();
+    }
+
+    /**
+     * Resets the game state and starts a new game of Tetris.
+     * Sets the game over flag to false, score to 0, piece velocity to initial
+     * velocity,
+     * initializes the game field, gets the next random piece, sets the screen state
+     * to the field,
+     * and starts the game loop.
+     */
+    public void restartTetris() {
+        gameOver = false;
+        score = 0;
+        pieceVelocity = INITIAL_VELOCITY;
+        initializeField();
+        getNextRandomPiece();
+        screen.setState(field);
+        startGameLoop();
     }
 
     /**
@@ -123,8 +112,8 @@ public class Tetris {
                 if (canClearRow())
                     clearRow();
                 if (!moveDown()) {
-                    actualMatrix = rotateMatrix(field);
-                    fieldWithoutCurrentPiece = deepCopy(rotateMatrix(field));
+                    actualMatrix = Matrix.rotateMatrix(field);
+                    fieldWithoutCurrentPiece = Matrix.deepCopy(Matrix.rotateMatrix(field));
                     getNextRandomPiece();
                     simulatedDropField = Bot.simulateDrop(currentPiece);
 
@@ -161,28 +150,6 @@ public class Tetris {
         updateTimerInterval.start();
     }
 
-    public int[][] getSimulatedDropField() {
-        if (simulatedDropField == null) {
-            dropPiece();
-            return field;
-        }
-        return simulatedDropField;
-    }
-
-    /**
-     * Creates a deep copy of a 2D integer array.
-     * 
-     * @param field the 2D integer array to be copied
-     * @return a new 2D integer array that is a deep copy of the input array
-     */
-    public static int[][] deepCopy(int[][] field) {
-        int[][] copy = new int[field.length][field[0].length];
-        for (int i = 0; i < field.length; i++) {
-            System.arraycopy(field[i], 0, copy[i], 0, field[0].length);
-        }
-        return copy;
-    }
-
     /**
      * Moves the specified row down by one and updates the score.
      * 
@@ -204,7 +171,7 @@ public class Tetris {
 
         MainScreen.updateScore();
 
-        field = rotateMatrixBack(actualMatrix);
+        field = Matrix.rotateMatrixBack(actualMatrix);
         screen.setState(field);
     }
 
@@ -272,12 +239,14 @@ public class Tetris {
     }
 
     /**
-     * Adds a given piece to the game field at the specified row and column.
+     * OVERLOAD
+     * Adds a piece to the board at the specified position.
      * 
-     * @param piece  the piece to be added to the field
-     * @param pentID the ID of the piece
-     * @param row    the row where the piece will be added
-     * @param col    the column where the piece will be added
+     * @param board   the game board represented as a 2D array
+     * @param piece   the piece to be added represented as a 2D array
+     * @param pentID  the ID of the piece
+     * @param row     the row index where the piece should be added
+     * @param col     the column index where the piece should be added
      */
     public static void addPiece(int[][] board, int[][] piece, int pentID, int row, int col) {
         for (int i = 0; i < piece.length; i++) {
@@ -287,16 +256,6 @@ public class Tetris {
                 }
             }
         }
-    }
-
-    /**
-     * Checks if the game is over by determining if the current piece can be placed
-     * on the field.
-     * 
-     * @return true if the game is over, false otherwise.
-     */
-    public static boolean checkGameOver() {
-        return !canPlace(field, currentPiece, currentX, currentY);
     }
 
     /**
@@ -391,42 +350,6 @@ public class Tetris {
         addPiece(currentPiece, currentID, currentX, currentY);
         screen.setState(field); // Update the MainScreen
     }
-
-    public static int getLowestY() {
-        int[][] copy = deepCopy(field);
-        removePiece(copy, currentPiece, currentX, currentY);
-        int lowestY = 0;
-        while (canPlace(copy, currentPiece, currentX, lowestY + 1)) {
-            if(lowestY + 1 > VERTICAL_GRID_SIZE - currentPiece.length) {
-                lowestY++;
-                break;
-            }
-            lowestY++;
-            // System.out.println("SUI");
-        }
-        System.out.println(15-lowestY);
-        return 15-lowestY;
-    }
-
-    // private int getMaxX() {
-
-    // int[][] cop = new int[game.VERTICAL_GRID_SIZE][game.HORIZONTAL_GRID_SIZE];
-    // for (int i = 0; i < game.VERTICAL_GRID_SIZE; i++) {
-    // cop[i] = Arrays.copyOf(state[i], state[i].length);
-    // }
-
-    // game.removePiece(cop, game.acticeShape, game.actualX, game.actualY);
-
-    // int x = 0;
-    // while (game.canPlace(cop, game.acticeShape, x, game.actualY)) {
-    // if (x + 1 > game.VERTICAL_GRID_SIZE - game.acticeShape.length) {
-    // x++;
-    // break;
-    // }
-    // x++;
-    // }
-    // return x - 1;
-    // }
 
     /**
      * Rotates the current piece 90 degrees clockwise and updates the game field.
@@ -561,76 +484,7 @@ public class Tetris {
                 field[i][j] = -1;
             }
         }
-        actualMatrix = rotateMatrix(field);
-    }
-
-    /**
-     * Rotates a given matrix by 90 degrees clockwise.
-     * 
-     * @param matrix the matrix to be rotated
-     * @return the rotated matrix
-     */
-    public static int[][] rotateMatrix(int[][] matrix) {
-        int numRows = matrix.length;
-        int numCols = matrix[0].length;
-
-        int[][] rotatedMatrix = new int[numCols][numRows];
-
-        for (int i = 0; i < numRows; i++) {
-            for (int j = 0; j < numCols; j++) {
-                rotatedMatrix[j][numRows - 1 - i] = matrix[i][j];
-            }
-        }
-
-        return rotatedMatrix;
-    }
-
-    /**
-     * Rotates the given matrix 90 degrees counter-clockwise.
-     * 
-     * @param matrix the matrix to be rotated
-     * @return the rotated matrix
-     */
-    public static int[][] rotateMatrixBack(int[][] matrix) {
-        int numRows = matrix.length;
-        int numCols = matrix[0].length;
-
-        int[][] rotatedMatrix = new int[numCols][numRows];
-
-        for (int i = 0; i < numRows; i++) {
-            for (int j = 0; j < numCols; j++) {
-                rotatedMatrix[j][i] = matrix[i][numCols - 1 - j];
-            }
-        }
-
-        return rotatedMatrix;
-    }
-
-    // RUNNING AND RESTARTING THE GAME
-    /**
-     * Sets the state of the screen to the current field and starts the game loop.
-     */
-    public void runTetris() {
-        screen.setState(field);
-        startGameLoop();
-    }
-
-    /**
-     * Resets the game state and starts a new game of Tetris.
-     * Sets the game over flag to false, score to 0, piece velocity to initial
-     * velocity,
-     * initializes the game field, gets the next random piece, sets the screen state
-     * to the field,
-     * and starts the game loop.
-     */
-    public void restartTetris() {
-        gameOver = false;
-        score = 0;
-        pieceVelocity = INITIAL_VELOCITY;
-        initializeField();
-        getNextRandomPiece();
-        screen.setState(field);
-        startGameLoop();
+        actualMatrix = Matrix.rotateMatrix(field);
     }
 
     public static void main(String[] args) {
@@ -647,5 +501,74 @@ public class Tetris {
 
     public int[][] getWorkingField() {
         return fieldWithoutCurrentPiece;
+    }
+
+    public int[][] getSimulatedDropField() {
+        if (simulatedDropField == null) {
+            dropPiece();
+            return field;
+        }
+        return simulatedDropField;
+    }
+
+    public static int getLowestY() {
+        int[][] copy = Matrix.deepCopy(field);
+        removePiece(copy, currentPiece, currentX, currentY);
+        int lowestY = 0;
+        while (canPlace(copy, currentPiece, currentX, lowestY + 1)) {
+            if (lowestY + 1 > VERTICAL_GRID_SIZE - currentPiece.length) {
+                lowestY++;
+                break;
+            }
+            lowestY++;
+        }
+        return 15 - lowestY;
+    }
+
+    /**
+     * Checks if the game is over by determining if the current piece can be placed
+     * on the field.
+     * 
+     * @return true if the game is over, false otherwise.
+     */
+    public static boolean checkGameOver() {
+        return !canPlace(field, currentPiece, currentX, currentY);
+    }
+
+    /**
+     * Get as input the character representation of a pentomino and translate it
+     * into its corresponding numerical value (ID).
+     * 
+     * @param character a character representing a pentomino
+     * @return the corresponding ID (numerical value)
+     */
+    public static int characterToID(char character) {
+        int pentID = -1;
+        if (character == 'X') {
+            pentID = 0;
+        } else if (character == 'I') {
+            pentID = 1;
+        } else if (character == 'Z') {
+            pentID = 2;
+        } else if (character == 'T') {
+            pentID = 3;
+        } else if (character == 'U') {
+            pentID = 4;
+        } else if (character == 'V') {
+            pentID = 5;
+        } else if (character == 'W') {
+            pentID = 6;
+        } else if (character == 'Y') {
+            pentID = 7;
+        } else if (character == 'L') {
+            pentID = 8;
+        } else if (character == 'P') {
+            pentID = 9;
+        } else if (character == 'N') {
+            pentID = 10;
+        } else if (character == 'F') {
+            pentID = 11;
+        }
+        return pentID;
     }
 }
