@@ -102,26 +102,29 @@ public class Tetris {
      * Uses two timers, one for the game loop and another for updating the piece
      * velocity.
      */
+    public static boolean flag = true;
+
     public void startGameLoop() {
+        // TODO: WORK WITH THIS THREAD! IT RETURNS THE ACTUAL FIELD BECAUSE OF THE
+        // TIMER!
+        // start a new thread
         Timer gameTimer = new Timer(pieceVelocity, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // System.out.println(Criteria.findLowestY(field, currentPiece, currentX,
-                // currentY));
-                // simulatedDropField = Bot.simulateDrop(currentPiece);
+
                 if (canClearRow())
                     clearRow();
                 if (!moveDown()) {
                     actualMatrix = Matrix.rotateMatrix(field);
                     fieldWithoutCurrentPiece = Matrix.deepCopy(Matrix.rotateMatrix(field));
                     getNextRandomPiece();
-                    simulatedDropField = Bot.simulateDrop(currentPiece);
+                    // simulatedDropField = Bot.simulateDrop(currentPiece);
 
                     if (canClearRow()) {
                         clearRow();
-                        simulatedDropField = Bot.simulateDrop(currentPiece);
+                        // simulatedDropField = Bot.simulateDrop(currentPiece);
                     } else {
-                        simulatedDropField = Bot.simulateDrop(currentPiece);
+                        // simulatedDropField = Bot.simulateDrop(currentPiece);
                     }
                     if (checkGameOver()) {
                         System.out.println("Game Over");
@@ -242,11 +245,11 @@ public class Tetris {
      * OVERLOAD
      * Adds a piece to the board at the specified position.
      * 
-     * @param board   the game board represented as a 2D array
-     * @param piece   the piece to be added represented as a 2D array
-     * @param pentID  the ID of the piece
-     * @param row     the row index where the piece should be added
-     * @param col     the column index where the piece should be added
+     * @param board  the game board represented as a 2D array
+     * @param piece  the piece to be added represented as a 2D array
+     * @param pentID the ID of the piece
+     * @param row    the row index where the piece should be added
+     * @param col    the column index where the piece should be added
      */
     public static void addPiece(int[][] board, int[][] piece, int pentID, int row, int col) {
         for (int i = 0; i < piece.length; i++) {
@@ -426,6 +429,16 @@ public class Tetris {
         screen.setState(field); // Update the MainScreen
     }
 
+    public static void moveLeftToTheBorder()
+    {
+        removePiece(field, currentPiece, currentX, currentY);
+        while (canPlace(field, currentPiece, currentX - 1, currentY)) {
+            currentX--;
+        }
+        addPiece(currentPiece, currentID, currentX, currentY);
+        screen.setState(field); // Update the MainScreen
+    }
+
     /**
      * Moves the current piece one cell to the right on the game field, if possible.
      * If the piece cannot be moved, it remains in its current position.
@@ -504,10 +517,26 @@ public class Tetris {
     }
 
     public int[][] getSimulatedDropField() {
-        if (simulatedDropField == null) {
-            dropPiece();
-            return field;
+        // Create a deep copy of the current field
+        int[][] copy = Matrix.deepCopy(field);
+        
+        // Remove the current piece from the copy
+        removePiece(copy, currentPiece, currentX, currentY);
+        
+        // Find the lowest position where the current piece can be placed
+        int lowestY = 0;
+        while (canPlace(copy, currentPiece, currentX, lowestY + 1)) {
+            if (lowestY + 1 > VERTICAL_GRID_SIZE - currentPiece.length) {
+                lowestY++;
+                break;
+            }
+            lowestY++;
         }
+    
+        // Simulate dropping the piece to the lowest position
+        int[][] simulatedDropField = Matrix.deepCopy(copy);
+        addPiece(simulatedDropField, currentPiece, currentID, currentX, lowestY);
+    
         return simulatedDropField;
     }
 

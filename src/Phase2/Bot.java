@@ -38,7 +38,7 @@ public class Bot {
             getOptimalDrop(botGame.getWorkingField(), currentPiece);
             try {
                 Thread.sleep(botGame.getUpdatedPieceVelocity());
-                //flush terminal
+                // flush terminal
                 System.out.print("\033[H\033[2J");
             } catch (InterruptedException e) {
                 e.printStackTrace();
@@ -47,28 +47,45 @@ public class Bot {
 
     }
 
-
     public void getOptimalDrop(int[][] afield, int[][] currentPiece) {
         // int[][] field = Tetris.deepCopy((afield));
-        List<int[][]> rotations = new ArrayList<>();
-        rotations.add(currentPiece);
-        rotations.add(rotatePiece90(currentPiece));
-        rotations.add(rotatePiece90(rotatePiece90(currentPiece)));
-        rotations.add(rotatePiece90(rotatePiece90(rotatePiece90(currentPiece))));
+        // List<int[][]> rotations = new ArrayList<>();
+        // rotations.add(currentPiece);
+        // rotations.add(rotatePiece90(currentPiece));
+        // rotations.add(rotatePiece90(rotatePiece90(currentPiece)));
+        // rotations.add(rotatePiece90(rotatePiece90(rotatePiece90(currentPiece))));
 
         List<Map<String, Object>> drops = new ArrayList<>();
-        for (int rotation = 0; rotation <=0 ; rotation++) { //rotations.size()
-            int[][] piece = Tetris.currentPiece;
-            int[][] simulatedBoard = Matrix.rotateMatrix(botGame.getSimulatedDropField());
-            Tetris.currentPiece = piece;
-            drops.add(new HashMap<String, Object>() {{
-                put("simulatedBoard", simulatedBoard);
-                put("canClear", Criteria.canClearRow(simulatedBoard));
-                put("height", Criteria.calculateHeight(simulatedBoard));
-                put("gaps", Criteria.calculateGaps(simulatedBoard));
-            }});
+        for (int rotation = 0; rotation <= 3; rotation++) { // rotations.size()
+            final int currentRotation = rotation;
+            for (int xposition = 0; xposition < (5 - (currentPiece[0].length))+1; xposition++) {
+                final int currentXPos = xposition;
+                int[][] simulatedBoard = Matrix.rotateMatrix(botGame.getSimulatedDropField());
+                drops.add(new HashMap<String, Object>() {
+                    {
+                        put("rotation", currentRotation);
+                        put("xpos", currentXPos);
+                        put("simulatedBoard", simulatedBoard);
+                        put("canClear", Criteria.canClearRow(simulatedBoard));
+                        put("height", Criteria.calculateHeight(simulatedBoard));
+                        put("gaps", Criteria.calculateGaps(simulatedBoard));
+                    }
+                });
+                Tetris.moveRight();
+            }
+            Tetris.moveLeftToTheBorder();
+
+            Tetris.rotateRight();
+            // Tetris.currentPiece = piece;
+            // try {
+            // Thread.sleep(botGame.getUpdatedPieceVelocity());
+            // } catch (InterruptedException e) {
+            // e.printStackTrace();
+            // }
+            //flush the terminal
+            System.out.print("\033[H\033[2J");
+            System.out.println(drops);
         }
-        System.out.println(drops);
     }
 
     /**
@@ -77,21 +94,18 @@ public class Bot {
      * @return The array with the piece dropped.
      */
     public static int[][] simulateDrop(int[][] piece) {
-        int[][] simulatedField = Matrix.deepCopy(Tetris.field); // Create a copy of the current field
+        int[][] simulatedField = Matrix.deepCopy(Tetris.field);
         int simulatedX = Tetris.currentX;
         int simulatedY = Tetris.currentY;
 
-        // Move the piece down until it can't go any further
         while (Tetris.canPlace(simulatedField, piece, simulatedX, simulatedY + 1)) {
             simulatedY++;
         }
 
         // Add the piece to the simulated field
-        Tetris.addPiece(simulatedField,piece, Tetris.currentID, simulatedX, simulatedY); //(int[][] board,int[][] piece, int pentID, int row, int col) {
-        // System.out.println(Arrays.deepToString(Tetris.rotateMatrix(simulatedField)));
+        Tetris.addPiece(simulatedField, piece, Tetris.currentID, simulatedX, simulatedY);
         return simulatedField;
     }
-
 
     public static void main(String[] args) {
         Bot bot = new Bot();
@@ -109,6 +123,5 @@ public class Bot {
         }
         return rotatedPiece;
     }
-
 
 }
