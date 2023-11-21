@@ -84,11 +84,11 @@ public class Menu {
         bestOrderButton.setBorder(BorderFactory.createLineBorder(Color.green, 4));
 
         botButton.setBackground(new Color(59, 89, 182));
-        botButton.setForeground(Color.BLUE);
+        botButton.setForeground(Color.white);
         botButton.setOpaque(false);
         botButton.setContentAreaFilled(false);
         botButton.setBorderPainted(true);
-        botButton.setBorder(BorderFactory.createLineBorder(Color.blue, 4));
+        botButton.setBorder(BorderFactory.createLineBorder(Color.white, 4));
            
         randomOrderButton.addActionListener(e -> {
             System.out.println("Random Order Button Clicked");
@@ -103,7 +103,7 @@ public class Menu {
         buttonPanel.add(bestOrderButton);
         buttonPanel.add(botButton);
 
-        buttonPanel.setBorder(BorderFactory.createEmptyBorder(50, 75, 50, 75));
+        buttonPanel.setBorder(BorderFactory.createEmptyBorder(100, 250, 10, 250));
 
         buttonPanel.setOpaque(false);
 
@@ -129,19 +129,25 @@ public class Menu {
         //inputLabel.setOpaque(false);
         inputLabel.setForeground(Color.black);
 
+
+
         inputField = new JTextField(20);
         inputField.setFont(new Font("Arial", Font.BOLD, 16));
         
         labelFieldPanel.add(inputLabel);
         labelFieldPanel.add(inputField);
         labelFieldPanel.setOpaque(false);
+        
+
 
         // Create an empty panel for spacing
         JPanel spacerPanel = new JPanel();
-        spacerPanel.setPreferredSize(new Dimension(10, 10));
+        spacerPanel.setPreferredSize(new Dimension(1, 0));
         labelPanel.add(spacerPanel, BorderLayout.NORTH);
         labelPanel.add(labelFieldPanel, BorderLayout.CENTER);
-
+        
+        labelPanel.setBackground(new Color(59, 89, 182));
+        labelPanel.setForeground(Color.red);
         return labelPanel;
     }
 
