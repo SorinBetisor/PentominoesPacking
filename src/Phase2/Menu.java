@@ -95,7 +95,7 @@ public class Menu {
 
         customizeButton(randomOrderButton, Color.pink, Color.pink);
         customizeButton(bestOrderButton, Color.GREEN, Color.green);
-        customizeButton(botButton, Color.BLUE, Color.blue);
+        customizeButton(botButton, Color.white, Color.white);
 
         buttonPanel.add(randomOrderButton);
         buttonPanel.add(bestOrderButton);
@@ -122,6 +122,8 @@ public class Menu {
         button.setBorderPainted(true);
         button.setBorder(BorderFactory.createLineBorder(borderColor, 4));
         button.setPreferredSize(new Dimension(200, 50));
+        
+    
     }
 
     private JButton createButton(String text) {
