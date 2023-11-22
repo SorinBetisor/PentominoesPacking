@@ -38,6 +38,13 @@ public class Menu {
         }
     }
 
+    private JLabel createTitleLabel(String text) {
+        JLabel titleLabel = new JLabel(text);
+        titleLabel.setFont(new Font("Arial", Font.BOLD, 48));
+        titleLabel.setForeground(new Color(128, 0, 128));
+        return titleLabel;
+    }
+
     public Menu() {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(800, 600);
@@ -50,6 +57,11 @@ public class Menu {
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridwidth = GridBagConstraints.REMAINDER;
         gbc.anchor = GridBagConstraints.CENTER;
+
+        JLabel titleLabel = createTitleLabel("TETRIS");
+        gbc.insets = new Insets(20, 0, 20, 0);
+        backgroundPanel.add(titleLabel, gbc);
+
 
 
         backgroundPanel.add(createButtonPanel(), gbc);
@@ -88,6 +100,16 @@ public class Menu {
         buttonPanel.add(randomOrderButton);
         buttonPanel.add(bestOrderButton);
         buttonPanel.add(botButton);
+
+        randomOrderButton.addActionListener(e -> {
+            System.out.println("Random Order Button Clicked");
+            toggleMusic();
+            frame.dispose();
+            Tetris tetris = new Tetris();
+            tetris.runTetris();
+            savePlayerInfo();
+        });
+
 
         return buttonPanel;
     }
@@ -145,4 +167,7 @@ public class Menu {
             new Menu();
         });
     }
+
+
+
 }
