@@ -9,6 +9,9 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 
 public class Menu {
+
+
+    //To Add : change sound icon, use sound sliders, add title, add name text box (back).
     private Player player;
     private JFrame frame = new JFrame("Game Menu");
     private JTextField inputField;
@@ -39,20 +42,25 @@ public class Menu {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(800, 600);
         frame.setLocationRelativeTo(null);
-        frame.setLayout(new BorderLayout());
+
         BackgroundPanel backgroundPanel = new BackgroundPanel("src/Phase2/misc/91655.jpg");
+        backgroundPanel.setLayout(new GridBagLayout());
         frame.setContentPane(backgroundPanel);
-        JPanel buttonPanel = createButtonPanel();
-        JPanel labelPanel = createLabelPanel();
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridwidth = GridBagConstraints.REMAINDER;
+        gbc.anchor = GridBagConstraints.CENTER;
+
+
+        backgroundPanel.add(createButtonPanel(), gbc);
 
 
         musicToggle = new JCheckBox("Toggle Music");
         musicToggle.setSelected(true);
         musicToggle.addActionListener(e -> toggleMusic());
+        gbc.insets = new Insets(10, 0, 0, 0); // spacing 4 music toggle
+        backgroundPanel.add(musicToggle, gbc);
 
-        backgroundPanel.add(buttonPanel, BorderLayout.CENTER);
-        backgroundPanel.add(labelPanel, BorderLayout.NORTH);
-        backgroundPanel.add(musicToggle, BorderLayout.SOUTH);
         frame.setVisible(true);
 
 
@@ -64,53 +72,25 @@ public class Menu {
         musicThread.start();
     }
 
-  private JPanel createButtonPanel() {
+    private JPanel createButtonPanel() {
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new GridLayout(3, 1, 10, 10));
+        buttonPanel.setOpaque(false);
 
         JButton randomOrderButton = createButton("Random Order");
         JButton bestOrderButton = createButton("Best Order");
         JButton botButton = createButton("Bot");
 
-        randomOrderButton.setBackground(new Color(59, 89, 182));
-        randomOrderButton.setForeground(Color.pink);
-        randomOrderButton.setOpaque(false);
-        randomOrderButton.setContentAreaFilled(true);
-        randomOrderButton.setBorderPainted(true);
-        randomOrderButton.setBorder(BorderFactory.createLineBorder(Color.pink, 4));
+        customizeButton(randomOrderButton, Color.pink, Color.pink);
+        customizeButton(bestOrderButton, Color.GREEN, Color.green);
+        customizeButton(botButton, Color.BLUE, Color.blue);
 
-        bestOrderButton.setBackground(new Color(59, 89, 182));
-        bestOrderButton.setForeground(Color.GREEN);
-        bestOrderButton.setOpaque(false);
-        bestOrderButton.setContentAreaFilled(false);
-        bestOrderButton.setBorderPainted(true);
-        bestOrderButton.setBorder(BorderFactory.createLineBorder(Color.green, 4));
-
-        botButton.setBackground(new Color(59, 89, 182));
-        botButton.setForeground(Color.BLUE);
-        botButton.setOpaque(false);
-        botButton.setContentAreaFilled(false);
-        botButton.setBorderPainted(true);
-        botButton.setBorder(BorderFactory.createLineBorder(Color.blue, 4));
-
-        randomOrderButton.addActionListener(e -> {
-            System.out.println("Random Order Button Clicked");
-            toggleMusic();
-            frame.dispose();
-            Tetris tetris = new Tetris();
-            tetris.runTetris();
-            savePlayerInfo();
-        });
         buttonPanel.add(randomOrderButton);
         buttonPanel.add(bestOrderButton);
         buttonPanel.add(botButton);
 
-        buttonPanel.setBorder(BorderFactory.createEmptyBorder(50, 75, 50, 75));
-        buttonPanel.setOpaque(false);
-
         return buttonPanel;
     }
-
 
     private void customizeButton(JButton button, Color foregroundColor, Color borderColor) {
         button.setBackground(new Color(59, 89, 182));
@@ -119,9 +99,8 @@ public class Menu {
         button.setContentAreaFilled(false);
         button.setBorderPainted(true);
         button.setBorder(BorderFactory.createLineBorder(borderColor, 4));
-        button.setPreferredSize(new Dimension(200, 50)); // Set a preferred size for bigger buttons
+        button.setPreferredSize(new Dimension(200, 50));
     }
-
 
     private JButton createButton(String text) {
         JButton button = new JButton(text);
@@ -129,39 +108,10 @@ public class Menu {
         return button;
     }
 
-    private JPanel createLabelPanel() {
-        JPanel labelPanel = new JPanel();
-        labelPanel.setLayout(new BorderLayout());
-
-        JPanel labelFieldPanel = new JPanel();
-        labelFieldPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
-
-        JLabel inputLabel = new JLabel("Name:");
-        inputLabel.setFont(new Font("Arial", Font.BOLD, 16));
-        inputLabel.setForeground(Color.black);
-
-        inputField = new JTextField(20);
-        inputField.setFont(new Font("Arial", Font.BOLD, 16));
-
-        labelFieldPanel.add(inputLabel);
-        labelFieldPanel.add(inputField);
-        labelFieldPanel.setOpaque(false);
-
-        //spacing.
-        JPanel spacerPanel = new JPanel();
-        spacerPanel.setPreferredSize(new Dimension(10, 10));
-        labelPanel.add(spacerPanel, BorderLayout.NORTH);
-        labelPanel.add(labelFieldPanel, BorderLayout.CENTER);
-
-        return labelPanel;
-    }
-
     private void savePlayerInfo() {
         String name = inputField.getText();
         player = new Player(name);
     }
-
-
 
     private void playMusic() {
         Thread musicThread = new Thread(() -> {
