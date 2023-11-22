@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Random;
 import Phase1.PentominoDatabase;
 import Phase2.helperClasses.Matrix;
-
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -114,7 +113,7 @@ public class Tetris {
 
                 if (canClearRow())
                     clearRow();
-                if (!moveDown()) {
+                    if (!moveDown()) {
                     actualMatrix = Matrix.rotateMatrix(field);
                     fieldWithoutCurrentPiece = Matrix.deepCopy(Matrix.rotateMatrix(field));
                     getNextRandomPiece();
