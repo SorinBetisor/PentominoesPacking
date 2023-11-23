@@ -19,25 +19,22 @@ import Phase2.helperClasses.Matrix;
 
 public class Bot {
     public static int[][] workingField;
-    private Tetris botGame;
+    private Tetris tetris;
 
     public Bot() {
-        botGame = new Tetris();
-        botGame.runTetris();
-        workingField = botGame.getWorkingField();
+        tetris = new Tetris();
+        tetris.runTetris();
+        workingField = tetris.getWorkingField();
     }
 
     public void runBot(int[][] field, int[][] currentPiece, int fWidth, int fHeight) {
-        Tetris.botPlaying = true;
-        System.out.println(Arrays.deepToString(botGame.getWorkingField()));
+        tetris.botPlaying = true;
+        System.out.println(Arrays.deepToString(tetris.getWorkingField()));
         System.out.println("Bot is playing");
-        while (!Tetris.gameOver) {
-            // System.out.println(Criteria.calculateHeight(botGame.getWorkingField()));
-            // System.out.println(Arrays.deepToString(botGame.getWorkingField()));
-            // System.out.println(Criteria.calculateGaps(botGame.getWorkingField()));
-            getOptimalDrop(botGame.getWorkingField(), currentPiece);
+        while (!tetris.gameOver) {
+            getAllPossibleDrops(tetris.getWorkingField(), currentPiece);
             try {
-                Thread.sleep(botGame.getUpdatedPieceVelocity());
+                Thread.sleep(tetris.getUpdatedPieceVelocity());
                 // flush terminal
                 System.out.print("\033[H\033[2J");
             } catch (InterruptedException e) {
@@ -47,81 +44,40 @@ public class Bot {
 
     }
 
-    public void getOptimalDrop(int[][] afield, int[][] currentPiece) {
-        // int[][] field = Tetris.deepCopy((afield));
-        // List<int[][]> rotations = new ArrayList<>();
-        // rotations.add(currentPiece);
-        // rotations.add(rotatePiece90(currentPiece));
-        // rotations.add(rotatePiece90(rotatePiece90(currentPiece)));
-        // rotations.add(rotatePiece90(rotatePiece90(rotatePiece90(currentPiece))));
+    //TODO: Select most optimal drop
+    public void getAllPossibleDrops(int[][] afield, int[][] currentPiece) {
 
         List<Map<String, Object>> drops = new ArrayList<>();
         for (int rotation = 0; rotation <= 3; rotation++) { // rotations.size()
             final int currentRotation = rotation;
-            for (int xposition = 0; xposition < (5 - (currentPiece[0].length))+1; xposition++) {
+            for (int xposition = 0; xposition <= (5 - (currentPiece[0].length)); xposition++) {
                 final int currentXPos = xposition;
-                int[][] simulatedBoard = Matrix.rotateMatrix(botGame.getSimulatedDropField());
+                int[][] simulatedBoard = Matrix.rotateMatrix(tetris.getSimulatedDropField());
                 drops.add(new HashMap<String, Object>() {
                     {
                         put("rotation", currentRotation);
                         put("xpos", currentXPos);
-                        put("simulatedBoard", simulatedBoard);
+                        // put("simulatedBoard", simulatedBoard);
                         put("canClear", Criteria.canClearRow(simulatedBoard));
                         put("height", Criteria.calculateHeight(simulatedBoard));
                         put("gaps", Criteria.calculateGaps(simulatedBoard));
                     }
                 });
-                Tetris.moveRight();
+                tetris.moveRight();
             }
-            Tetris.moveLeftToTheBorder();
-
-            Tetris.rotateRight();
-            // Tetris.currentPiece = piece;
-            // try {
-            // Thread.sleep(botGame.getUpdatedPieceVelocity());
-            // } catch (InterruptedException e) {
-            // e.printStackTrace();
-            // }
-            //flush the terminal
+            tetris.moveLeftToTheBorder();
+            tetris.rotateRight();
             System.out.print("\033[H\033[2J");
             System.out.println(drops);
         }
     }
 
-    /**
-     * Simulates dropping the current piece in a simulated board.
-     *
-     * @return The array with the piece dropped.
-     */
-    public static int[][] simulateDrop(int[][] piece) {
-        int[][] simulatedField = Matrix.deepCopy(Tetris.field);
-        int simulatedX = Tetris.currentX;
-        int simulatedY = Tetris.currentY;
-
-        while (Tetris.canPlace(simulatedField, piece, simulatedX, simulatedY + 1)) {
-            simulatedY++;
-        }
-
-        // Add the piece to the simulated field
-        Tetris.addPiece(simulatedField, piece, Tetris.currentID, simulatedX, simulatedY);
-        return simulatedField;
-    }
-
     public static void main(String[] args) {
         Bot bot = new Bot();
-        bot.runBot(Tetris.field, Tetris.currentPiece, Tetris.HORIZONTAL_GRID_SIZE, Tetris.VERTICAL_GRID_SIZE);
+        Tetris tetris = bot.tetris; // Access the Tetris instance
+        bot.runBot(tetris.field, tetris.currentPiece, Tetris.HORIZONTAL_GRID_SIZE, Tetris.VERTICAL_GRID_SIZE);
     }
 
     // Helper Functions
-
-    public static int[][] rotatePiece90(int[][] piece) {
-        int[][] rotatedPiece = new int[piece[0].length][piece.length];
-        for (int i = 0; i < piece.length; i++) {
-            for (int j = 0; j < piece[0].length; j++) {
-                rotatedPiece[j][piece.length - 1 - i] = piece[i][j];
-            }
-        }
-        return rotatedPiece;
-    }
 
 }

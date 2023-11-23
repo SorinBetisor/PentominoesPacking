@@ -36,13 +36,15 @@ public class MainScreen extends JPanel implements KeyListener {
     private BufferedImage rightFillerImage;
     private ImagePanel scorePanel;
     private ImageIcon icon;
+    public Tetris tetris;
 
     // Constructor
-    public MainScreen(int x, int y, int _size, int[][] upcomingMatrix) {
+    public MainScreen(int x, int y, int _size, int[][] upcomingMatrix, Tetris tetris) {
         size = _size;
         this.x = x;
         this.y = y;
         this.upcomingMatrix = upcomingMatrix;
+        this.tetris = tetris;
 
         // Load images
         try {
@@ -134,7 +136,7 @@ public class MainScreen extends JPanel implements KeyListener {
 
         // Draw high score label
         Font font = new Font("Dialog", Font.BOLD, 18);
-        String highScoreString = "High Score: " + Tetris.highScore;
+        String highScoreString = "High Score: " + tetris.highScore;
         GradientPaint textGradient = new GradientPaint(
                 0, 0, Color.ORANGE.brighter(),
                 font.getSize() * highScoreString.length(), 0, Color.MAGENTA);
@@ -149,7 +151,7 @@ public class MainScreen extends JPanel implements KeyListener {
         g2d.drawString(highScoreString, 10, 40);
 
         // Draw score label
-        String scoreString = "Score: " + Tetris.score;
+        String scoreString = "Score: " + tetris.score;
         GradientPaint scoreTextGradient = new GradientPaint(
                 0, 0, Color.GREEN.brighter(),
                 font.getSize() * scoreString.length(), 0, Color.BLUE);
@@ -162,7 +164,7 @@ public class MainScreen extends JPanel implements KeyListener {
         g2d.drawString(scoreString, 10, 65);
 
         // Draw speed label
-        String speedString = "Speed: " + (10 - (Tetris.pieceVelocity / 100));
+        String speedString = "Speed: " + (10 - (tetris.pieceVelocity / 100));
         GradientPaint speedTextGradient = new GradientPaint(
                 0, 0, Color.CYAN.brighter(),
                 font.getSize() * speedString.length(), 0, Color.BLUE);
@@ -174,27 +176,27 @@ public class MainScreen extends JPanel implements KeyListener {
         g2d.setFont(font);
         g2d.drawString(speedString, 10, 87);
 
-        for (int i = 0; i < Tetris.currentPiece.length; i++) {
-            for (int j = 0; j < Tetris.currentPiece[0].length; j++) {
-                if (Tetris.currentPiece[i][j] != 0) {
-                    int y = Tetris.getLowestY();
+        for (int i = 0; i < tetris.currentPiece.length; i++) {
+            for (int j = 0; j < tetris.currentPiece[0].length; j++) {
+                if (tetris.currentPiece[i][j] != 0) {
+                    int y = tetris.getLowestY();
                     // System.out.println(y);
                     // if (Tetris.field[i + Tetris.currentY][j + y] != -1) {
-                    if(Tetris.field[i + Tetris.currentX][j + (15-y)] != -1){
+                    if(tetris.field[i + tetris.currentX][j + (15-y)] != -1){
                     g2d.setColor(Color.WHITE);
                     g2d.setStroke(new BasicStroke(3.0f));}
                     else{
                     // } else {
-                        Color pieceColor = new Color(GetColorOfID(Tetris.currentID).getRed(),
-                        GetColorOfID(Tetris.currentID).getGreen(),
-                        GetColorOfID(Tetris.currentID).getBlue(),
+                        Color pieceColor = new Color(GetColorOfID(tetris.currentID).getRed(),
+                        GetColorOfID(tetris.currentID).getGreen(),
+                        GetColorOfID(tetris.currentID).getBlue(),
                         200);
                     g2d.setColor(pieceColor.darker());
                     g2d.setStroke(new BasicStroke(3.0f));
                     // }
                     
                 }
-                g2d.draw(new Rectangle2D.Double((i + leftFillerWidth + Tetris.currentX) * size+1,
+                g2d.draw(new Rectangle2D.Double((i + leftFillerWidth + tetris.currentX) * size+1,
                             (j+(15-y)) * size, size, size));}
             }
         }
@@ -251,14 +253,14 @@ public class MainScreen extends JPanel implements KeyListener {
     }
 
     // Updates the speed label
-    public static void updateSpeed() {
-        scoreLabel.setText("Score: " + Tetris.score + "     Speed:" + (10 - (Tetris.pieceVelocity / 100)));
+    public void updateSpeed() {
+        scoreLabel.setText("Score: " + tetris.score + "     Speed:" + (10 - (tetris.pieceVelocity / 100)));
     }
 
     // Shows game over message
     public void showGameOver() {
         JOptionPane.showMessageDialog(null,
-                "Game Over! Your score is: " + Tetris.score + "\nPress R to restart the game.");
+                "Game Over! Your score is: " + tetris.score + "\nPress R to restart the game.");
     }
 
     // Key listener methods
@@ -270,27 +272,27 @@ public class MainScreen extends JPanel implements KeyListener {
     public void keyPressed(KeyEvent e) {
         int keyCode = e.getKeyCode();
 
-        if (!Tetris.gameOver) {
+        if (!tetris.gameOver) {
             if (keyCode == KeyEvent.VK_LEFT) {
-                Tetris.moveLeft();
+                tetris.moveLeft();
             } else if (keyCode == KeyEvent.VK_RIGHT) {
-                Tetris.moveRight();
+                tetris.moveRight();
             } else if (keyCode == KeyEvent.VK_D) {
-                Tetris.rotateRight();
+                tetris.rotateRight();
             } else if (keyCode == KeyEvent.VK_A) {
-                Tetris.rotateLeft();
+                tetris.rotateLeft();
             } else if (keyCode == KeyEvent.VK_DOWN) {
-                Tetris.accelerateMovingDown();
+                tetris.accelerateMovingDown();
             } else if (keyCode == KeyEvent.VK_UP) {
-                Tetris.decelerateMovingDown();
+                tetris.decelerateMovingDown();
             } else if (keyCode == KeyEvent.VK_SPACE) {
-                Tetris.dropPiece();
+                tetris.dropPiece();
             }
         } else {
             if (keyCode == KeyEvent.VK_R) {
-                Tetris.gameOver = false;
-                Tetris.score = 0;
-                Tetris.pieceVelocity = 1000;
+                tetris.gameOver = false;
+                tetris.score = 0;
+                tetris.pieceVelocity = 1000;
                 Tetris tetris = new Tetris();
                 tetris.restartTetris();
             }
