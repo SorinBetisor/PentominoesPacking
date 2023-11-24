@@ -59,8 +59,9 @@ public class Criteria {
         floodFillHoles(row, col - 1, field, checked);
     }
 
-    public static boolean canClearRow(int[][] field)
-    {
+    public static int calculateClearRows(int[][] field) {
+        int clearRowCount = 0;
+    
         for (int i = 0; i < field.length; i++) {
             boolean canClear = true;
             for (int j = 0; j < field[0].length; j++) {
@@ -69,11 +70,14 @@ public class Criteria {
                     break;
                 }
             }
-            if (canClear)
-                return true;
+            if (canClear) {
+                clearRowCount++;
+            }
         }
-        return false;
+    
+        return clearRowCount;
     }
+    
     
 
     public static void main(String[] args) {

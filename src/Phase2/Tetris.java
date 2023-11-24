@@ -57,6 +57,7 @@ public class Tetris {
         currentPiece = PentominoDatabase.data[currentID][0];
         currentX = 0;
         currentY = 0;
+        currentRotation = 0;
         initializeField();
         fieldWithoutCurrentPiece = Matrix.rotateMatrix(field).clone();
         addPiece(currentPiece, currentID, currentX, currentY);
@@ -72,6 +73,7 @@ public class Tetris {
      * Sets the state of the screen to the current field and starts the game loop.
      */
     public void runTetris() {
+        if(botPlaying) pieceVelocity = MINIMUM_VELOCITY;
         screen.setState(field);
         startGameLoop();
     }
@@ -111,14 +113,10 @@ public class Tetris {
                     actualMatrix = Matrix.rotateMatrix(field);
                     fieldWithoutCurrentPiece = Matrix.deepCopy(Matrix.rotateMatrix(field));
                     getNextRandomPiece();
-                    // simulatedDropField = Bot.simulateDrop(currentPiece);
 
-                    if (canClearRow()) {
+                    if(canClearRow())
                         clearRow();
-                        // simulatedDropField = Bot.simulateDrop(currentPiece);
-                    } else {
-                        // simulatedDropField = Bot.simulateDrop(currentPiece);
-                    }
+
                     if (checkGameOver()) {
                         System.out.println("Game Over");
                         gameOver = true;
@@ -428,6 +426,7 @@ public class Tetris {
         while (canPlace(field, currentPiece, currentX - 1, currentY)) {
             currentX--;
         }
+        currentX=0;
         addPiece(currentPiece, currentID, currentX, currentY);
         screen.setState(field); // Update the MainScreen
     }

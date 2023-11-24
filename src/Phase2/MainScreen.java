@@ -176,13 +176,15 @@ public class MainScreen extends JPanel implements KeyListener {
         g2d.setFont(font);
         g2d.drawString(speedString, 10, 87);
 
+
+        if(!tetris.botPlaying){
         for (int i = 0; i < tetris.currentPiece.length; i++) {
             for (int j = 0; j < tetris.currentPiece[0].length; j++) {
                 if (tetris.currentPiece[i][j] != 0) {
                     int y = tetris.getLowestY();
                     // System.out.println(y);
                     // if (Tetris.field[i + Tetris.currentY][j + y] != -1) {
-                    if(tetris.field[i + tetris.currentX][j + (15-y)] != -1){
+                    if(tetris.field[i + tetris.currentX][j + (Tetris.VERTICAL_GRID_SIZE-y)] != -1){
                     g2d.setColor(Color.WHITE);
                     g2d.setStroke(new BasicStroke(3.0f));}
                     else{
@@ -199,7 +201,7 @@ public class MainScreen extends JPanel implements KeyListener {
                 g2d.draw(new Rectangle2D.Double((i + leftFillerWidth + tetris.currentX) * size+1,
                             (j+(15-y)) * size, size, size));}
             }
-        }
+        }}
     }
 
     // Returns the color associated with a given ID
@@ -233,7 +235,14 @@ public class MainScreen extends JPanel implements KeyListener {
         }
     }
 
-    // Sets the state of the game board
+    /**
+     * Sets the state of the MainScreen with the provided 2D integer array.
+     * The provided array should have the same dimensions as the current state array.
+     * The elements of the provided array will be copied to the corresponding positions in the state array.
+     * After setting the state, the MainScreen will be repainted.
+     *
+     * @param _state the 2D integer array representing the new state of the MainScreen
+     */
     public void setState(int[][] _state) {
         int rows = Math.min(state.length, _state.length);
         int cols = Math.min(state[0].length, _state[0].length);
@@ -257,7 +266,9 @@ public class MainScreen extends JPanel implements KeyListener {
         scoreLabel.setText("Score: " + tetris.score + "     Speed:" + (10 - (tetris.pieceVelocity / 100)));
     }
 
-    // Shows game over message
+    /**
+     * Displays a game over message with the player's score and a prompt to restart the game.
+     */
     public void showGameOver() {
         JOptionPane.showMessageDialog(null,
                 "Game Over! Your score is: " + tetris.score + "\nPress R to restart the game.");
@@ -268,6 +279,11 @@ public class MainScreen extends JPanel implements KeyListener {
     public void keyTyped(KeyEvent e) {
     }
 
+    /**
+     * Invoked when a key is pressed.
+     * 
+     * @param e the KeyEvent object representing the key event
+     */
     @Override
     public void keyPressed(KeyEvent e) {
         int keyCode = e.getKeyCode();
