@@ -116,10 +116,23 @@ public class MainScreen extends JPanel implements KeyListener {
         // Draw current state of the game board
         for (int i = 0; i < state.length; i++) {
             for (int j = 0; j < state[0].length; j++) {
-                g2d.setColor(GetColorOfID(state[i][j]));
-                g2d.fill(new Rectangle2D.Double((i + leftFillerWidth) * size + 1, j * size + 1, size - 1, size - 1));
-                g2d.setColor(Color.GRAY);
-                g2d.draw(new Rectangle2D.Double((i + leftFillerWidth) * size + 1, j * size + 1, size - 1, size - 1));
+                if (state[i][j] != -1) { // Only draw for non-empty cells (Tetris pieces)
+                    Color pieceColor = GetColorOfID(state[i][j]);
+                    g2d.setColor(pieceColor);
+
+                    // Fill the rectangle with a solid color
+                    g2d.fill(
+                            new Rectangle2D.Double((i + leftFillerWidth) * size + 1, j * size + 1, size - 1, size - 1));
+
+                    // Draw a thicker border of the Tetris piece's color
+                    Stroke originalStroke = g2d.getStroke(); // Save the original stroke
+                    g2d.setStroke(new BasicStroke(3.0f)); // Set the thickness of the border
+                    g2d.setColor(pieceColor.darker().darker());
+                    g2d.draw(new Rectangle2D.Double((i + leftFillerWidth) * size, j * size, size, size));
+
+                    // Restore the original stroke
+                    g2d.setStroke(originalStroke);
+                }
             }
         }
 
@@ -176,32 +189,33 @@ public class MainScreen extends JPanel implements KeyListener {
         g2d.setFont(font);
         g2d.drawString(speedString, 10, 87);
 
+        if (!tetris.botPlaying) {
+            for (int i = 0; i < tetris.currentPiece.length; i++) {
+                for (int j = 0; j < tetris.currentPiece[0].length; j++) {
+                    if (tetris.currentPiece[i][j] != 0) {
+                        int y = tetris.getLowestY();
+                        // System.out.println(y);
+                        // if (Tetris.field[i + Tetris.currentY][j + y] != -1) {
+                        if (tetris.field[i + tetris.currentX][j + (Tetris.VERTICAL_GRID_SIZE - y)] != -1) {
+                            g2d.setColor(Color.WHITE);
+                            g2d.setStroke(new BasicStroke(3.0f));
+                        } else {
+                            // } else {
+                            Color pieceColor = new Color(GetColorOfID(tetris.currentID).getRed(),
+                                    GetColorOfID(tetris.currentID).getGreen(),
+                                    GetColorOfID(tetris.currentID).getBlue(),
+                                    200);
+                            g2d.setColor(pieceColor.darker());
+                            g2d.setStroke(new BasicStroke(3.0f));
+                            // }
 
-        if(!tetris.botPlaying){
-        for (int i = 0; i < tetris.currentPiece.length; i++) {
-            for (int j = 0; j < tetris.currentPiece[0].length; j++) {
-                if (tetris.currentPiece[i][j] != 0) {
-                    int y = tetris.getLowestY();
-                    // System.out.println(y);
-                    // if (Tetris.field[i + Tetris.currentY][j + y] != -1) {
-                    if(tetris.field[i + tetris.currentX][j + (Tetris.VERTICAL_GRID_SIZE-y)] != -1){
-                    g2d.setColor(Color.WHITE);
-                    g2d.setStroke(new BasicStroke(3.0f));}
-                    else{
-                    // } else {
-                        Color pieceColor = new Color(GetColorOfID(tetris.currentID).getRed(),
-                        GetColorOfID(tetris.currentID).getGreen(),
-                        GetColorOfID(tetris.currentID).getBlue(),
-                        200);
-                    g2d.setColor(pieceColor.darker());
-                    g2d.setStroke(new BasicStroke(3.0f));
-                    // }
-                    
+                        }
+                        g2d.draw(new Rectangle2D.Double((i + leftFillerWidth + tetris.currentX) * size + 1,
+                                (j + (15 - y)) * size, size, size));
+                    }
                 }
-                g2d.draw(new Rectangle2D.Double((i + leftFillerWidth + tetris.currentX) * size+1,
-                            (j+(15-y)) * size, size, size));}
             }
-        }}
+        }
     }
 
     // Returns the color associated with a given ID
@@ -223,7 +237,7 @@ public class MainScreen extends JPanel implements KeyListener {
         } else if (i == 7) {
             return Color.YELLOW;
         } else if (i == 8) {
-            return new Color(0, 0, 0);
+            return Color.LIGHT_GRAY.darker().darker();
         } else if (i == 9) {
             return new Color(0, 0, 100);
         } else if (i == 10) {
@@ -237,11 +251,14 @@ public class MainScreen extends JPanel implements KeyListener {
 
     /**
      * Sets the state of the MainScreen with the provided 2D integer array.
-     * The provided array should have the same dimensions as the current state array.
-     * The elements of the provided array will be copied to the corresponding positions in the state array.
+     * The provided array should have the same dimensions as the current state
+     * array.
+     * The elements of the provided array will be copied to the corresponding
+     * positions in the state array.
      * After setting the state, the MainScreen will be repainted.
      *
-     * @param _state the 2D integer array representing the new state of the MainScreen
+     * @param _state the 2D integer array representing the new state of the
+     *               MainScreen
      */
     public void setState(int[][] _state) {
         int rows = Math.min(state.length, _state.length);
@@ -267,7 +284,8 @@ public class MainScreen extends JPanel implements KeyListener {
     }
 
     /**
-     * Displays a game over message with the player's score and a prompt to restart the game.
+     * Displays a game over message with the player's score and a prompt to restart
+     * the game.
      */
     public void showGameOver() {
         JOptionPane.showMessageDialog(null,

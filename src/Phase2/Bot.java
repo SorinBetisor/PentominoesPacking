@@ -1,7 +1,6 @@
 package Phase2;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,7 +36,7 @@ public class Bot {
         while (!tetris.gameOver) {
             getAllPossibleDrops(tetris.getWorkingField(), currentPiece);
             try {
-                Thread.sleep(tetris.getUpdatedPieceVelocity()*3);
+                Thread.sleep(tetris.getUpdatedPieceVelocity() * 3);
                 // flush terminal
                 // System.out.print("\033[H\033[2J");
             } catch (InterruptedException e) {
@@ -51,6 +50,7 @@ public class Bot {
     public void getAllPossibleDrops(int[][] afield, int[][] currentPiece) {
 
         List<Map<String, Object>> drops = new ArrayList<>();
+        tetris.moveLeftToTheBorder();
         for (int rotation = 0; rotation <= 3; rotation++) { // rotations.size()
             final int currentRotation = rotation;
             tetris.currentRotation = rotation;
@@ -66,20 +66,24 @@ public class Bot {
                         put("canClear", Criteria.calculateClearRows(simulatedBoard));
                         put("height", Criteria.calculateHeight(simulatedBoard));
                         put("gaps", Criteria.calculateGaps(simulatedBoard));
+                        put("bumpiness", Criteria.calculateBumpiness());
                     }
                 });
                 tetris.moveRight();
             }
             tetris.rotateRight();
             // System.out.print("\033[H\033[2J");
-            // System.out.println(drops);
+            System.out.println(drops);
         }
         int bestMoveIndex = calculateBestMove(drops);
-        if(tetris.currentID == 1){tetris.dropPiece();}
-        else{
-        if (bestMoveIndex != -1) {
-            performBestDrop();
-        }}
+        tetris.rotateLeft();
+        tetris.rotateLeft();
+
+        tetris.rotateLeft();
+
+            if (bestMoveIndex != -1) {
+                performBestDrop();
+            }
     }
 
     // write a function that accesses the drops hashmap and calculates the minimum
@@ -99,36 +103,43 @@ public class Bot {
                 bestMoveIndex = i;
 
                 currentBestRotation = (int) drop.get("rotation");
-                // System.out.println("Current best rotation: " + currentBestRotation);
                 currentBestXPos = (int) drop.get("xpos");
             }
         }
         System.out.println("Best move index: " + bestMoveIndex);
         System.out.println("Best move score: " + minScore);
+        // TODO: IT IS CALCULATING THE HEIGHT WRONG! ALL VALUE FOR HEIGHT ARE THE SAME
+        // ANYWAYS
+        System.out.println("Current best rotation: " + currentBestRotation);
         return bestMoveIndex;
     }
 
     public void performBestDrop() {
-        if(tetris.currentID == 1){
-            tetris.dropPiece();
-            return;}
 
         tetris.moveLeftToTheBorder();
         tetris.removePiece(tetris.field, tetris.currentPiece, tetris.currentX, tetris.currentY);
-        while (tetris.currentX<currentBestXPos) {
+        while (tetris.currentX < currentBestXPos) {
             tetris.moveRight();
         }
-        tetris.currentRotation = 0;
-        System.out.println(tetris.currentRotation + " " + currentBestRotation);
-        while(tetris.currentRotation < currentBestRotation) {
-            tetris.rotateRight();
-            tetris.currentRotation++;
-            // System.out.println("Rotating right");
+        System.out.println("moving to the best x position");
+        if (tetris.currentRotation < currentBestRotation) {
+            // System.out.println("rotating right");
+
+            while (tetris.currentRotation != currentBestRotation) {
+                tetris.rotateRight();
+            }
+        } else if (tetris.currentRotation > currentBestRotation) {
+            // System.out.println("rotating left");
+
+            while (tetris.currentRotation != currentBestRotation) {
+                tetris.rotateLeft();
+            }
         }
-        
+
         tetris.currentX = currentBestXPos;
         tetris.currentRotation = currentBestRotation;
         tetris.addPiece(tetris.currentPiece, tetris.currentID, tetris.currentX, tetris.currentY);
+
         tetris.dropPiece();
     }
 
@@ -136,15 +147,17 @@ public class Bot {
         int canClearScore = (int) drop.get("canClear");
         int heightScore = (int) drop.get("height");
         int gapsScore = (int) drop.get("gaps");
+        int bumpinessScore = (int) drop.get("bumpiness");
 
         // System.out.println("Can clear score: " + canClearScore);
         // System.out.println("Height score: " + heightScore);
         // System.out.println("Gaps score: " + gapsScore);
 
         // You can adjust the weights for each criterion based on importance
-        double totalScore = -3.4181268101392694 * canClearScore + 7.899265427351652 * heightScore + 4 * gapsScore;
-        // 3.4181268101392694f*canClearScore + -7.899265427351652f*heightScore +
-        // -4.500158825082766f*gapsScore;
+        //TODO: work on weights and criteria
+        double totalScore = 0.1 * canClearScore + 0.8 * heightScore + 0.7 * gapsScore + 0.3 * bumpinessScore;
+        // -3.4181268101392694f*canClearScore + 7.899265427351652f*heightScore +
+        // 4.500158825082766f*gapsScore;
 
         return totalScore;
     }

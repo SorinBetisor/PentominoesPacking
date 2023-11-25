@@ -20,7 +20,7 @@ import java.awt.event.ActionListener;
 
 public class Tetris {
     public static Random random = new Random();
-    public static final int HORIZONTAL_GRID_SIZE = 5;
+    public static final int HORIZONTAL_GRID_SIZE = 10;
     public static final int VERTICAL_GRID_SIZE = 15;
     public static final int MAXIMUM_VELOCITY = 950;
     public static final int MINIMUM_VELOCITY = 150;
@@ -106,7 +106,7 @@ public class Tetris {
         Timer gameTimer = new Timer(pieceVelocity, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                // System.out.println(currentRotation);
                 if (canClearRow())
                     clearRow();
                     if (!moveDown()) {
@@ -270,6 +270,7 @@ public class Tetris {
         }
         currentX = 0;
         currentY = 0;
+        currentRotation = 0;
     }
 
     // CLEARING ROWS
@@ -362,6 +363,12 @@ public class Tetris {
         if (canPlace(field, rotatedPiece, currentX, currentY)) {
             currentPiece = rotatedPiece;
         }
+        if(currentRotation == 3){
+            currentRotation = 0;
+        }
+        else{
+            currentRotation++;
+        }
         addPiece(currentPiece, currentID, currentX, currentY);
         screen.setState(field); // Update the MainScreen
     }
@@ -400,10 +407,15 @@ public class Tetris {
         if (canPlace(field, rotatedPiece, currentX, currentY)) {
             currentPiece = rotatedPiece;
         }
+        if(currentRotation == 0){
+            currentRotation = 3;
+        }
+        else{
+            currentRotation--;
+        }
         addPiece(currentPiece, currentID, currentX, currentY);
         screen.setState(field); // Update the MainScreen
     }
-
     /**
      * Moves the current piece one cell to the left on the game field, if possible.
      * If the piece cannot be moved, it remains in its current position.
@@ -543,7 +555,7 @@ public class Tetris {
             }
             lowestY++;
         }
-        return 15 - lowestY;
+        return VERTICAL_GRID_SIZE - lowestY;
     }
 
     /**
