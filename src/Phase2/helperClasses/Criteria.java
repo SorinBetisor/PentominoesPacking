@@ -5,13 +5,14 @@ import Phase2.Tetris;
 public class Criteria {
 
     public static int[] columnHeights = new int[Tetris.HORIZONTAL_GRID_SIZE];
+
     public static int calculateHeight(int[][] field) {
         int currentHeight = 0;
         int maxHeight = 0;
         for (int j = 0; j < field[0].length; j++) {
-            for (int i = Tetris.VERTICAL_GRID_SIZE-1; i >= 0; i--) {
+            for (int i = Tetris.VERTICAL_GRID_SIZE - 1; i >= 0; i--) {
                 if (field[i][j] != -1) {
-                    currentHeight = Tetris.VERTICAL_GRID_SIZE - i +1;
+                    currentHeight = Tetris.VERTICAL_GRID_SIZE - i + 1;
                 }
 
             }
@@ -35,7 +36,7 @@ public class Criteria {
         return calculateGaps(field, checked);
     }
 
-    //TODO: ADD GAP HOLE CRITERIA
+    // TODO: ADD GAP HOLE CRITERIA
     public static int calculateGaps(int[][] field, boolean[][] checked) {
         int gaps = -1;
         for (int i = 0; i < field.length; i++) {
@@ -53,7 +54,6 @@ public class Criteria {
         return gaps;
     }
 
-    
     private static void floodFillHoles(int row, int col, int[][] field, boolean[][] checked) {
         if (row < 0 || row >= field.length || col < 0 || col >= field[0].length)
             return;
@@ -142,11 +142,10 @@ public class Criteria {
 
         return wellPoints;
     }
-    
 
     public static int calculateClearRows(int[][] field) {
         int clearRowCount = 0;
-    
+
         for (int i = 0; i < field.length; i++) {
             boolean canClear = true;
             for (int j = 0; j < field[0].length; j++) {
@@ -159,61 +158,127 @@ public class Criteria {
                 clearRowCount++;
             }
         }
-    
+
         return clearRowCount;
     }
 
-    public static int calculateBumpiness()
-    {
+    public static int calculateBumpiness() {
         return calculateBumpinness(columnHeights);
     }
-    
 
     public static int calculateBumpinness(int[] array) {
         if (array == null || array.length < 2) {
             return 0; // There are no adjacent elements to calculate differences
         }
-    
+
         int sum = 0;
-    
+
         for (int i = 0; i < array.length - 1; i++) {
             int absoluteDifference = Math.abs(array[i] - array[i + 1]);
             sum += absoluteDifference;
         }
-    
+
         return sum;
     }
-    
+
+    public static int calculateFloorTouchingBlocks(int[][] matrix) {
+        int cols = matrix[0].length;
+        int floorTouchingBlocks = 0;
+        // Iterate over the elements of the bottom row
+        for (int col = 0; col < cols; col++) {
+            if (matrix[matrix.length - 1][col] != -1) {
+                floorTouchingBlocks++;
+            }
+        }
+        return floorTouchingBlocks;
+    }
+
+    public static int calculateWallTouchingBlocks(int[][] matrix) {
+        int rows = matrix.length;
+        int cols = matrix[0].length;
+        int wallTouchingBlocks = 0;
+
+        // Iterate over the left wall
+        for (int row = 0; row < rows; row++) {
+            if (matrix[row][0] != -1) {
+                wallTouchingBlocks++;
+            }
+        }
+
+        // Iterate over the right wall
+        for (int row = 0; row < rows; row++) {
+            if (matrix[row][cols - 1] != -1) {
+                wallTouchingBlocks++;
+            }
+        }
+
+        return wallTouchingBlocks;
+    }
+
+    public static int calculateEdgesTouchingBlocks(int[][] matrix) {
+        int rows = matrix.length;
+        int cols = matrix[0].length;
+        int edgesTouchingBlocks = 0;
+
+        for (int row = 0; row < rows; row++) {
+            for (int col = 0; col < cols; col++) {
+                if(matrix[row][col] != -1) {
+                    if(row+1<rows) {
+                        if(matrix[row+1][col] != -1) {
+                            edgesTouchingBlocks++;
+                        }
+                    }
+                    if(row-1>=0) {
+                        if(matrix[row-1][col] != -1) {
+                            edgesTouchingBlocks++;
+                        }
+                    }
+                    if(col+1<cols) {
+                        if(matrix[row][col+1] != -1) {
+                            edgesTouchingBlocks++;
+                        }
+                    }
+                    if(col-1>=0) {
+                        if(matrix[row][col-1] != -1) {
+                            edgesTouchingBlocks++;
+                        }
+                    }
+                }
+            }
+        }
+        return edgesTouchingBlocks;
+    }
 
     public static void main(String[] args) {
 
         int[][] matrix = {
-            {-1, -1, -1, -1, -1},
-            {-1, -1, -1, -1, -1},
-            {-1, -1, -1, -1, -1},
-            {-1, -1, -1, -1, -1},
-            {-1, -1, -1, -1, -1},
-            {-1, -1, -1, -1, -1},
-            {-1, -1, -1, -1, -1},
-            {-1, -1, -1, -1, -1},
-            {-1, -1, -1, -1, -1},
-            {-1, -1, -1, -1, -1},
-            {-1, -1, -1, -1, 5},
-            {-1, -1, -1, -1, -1},
-            {-1, -1, 0, -1, -1},
-            {-1, -1, 0, -1, 2},
-            {-1, -1, 0, -1, 1},
-            {-1, -1, 0, -1, 1}
+                { -1, -1, -1, -1, -1 },
+                { -1, -1, -1, -1, -1 },
+                { -1, -1, -1, -1, -1 },
+                { -1, -1, -1, -1, -1 },
+                { -1, -1, -1, -1, -1 },
+                { -1, -1, -1, -1, -1 },
+                { -1, -1, -1, -1, -1 },
+                { -1, -1, -1, -1, -1 },
+                { -1, -1, -1, -1, -1 },
+                { -1, -1, -1, -1, -1 },
+                { -1, -1, -1, -1, -1 },
+                { -1, -1, -1, -1, -1 },
+                { -1, -1, -1, -1, -1 },
+                { -1, -1, -1, -1, -1 },
+                { -1, -1, -1, -1, -1 },
+                { -1, -1, -1, -1, -1 }
         };
-        
-        
 
-        System.out.println(calculateHeight(matrix));
+        // System.out.println(calculateHeight(matrix));
         // System.out.println(calculateWellSums(matrix));
         // System.out.println(calculateGaps(matrix));
         // int[] columnHeights = calculateColumnHeights(matrix);
 
-        System.out.println("Bumpiness: " + calculateBumpiness());
+        // System.out.println("Bumpiness: " + calculateBumpiness());
+        // System.out.println("Floor touching blocks: " +
+        // countFloorTouchingBlocks(matrix));
+        // System.out.println("Edges touching blocks: " + iterateOverEdgesTouchingBlocks(matrix));
     }
 
 }

@@ -20,7 +20,7 @@ import java.awt.event.ActionListener;
 
 public class Tetris {
     public static Random random = new Random();
-    public static final int HORIZONTAL_GRID_SIZE = 10;
+    public static final int HORIZONTAL_GRID_SIZE = 8;
     public static final int VERTICAL_GRID_SIZE = 15;
     public static final int MAXIMUM_VELOCITY = 950;
     public static final int MINIMUM_VELOCITY = 150;

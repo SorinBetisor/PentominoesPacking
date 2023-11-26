@@ -288,8 +288,14 @@ public class MainScreen extends JPanel implements KeyListener {
      * the game.
      */
     public void showGameOver() {
+        if(!tetris.botPlaying){
         JOptionPane.showMessageDialog(null,
-                "Game Over! Your score is: " + tetris.score + "\nPress R to restart the game.");
+                "Game Over! Your score is: " + tetris.score + "\nPress R to restart the game.");}
+        else
+        {
+            JOptionPane.showMessageDialog(null,
+                "The bot has finished playing! Your score is: " + tetris.score);
+        }
     }
 
     // Key listener methods

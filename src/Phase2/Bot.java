@@ -46,7 +46,6 @@ public class Bot {
 
     }
 
-    // TODO: Select most optimal drop
     public void getAllPossibleDrops(int[][] afield, int[][] currentPiece) {
 
         List<Map<String, Object>> drops = new ArrayList<>();
@@ -67,6 +66,9 @@ public class Bot {
                         put("height", Criteria.calculateHeight(simulatedBoard));
                         put("gaps", Criteria.calculateGaps(simulatedBoard));
                         put("bumpiness", Criteria.calculateBumpiness());
+                        put("floorTouchingBlocks", Criteria.calculateFloorTouchingBlocks(simulatedBoard));
+                        put("wallTouchingBlocks", Criteria.calculateWallTouchingBlocks(simulatedBoard));
+                        put("edgesTouchingBlocks", Criteria.calculateEdgesTouchingBlocks(simulatedBoard));
                     }
                 });
                 tetris.moveRight();
@@ -81,25 +83,23 @@ public class Bot {
 
         tetris.rotateLeft();
 
-            if (bestMoveIndex != -1) {
-                performBestDrop();
-            }
+        if (bestMoveIndex != -1) {
+            performBestDrop();
+        }
     }
 
     // write a function that accesses the drops hashmap and calculates the minimum
     // sum of the criterias
     public int calculateBestMove(List<Map<String, Object>> drops) {
-        double minScore = Integer.MAX_VALUE;
+        double maxScore = Integer.MIN_VALUE;
         int bestMoveIndex = -1;
 
         for (int i = 0; i < drops.size(); i++) {
             Map<String, Object> drop = drops.get(i);
-            // System.out.println("Drop: " + drop);
             double score = calculateScore(drop);
-            // System.out.println("Score: " + score);
 
-            if (score < minScore) {
-                minScore = score;
+            if (score > maxScore) {
+                maxScore = score;
                 bestMoveIndex = i;
 
                 currentBestRotation = (int) drop.get("rotation");
@@ -107,10 +107,9 @@ public class Bot {
             }
         }
         System.out.println("Best move index: " + bestMoveIndex);
-        System.out.println("Best move score: " + minScore);
-        // TODO: IT IS CALCULATING THE HEIGHT WRONG! ALL VALUE FOR HEIGHT ARE THE SAME
-        // ANYWAYS
+        System.out.println("Best move score: " + maxScore);
         System.out.println("Current best rotation: " + currentBestRotation);
+        System.out.println("Current best x position: " + currentBestXPos);
         return bestMoveIndex;
     }
 
@@ -121,7 +120,6 @@ public class Bot {
         while (tetris.currentX < currentBestXPos) {
             tetris.moveRight();
         }
-        System.out.println("moving to the best x position");
         if (tetris.currentRotation < currentBestRotation) {
             // System.out.println("rotating right");
 
@@ -148,15 +146,20 @@ public class Bot {
         int heightScore = (int) drop.get("height");
         int gapsScore = (int) drop.get("gaps");
         int bumpinessScore = (int) drop.get("bumpiness");
+        int floorTouchingBlocksScore = (int) drop.get("floorTouchingBlocks");
+        int wallTouchingBlocksScore = (int) drop.get("wallTouchingBlocks");
+        int edgesTouchingBlocksScore = (int) drop.get("edgesTouchingBlocks");
 
         // System.out.println("Can clear score: " + canClearScore);
         // System.out.println("Height score: " + heightScore);
         // System.out.println("Gaps score: " + gapsScore);
 
         // You can adjust the weights for each criterion based on importance
-        //TODO: work on weights and criteria
-        double totalScore = 0.1 * canClearScore + 0.8 * heightScore + 0.7 * gapsScore + 0.3 * bumpinessScore;
-        // -3.4181268101392694f*canClearScore + 7.899265427351652f*heightScore +
+        // TODO: work on weights and criteria
+        double totalScore = 2.7 * canClearScore + -3.71 * heightScore + -4.79 * gapsScore
+                + 4.8 * edgesTouchingBlocksScore + 3.22 * wallTouchingBlocksScore + 3.68 * floorTouchingBlocksScore + -2.0 * bumpinessScore;
+        // -3.4181268101392694f*canClearScore + 7.899265427351652f*heightScore + -2.5 *
+        // bumpinessScore;
         // 4.500158825082766f*gapsScore;
 
         return totalScore;
@@ -170,4 +173,7 @@ public class Bot {
 
     // Helper Functions
 
+    public void setTetris(Tetris tetris) {
+        this.tetris = tetris;
+    }
 }
