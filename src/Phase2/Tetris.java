@@ -20,7 +20,7 @@ import java.awt.event.ActionListener;
 
 public class Tetris {
     public static Random random = new Random();
-    public static final int HORIZONTAL_GRID_SIZE = 8;
+    public static final int HORIZONTAL_GRID_SIZE = 5;
     public static final int VERTICAL_GRID_SIZE = 15;
     public static final int MAXIMUM_VELOCITY = 950;
     public static final int MINIMUM_VELOCITY = 150;
@@ -42,6 +42,7 @@ public class Tetris {
     public int currentY;
     public int currentLowestY;
     public int currentRotation;
+    public static int currentPieceIndex;
     public boolean accelerateDown = false;
     public int pieceVelocity = INITIAL_VELOCITY;
     public int[][] actualMatrix;
@@ -55,12 +56,17 @@ public class Tetris {
         char randomPieceChar = PIECES[random.nextInt(12)];
         currentID = characterToID(randomPieceChar);
         currentPiece = PentominoDatabase.data[currentID][0];
+
         currentX = 0;
         currentY = 0;
         currentRotation = 0;
+        currentPieceIndex = 0;
         initializeField();
+        // getNextPieceFromSequence(PIECES);
+
         fieldWithoutCurrentPiece = Matrix.rotateMatrix(field).clone();
         addPiece(currentPiece, currentID, currentX, currentY);
+
 
         if (screen == null)
             screen = new MainScreen(HORIZONTAL_GRID_SIZE, VERTICAL_GRID_SIZE, 45,
@@ -92,6 +98,7 @@ public class Tetris {
         pieceVelocity = INITIAL_VELOCITY;
         initializeField();
         getNextRandomPiece();
+        // getNextPieceFromSequence(PIECES);
         screen.setState(field);
         startGameLoop();
     }
@@ -113,6 +120,7 @@ public class Tetris {
                     actualMatrix = Matrix.rotateMatrix(field);
                     fieldWithoutCurrentPiece = Matrix.deepCopy(Matrix.rotateMatrix(field));
                     getNextRandomPiece();
+                    // getNextPieceFromSequence(PIECES);
 
                     if(canClearRow())
                         clearRow();
@@ -271,6 +279,24 @@ public class Tetris {
         currentX = 0;
         currentY = 0;
         currentRotation = 0;
+    }
+
+    private void getNextPieceFromSequence(char[] sequence) {
+        char currentPieceChar = sequence[currentPieceIndex];
+        currentID = characterToID(currentPieceChar);
+        currentPiece = PentominoDatabase.data[currentID][0];
+        if (currentPieceChar == 'F' || currentPieceChar == 'L' || currentPieceChar == 'P' || currentPieceChar == 'Z'
+                || currentPieceChar == 'T' || currentPieceChar == 'Y') {
+            currentPiece = flipPiece();
+        }
+        currentX = 0;
+        currentY = 0;
+        currentRotation = 0;
+        currentPieceIndex++;
+        if (currentPieceIndex == sequence.length) {
+            currentPieceIndex = 0;
+        }
+        System.out.println(currentPieceIndex);
     }
 
     // CLEARING ROWS

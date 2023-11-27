@@ -13,7 +13,7 @@ public class Menu {
 
     //To Add : change sound icon, use sound sliders, add title, add name text box (back).
     private Player player;
-    private JFrame frame = new JFrame("Game Menu");
+    private JFrame frame = new JFrame("PENTRIS Menu");
     private JTextField inputField;
     private SoundPlayerUsingClip soundPlayer;
     private JCheckBox musicToggle;
@@ -58,7 +58,7 @@ public class Menu {
         gbc.gridwidth = GridBagConstraints.REMAINDER;
         gbc.anchor = GridBagConstraints.CENTER;
 
-        JLabel titleLabel = createTitleLabel("TETRIS");
+        JLabel titleLabel = createTitleLabel("PENTRIS");
         gbc.insets = new Insets(20, 0, 20, 0);
         backgroundPanel.add(titleLabel, gbc);
 

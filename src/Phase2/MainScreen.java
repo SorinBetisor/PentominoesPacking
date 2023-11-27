@@ -51,7 +51,7 @@ public class MainScreen extends JPanel implements KeyListener {
             leftFillerImage = ImageIO.read(getClass().getResource("/Phase2/misc/leftfiller.jpg"));
             rightFillerImage = ImageIO.read(getClass().getResource("/Phase2/misc/rightfiller.jpg"));
             icon = new ImageIcon(getClass().getResource("/Phase2/misc/icon.png"));
-            scorePanel = new ImagePanel("/Phase2/misc/bottomblu.jpg");
+            scorePanel = new ImagePanel("/Phase2/misc/bottomblu.png");
         } catch (IOException e) {
             System.out.println("Error reading filler image");
             e.printStackTrace();

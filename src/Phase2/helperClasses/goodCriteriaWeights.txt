@@ -1,0 +1,4 @@
+double totalScore = 2.7 * canClearScore + -3.71 * heightScore + -4.79 * gapsScore
+                + 4.8 * edgesTouchingBlocksScore + 3.22 * wallTouchingBlocksScore + 4.98 * floorTouchingBlocksScore + -2.9 * bumpinessScore;
+
+

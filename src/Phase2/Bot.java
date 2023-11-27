@@ -157,10 +157,7 @@ public class Bot {
         // You can adjust the weights for each criterion based on importance
         // TODO: work on weights and criteria
         double totalScore = 2.7 * canClearScore + -3.71 * heightScore + -4.79 * gapsScore
-                + 4.8 * edgesTouchingBlocksScore + 3.22 * wallTouchingBlocksScore + 3.68 * floorTouchingBlocksScore + -2.0 * bumpinessScore;
-        // -3.4181268101392694f*canClearScore + 7.899265427351652f*heightScore + -2.5 *
-        // bumpinessScore;
-        // 4.500158825082766f*gapsScore;
+                + 4.8 * edgesTouchingBlocksScore + 3.22 * wallTouchingBlocksScore + 4.98 * floorTouchingBlocksScore + -2.9 * bumpinessScore;
 
         return totalScore;
     }

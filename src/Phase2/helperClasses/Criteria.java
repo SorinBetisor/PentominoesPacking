@@ -265,9 +265,9 @@ public class Criteria {
                 { -1, -1, -1, -1, -1 },
                 { -1, -1, -1, -1, -1 },
                 { -1, -1, -1, -1, -1 },
+                { -1, -1, -1, 1, -1 },
                 { -1, -1, -1, -1, -1 },
-                { -1, -1, -1, -1, -1 },
-                { -1, -1, -1, -1, -1 }
+                { -1, -1, -1, 1, -1 }
         };
 
         // System.out.println(calculateHeight(matrix));
@@ -278,7 +278,7 @@ public class Criteria {
         // System.out.println("Bumpiness: " + calculateBumpiness());
         // System.out.println("Floor touching blocks: " +
         // countFloorTouchingBlocks(matrix));
-        // System.out.println("Edges touching blocks: " + iterateOverEdgesTouchingBlocks(matrix));
+        System.out.println(calculateColumnTransitions(matrix));
     }
 
 }
