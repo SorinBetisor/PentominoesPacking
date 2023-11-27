@@ -1,5 +1,5 @@
 package Phase2;
-
+import java.util.Random;
 import javax.imageio.ImageIO;
 import javax.sound.sampled.LineUnavailableException;
 import javax.swing.*;
@@ -45,6 +45,7 @@ public class Menu {
         return titleLabel;
     }
 
+   
     public Menu() {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(800, 600);
@@ -58,11 +59,19 @@ public class Menu {
         gbc.gridwidth = GridBagConstraints.REMAINDER;
         gbc.anchor = GridBagConstraints.CENTER;
 
+        Random random = new Random();
+        int red = random.nextInt(256);
+        int green = random.nextInt(256);
+        int blue = random.nextInt(256);
+        Color randomColor = new Color(red, green, blue);
+
+
+
         JLabel titleLabel = createTitleLabel("PENTRIS");
         gbc.insets = new Insets(20, 0, 20, 0);
+        titleLabel.setBackground(randomColor);
         backgroundPanel.add(titleLabel, gbc);
-
-
+        
 
         backgroundPanel.add(createButtonPanel(), gbc);
 
