@@ -7,7 +7,6 @@ import Phase2.helperClasses.SoundPlayerUsingClip;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
-
 public class Menu {
 
 
@@ -51,6 +50,7 @@ public class Menu {
         frame.setSize(800, 600);
         frame.setLocationRelativeTo(null);
 
+        
         BackgroundPanel backgroundPanel = new BackgroundPanel("src/Phase2/misc/91655.jpg");
         backgroundPanel.setLayout(new GridBagLayout());
         frame.setContentPane(backgroundPanel);
@@ -68,14 +68,13 @@ public class Menu {
 
 
         JLabel titleLabel = createTitleLabel("PENTRIS");
-        gbc.insets = new Insets(20, 0, 20, 0);
+        gbc.insets = new Insets(20, 0, 20, 0); 
         titleLabel.setBackground(randomColor);
         backgroundPanel.add(titleLabel, gbc);
-        
-
         backgroundPanel.add(createButtonPanel(), gbc);
-
-
+        
+        
+       
         musicToggle = new JCheckBox("Toggle Music");
         musicToggle.setSelected(true);
         musicToggle.addActionListener(e -> toggleMusic());
@@ -92,6 +91,8 @@ public class Menu {
 
         musicThread.start();
     }
+
+
 
     private JPanel createButtonPanel() {
         JPanel buttonPanel = new JPanel();
