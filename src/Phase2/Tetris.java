@@ -24,8 +24,8 @@ public class Tetris {
     public static final int VERTICAL_GRID_SIZE = 15;
     public static final int MAXIMUM_VELOCITY = 950;
     public static final int MINIMUM_VELOCITY = 150;
-    public static final int INITIAL_VELOCITY = 800;
-    private static final char[] PIECES = { 'T', 'U', 'P', 'I', 'V', 'L', 'F', 'W', 'X', 'Y', 'Z', 'N' };
+    public static final int INITIAL_VELOCITY = 150;
+    private static final char[] PIECES = { 'T', 'U', 'P', 'I', 'V', 'L', 'F', 'W', 'X', 'Y', 'Z', 'N', 'T','U','P'};
 
     public int[][] field;
     public int[][] fieldWithoutCurrentPiece;
@@ -53,16 +53,16 @@ public class Tetris {
      * not already exist.
      */
     public Tetris() {
-        char randomPieceChar = PIECES[random.nextInt(12)];
-        currentID = characterToID(randomPieceChar);
-        currentPiece = PentominoDatabase.data[currentID][0];
+        // char randomPieceChar = PIECES[random.nextInt(12)];
+        // currentID = characterToID(randomPieceChar);
+        // currentPiece = PentominoDatabase.data[currentID][0];
 
         currentX = 0;
         currentY = 0;
         currentRotation = 0;
         currentPieceIndex = 0;
         initializeField();
-        // getNextPieceFromSequence(PIECES);
+        getNextPieceFromSequence(PIECES);
 
         fieldWithoutCurrentPiece = Matrix.rotateMatrix(field).clone();
         addPiece(currentPiece, currentID, currentX, currentY);
@@ -97,8 +97,8 @@ public class Tetris {
         score = 0;
         pieceVelocity = INITIAL_VELOCITY;
         initializeField();
-        getNextRandomPiece();
-        // getNextPieceFromSequence(PIECES);
+        // getNextRandomPiece();
+        getNextPieceFromSequence(PIECES);
         screen.setState(field);
         startGameLoop();
     }
@@ -119,14 +119,14 @@ public class Tetris {
                     if (!moveDown()) {
                     actualMatrix = Matrix.rotateMatrix(field);
                     fieldWithoutCurrentPiece = Matrix.deepCopy(Matrix.rotateMatrix(field));
-                    getNextRandomPiece();
-                    // getNextPieceFromSequence(PIECES);
+                    // getNextRandomPiece();
+                    getNextPieceFromSequence(PIECES);
 
                     if(canClearRow())
                         clearRow();
 
                     if (checkGameOver()) {
-                        System.out.println("Game Over");
+                        // System.out.println("Game Over");
                         gameOver = true;
                         if (score > highScore) {
                             highScore = score;
@@ -296,7 +296,7 @@ public class Tetris {
         if (currentPieceIndex == sequence.length) {
             currentPieceIndex = 0;
         }
-        System.out.println(currentPieceIndex);
+        // System.out.println(currentPieceIndex);
     }
 
     // CLEARING ROWS

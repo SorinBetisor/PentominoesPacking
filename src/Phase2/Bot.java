@@ -17,14 +17,17 @@ import Phase2.helperClasses.Matrix;
 // Press “spacebar” if the position is correct.
 
 public class Bot {
-    public static int[][] workingField;
-    private Tetris tetris;
+    public int[][] workingField;
+    public Tetris tetris;
 
     private int currentBestRotation;
     private int currentBestXPos;
 
-    public Bot() {
+    public double[] weights;
+
+    public Bot(double[] weights) {
         tetris = new Tetris();
+        this.weights = weights;
         tetris.runTetris();
         workingField = tetris.getWorkingField();
     }
@@ -32,7 +35,7 @@ public class Bot {
     public void runBot(int[][] field, int[][] currentPiece, int fWidth, int fHeight) {
         tetris.botPlaying = true;
         // System.out.println(Arrays.deepToString(tetris.getWorkingField()));
-        System.out.println("Bot is playing");
+        // System.out.println("Bot is playing");
         while (!tetris.gameOver) {
             getAllPossibleDrops(tetris.getWorkingField(), currentPiece);
             try {
@@ -75,7 +78,7 @@ public class Bot {
             }
             tetris.rotateRight();
             // System.out.print("\033[H\033[2J");
-            System.out.println(drops);
+            // System.out.println(drops);
         }
         int bestMoveIndex = calculateBestMove(drops);
         tetris.rotateLeft();
@@ -106,10 +109,10 @@ public class Bot {
                 currentBestXPos = (int) drop.get("xpos");
             }
         }
-        System.out.println("Best move index: " + bestMoveIndex);
-        System.out.println("Best move score: " + maxScore);
-        System.out.println("Current best rotation: " + currentBestRotation);
-        System.out.println("Current best x position: " + currentBestXPos);
+        // System.out.println("Best move index: " + bestMoveIndex);
+        // System.out.println("Best move score: " + maxScore);
+        // System.out.println("Current best rotation: " + currentBestRotation);
+        // System.out.println("Current best x position: " + currentBestXPos);
         return bestMoveIndex;
     }
 
@@ -156,14 +159,14 @@ public class Bot {
 
         // You can adjust the weights for each criterion based on importance
         // TODO: work on weights and criteria
-        double totalScore = 2.7 * canClearScore + -3.71 * heightScore + -4.79 * gapsScore
-                + 4.8 * edgesTouchingBlocksScore + 3.22 * wallTouchingBlocksScore + 4.98 * floorTouchingBlocksScore + -2.9 * bumpinessScore;
+        double totalScore = weights[0] * canClearScore + weights[1] * heightScore + weights[2] * gapsScore
+                + weights[3] * edgesTouchingBlocksScore + weights[4] * wallTouchingBlocksScore + weights[5] * floorTouchingBlocksScore + weights[6] * bumpinessScore;
 
         return totalScore;
     }
 
     public static void main(String[] args) {
-        Bot bot = new Bot();
+        Bot bot = new Bot(new double[] { 2.7, -3.71, -4.79, 4.8, 3.22, 4.98, -2.9 });
         Tetris tetris = bot.tetris; // Access the Tetris instance
         bot.runBot(tetris.field, tetris.currentPiece, Tetris.HORIZONTAL_GRID_SIZE, Tetris.VERTICAL_GRID_SIZE);
     }
