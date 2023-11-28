@@ -36,7 +36,7 @@ public class BotTrain {
         bot.runBot(tetris.field, tetris.currentPiece, Tetris.HORIZONTAL_GRID_SIZE, Tetris.VERTICAL_GRID_SIZE);
         // System.out.println(tetris.PIECES);
         if (tetris.checkGameOver()) {
-            if(tetris.score >= 10){
+            if(tetris.score >= 8){
                 System.out.println(botName + " Score: " + tetris.score);
                 System.out.println(botName + " Weights: " + arrayToString(bot.weights));
                 System.out.println("Sequence: " + Arrays.toString(tetris.PIECES));
@@ -60,12 +60,13 @@ public class BotTrain {
         Random random = new Random();
     
         for (int i = 0; i < arraySize; i++) {
-            // Generate a random double value between -2.0 (inclusive) and 3.0 (exclusive)
-            randomArray[i] = (random.nextDouble() * 5.0) - 2.0;
+            // Generate a random double value between -5.0 (inclusive) and 5.0 (exclusive)
+            randomArray[i] = (random.nextDouble() * 10.0) - 5.0;
         }
     
         return randomArray;
     }
+    
     
     
     

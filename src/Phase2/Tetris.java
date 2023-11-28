@@ -26,8 +26,9 @@ public class Tetris {
     public static final int MAXIMUM_VELOCITY = 950;
     public static final int MINIMUM_VELOCITY = 150;
     public static final int INITIAL_VELOCITY = 150;
-    public char[] PIECES = {'T', 'U', 'P', 'I', 'V', 'L', 'F', 'W', 'X', 'Y', 'Z', 'N'};
+    public char[] PIECES = {'I', 'P', 'Z', 'Y', 'N', 'U', 'X', 'F', 'W', 'L', 'V', 'T'};
     //'T', 'U', 'P', 'I', 'V', 'L', 'F', 'W', 'X', 'Y', 'Z', 'N'
+    //I P Z F U Y X N L T V
 
     public int[][] field;
     public int[][] fieldWithoutCurrentPiece;
@@ -44,7 +45,7 @@ public class Tetris {
     public int currentY;
     public int currentLowestY;
     public int currentRotation;
-    public static int currentPieceIndex;
+    public int currentPieceIndex;
     public boolean accelerateDown = false;
     public int pieceVelocity = INITIAL_VELOCITY;
     public int[][] actualMatrix;
@@ -64,7 +65,7 @@ public class Tetris {
         currentRotation = 0;
         currentPieceIndex = 0;
         initializeField();
-        PIECES = shufflePieces(PIECES);
+        // PIECES = shufflePieces(PIECES);
         getNextPieceFromSequence(PIECES);
 
         fieldWithoutCurrentPiece = Matrix.rotateMatrix(field).clone();
@@ -290,10 +291,6 @@ public class Tetris {
         char currentPieceChar = sequence[currentPieceIndex];
         currentID = characterToID(currentPieceChar);
         currentPiece = PentominoDatabase.data[currentID][0];
-        if (currentPieceChar == 'F' || currentPieceChar == 'L' || currentPieceChar == 'P' || currentPieceChar == 'Z'
-                || currentPieceChar == 'T' || currentPieceChar == 'Y') {
-            currentPiece = flipPiece();
-        }
         currentX = 0;
         currentY = 0;
         currentRotation = 0;
