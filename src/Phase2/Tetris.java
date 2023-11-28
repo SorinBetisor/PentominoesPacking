@@ -25,7 +25,8 @@ public class Tetris {
     public static final int MAXIMUM_VELOCITY = 950;
     public static final int MINIMUM_VELOCITY = 150;
     public static final int INITIAL_VELOCITY = 150;
-    private static final char[] PIECES = { 'T', 'U', 'P', 'I', 'V', 'L', 'F', 'W', 'X', 'Y', 'Z', 'N', 'T','U','P'};
+    public static final char[] PIECES = {'T', 'U', 'P', 'I', 'V', 'L', 'F', 'W', 'X', 'Y', 'Z', 'N'};
+    //'T', 'U', 'P', 'I', 'V', 'L', 'F', 'W', 'X', 'Y', 'Z', 'N'
 
     public int[][] field;
     public int[][] fieldWithoutCurrentPiece;
