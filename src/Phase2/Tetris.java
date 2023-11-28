@@ -1,6 +1,7 @@
 package Phase2;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 import Phase1.PentominoDatabase;
@@ -25,7 +26,7 @@ public class Tetris {
     public static final int MAXIMUM_VELOCITY = 950;
     public static final int MINIMUM_VELOCITY = 150;
     public static final int INITIAL_VELOCITY = 150;
-    public static final char[] PIECES = {'T', 'U', 'P', 'I', 'V', 'L', 'F', 'W', 'X', 'Y', 'Z', 'N'};
+    public char[] PIECES = {'T', 'U', 'P', 'I', 'V', 'L', 'F', 'W', 'X', 'Y', 'Z', 'N'};
     //'T', 'U', 'P', 'I', 'V', 'L', 'F', 'W', 'X', 'Y', 'Z', 'N'
 
     public int[][] field;
@@ -63,6 +64,7 @@ public class Tetris {
         currentRotation = 0;
         currentPieceIndex = 0;
         initializeField();
+        PIECES = shufflePieces(PIECES);
         getNextPieceFromSequence(PIECES);
 
         fieldWithoutCurrentPiece = Matrix.rotateMatrix(field).clone();
@@ -72,6 +74,8 @@ public class Tetris {
         if (screen == null)
             screen = new MainScreen(HORIZONTAL_GRID_SIZE, VERTICAL_GRID_SIZE, 45,
                     new int[HORIZONTAL_GRID_SIZE][VERTICAL_GRID_SIZE], this);
+        
+    // System.out.println(PIECES);
 
     }
 
@@ -630,5 +634,25 @@ public class Tetris {
             pentID = 11;
         }
         return pentID;
+    }
+
+    public void setPieces(char[] pieces)
+    {
+        PIECES = pieces;
+    }
+
+    public static char[] shufflePieces(char[] pieces) {
+        List<Character> piecesList = new ArrayList<>();
+        for (char piece : pieces) {
+            piecesList.add(piece);
+        }
+        Collections.shuffle(piecesList, new Random());
+
+        char[] shuffledPieces = new char[piecesList.size()];
+        for (int i = 0; i < piecesList.size(); i++) {
+            shuffledPieces[i] = piecesList.get(i);
+        }
+
+        return shuffledPieces;
     }
 }
