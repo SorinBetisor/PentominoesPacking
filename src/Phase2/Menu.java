@@ -62,23 +62,17 @@ public class Menu {
         gbc.gridwidth = GridBagConstraints.REMAINDER;
         gbc.anchor = GridBagConstraints.CENTER;
 
-        Random random = new Random();
-        int red = random.nextInt(256);
-        int green = random.nextInt(256);
-        int blue = random.nextInt(256);
-        Color randomColor = new Color(red, green, blue);
 
 
-
-        JLabel titleLabel = createTitleLabel("PENTRIS");
-        gbc.insets = new Insets(20, 0, 20, 0); 
-        titleLabel.setBackground(randomColor);
-        backgroundPanel.add(titleLabel, gbc);
+        JLabel t1=new JLabel("",new ImageIcon("src\\Phase2\\misc\\FirstVersions_Tetris_logo.gif"),JLabel.CENTER);
+        gbc.insets=new Insets(-5, 0, 20, 0);
+        frame.add(t1,gbc);
+        t1.setBounds(0, 0, 0, 0);
         
 
+
+
         backgroundPanel.add(createButtonPanel(), gbc);
-
-
         musicToggle = new JCheckBox("Toggle Music");
         musicToggle.setSelected(true);
         musicToggle.setOpaque(false);
