@@ -11,7 +11,7 @@ import java.io.IOException;
 public class SoundPlayerUsingClip implements LineListener {
     public boolean isPlaybackCompleted;
     private SourceDataLine audioLine;
-    private boolean isPaused = false;
+    public boolean isPaused = false;
     private FloatControl volumeControl;
 
     /**
@@ -59,6 +59,7 @@ public class SoundPlayerUsingClip implements LineListener {
                     audioLine.write(buffer, 0, bytesRead);
                 }
             }
+            
 
             audioLine.drain();
             audioLine.close();

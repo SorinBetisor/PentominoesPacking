@@ -1,4 +1,5 @@
 package Phase2;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.imageio.ImageIO;
@@ -8,16 +9,11 @@ import Phase2.helperClasses.SoundPlayerUsingClip;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
+
 public class Menu {
-
-    //4 commit.
-
-    //To Add : change sound icon, use sound sliders, add title, add name text box (back).
-    private Player player;
     private static JFrame frame = new JFrame("PENTRIS Menu");
-    private JTextField inputField;
     private SoundPlayerUsingClip soundPlayer;
-    private JCheckBox musicToggle;
+    private ImageIcon icon;
 
     class BackgroundPanel extends JPanel {
         private BufferedImage backgroundImage;
@@ -25,6 +21,7 @@ public class Menu {
         public BackgroundPanel(String imagePath) {
             try {
                 this.backgroundImage = ImageIO.read(new File(imagePath));
+                icon = new ImageIcon(getClass().getResource("/Phase2/misc/icon.png"));
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -39,50 +36,51 @@ public class Menu {
         }
     }
 
-    private JLabel createTitleLabel(String text) {
-        JLabel titleLabel = new JLabel(text);
-        titleLabel.setFont(new Font("Arial", Font.BOLD, 48));
-        titleLabel.setForeground(new Color(128, 0, 128));
-        return titleLabel;
-    }
-
-
     public Menu() {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(800, 600);
         frame.setLocationRelativeTo(null);
 
-        
-        BackgroundPanel backgroundPanel = new BackgroundPanel("src/Phase2/misc/91655.jpg");
+        BackgroundPanel backgroundPanel = new BackgroundPanel(
+                "bcs_group_33_project_2023\\src\\Phase2\\misc\\91655.jpg");
         backgroundPanel.setLayout(new GridBagLayout());
         frame.setContentPane(backgroundPanel);
 
+        // Set the icon
+        frame.setIconImage(icon.getImage());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridwidth = GridBagConstraints.REMAINDER;
         gbc.anchor = GridBagConstraints.CENTER;
 
-
-
-        JLabel t1=new JLabel("",new ImageIcon("src\\Phase2\\misc\\Pentris-11-29-2023(1).gif"),JLabel.CENTER);
-        gbc.insets=new Insets(-5, 0, 20, 0);
-        frame.add(t1,gbc);
+        JLabel t1 = new JLabel("",
+                new ImageIcon("bcs_group_33_project_2023\\src\\Phase2\\misc\\Pentris-11-29-2023(1).gif"),
+                JLabel.CENTER);
+        gbc.insets = new Insets(-5, 0, 20, 0);
+        frame.add(t1, gbc);
         t1.setBounds(0, 0, 0, 0);
-        
 
-
-
+        // Music button
+        soundPlayer = new SoundPlayerUsingClip();
         backgroundPanel.add(createButtonPanel(), gbc);
-        musicToggle = new JCheckBox("Toggle Music");
-        musicToggle.setSelected(true);
+        JButton musicToggle = new JButton();
         musicToggle.setOpaque(false);
         musicToggle.setContentAreaFilled(false);
-        musicToggle.addActionListener(e -> toggleMusic());
+        musicToggle.setBorderPainted(false);
+        musicToggle.setFocusPainted(false);
+
+        // Set the speaker icon (adjust the path accordingly)
+        ImageIcon speakerIcon = new ImageIcon("bcs_group_33_project_2023\\src\\Phase2\\misc\\soundIcon.png");
+
+        // Resize the icon
+        Image scaledImage = speakerIcon.getImage().getScaledInstance(15, 15, Image.SCALE_SMOOTH);
+        ImageIcon scaledIcon = new ImageIcon(scaledImage);
+
+        musicToggle.setIcon(scaledIcon);
+
         gbc.insets = new Insets(10, 0, 0, 0);
         backgroundPanel.add(musicToggle, gbc);
 
-
         frame.setVisible(true);
-
 
         Thread musicThread = new Thread(() -> {
             soundPlayer = new SoundPlayerUsingClip();
@@ -90,42 +88,68 @@ public class Menu {
         }, "MenuMusicThread");
 
         musicThread.start();
+
+        musicToggle.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (soundPlayer.isPaused == true) {
+                    soundPlayer.resume();
+                } else {
+                    soundPlayer.pause();
+                }
+            }
+        });
     }
-
-
 
     private JPanel createButtonPanel() {
         JPanel buttonPanel = new JPanel();
-        buttonPanel.setLayout(new GridLayout(3, 1, 10, 10));
+        buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
         buttonPanel.setOpaque(false);
 
         JButton randomOrderButton = createButton("PLAY");
-        JButton bestOrderButton = createButton("Bot - Best Order");
         JButton botButton = createButton("Bot");
+        JButton bestOrderButton = createButton("Bot Sequence");
+        JButton controlsButton = createButton("Controls");
 
-        JButton controlsButton = new JButton("Controls");
-        controlsButton.setFont(new Font("Arial", Font.BOLD, 14));
+        customizeButton(randomOrderButton, Color.BLACK, Color.BLACK);
+        customizeButton(botButton, Color.black, Color.black);
+        customizeButton(bestOrderButton, Color.BLACK, Color.BLACK);
+        customizeButton(controlsButton, Color.black, Color.black);
 
+        Dimension buttonSize = new Dimension(250, 70); // Set the desired size
 
-        customizeButton(randomOrderButton, Color.pink, Color.pink);
-        customizeButton(bestOrderButton, Color.GREEN, Color.green);
-        customizeButton(botButton, Color.white, Color.white);
-        customizeButton(controlsButton,Color.ORANGE,Color.ORANGE);
+        randomOrderButton.setMaximumSize(buttonSize);
+        bestOrderButton.setMaximumSize(buttonSize);
+        botButton.setMaximumSize(buttonSize);
+        controlsButton.setMaximumSize(buttonSize);
 
         buttonPanel.add(randomOrderButton);
-        buttonPanel.add(bestOrderButton);
         buttonPanel.add(botButton);
+
+        buttonPanel.add(bestOrderButton);
         buttonPanel.add(controlsButton);
 
-
         randomOrderButton.addActionListener(e -> {
-            //System.out.println("Random Order Button Clicked");
-            //toggleMusic();
             frame.dispose();
             Tetris tetris = new Tetris();
             tetris.runTetris();
-            savePlayerInfo();
         });
+
+        botButton.addActionListener(e -> {
+            frame.dispose();
+            SwingWorker<Void, Void> worker = new SwingWorker<>() {
+                @Override
+                protected Void doInBackground() {
+                    Bot bot = new Bot(new double[] { 2.7f, -3.78f, -2.31f, -2.9f, -0.59f, 0.65f, 6.52f, 3.97f });
+                    Tetris tetris = bot.tetris;
+                    bot.runBot(tetris.field, tetris.currentPiece, Tetris.HORIZONTAL_GRID_SIZE, Tetris.VERTICAL_GRID_SIZE);
+                    return null;
+                }
+            };
+    
+            worker.execute();
+        });
+        
 
         controlsButton.addActionListener(new ActionListener() {
             @Override
@@ -134,91 +158,67 @@ public class Menu {
             }
         });
 
-        //4 commit
         return buttonPanel;
     }
 
-    public void showControlsDialog(){
-
+    public void showControlsDialog() {
         JDialog controlsDialog = new JDialog(frame, "Game Controls", true);
         controlsDialog.setSize(400, 300);
         controlsDialog.setLocationRelativeTo(frame);
 
-
-        BackgroundPanel controlsBackground = new BackgroundPanel("src/Phase2/misc/photo.jpg");
+        BackgroundPanel controlsBackground = new BackgroundPanel(
+                "bcs_group_33_project_2023\\src\\Phase2\\misc\\photo.jpg");
         controlsBackground.setLayout(new BorderLayout());
         controlsDialog.setContentPane(controlsBackground);
 
-
         String controlsText = "<html><body style='text-align: center;'>"
-                + "<h3>Controls:</h3>"
-                + "SPACE - Drops the piece instantly<br>"
+                + "<h3 style='font-family: Monospaced;'>Controls:</h3>"
+                + "<p style='font-family: Monospaced;'>SPACE - Drops the piece instantly<br>"
                 + "LEFT ARROW - Move piece left<br>"
                 + "RIGHT ARROW - Move piece right<br>"
                 + "UP ARROW - Decrease speed<br>"
                 + "DOWN ARROW - Increase speed<br>"
                 + "D - Rotate piece clockwise<br>"
-                + "A - Rotate piece anticlockwise"
+                + "A - Rotate piece anticlockwise</p>"
                 + "</body></html>";
-
 
         JLabel controlsLabel = new JLabel(controlsText, SwingConstants.CENTER);
         controlsLabel.setForeground(Color.WHITE);
+        controlsLabel.setFont(new Font("Monospaced", Font.PLAIN, 14));
+        controlsLabel.setOpaque(true);
+        controlsLabel.setBackground(new Color(128, 0, 158)); // Black background with 150 alpha (transparency)
+
         controlsBackground.add(controlsLabel);
 
         // Display the dialog
         controlsDialog.setVisible(true);
     }
 
-
-
     private void customizeButton(JButton button, Color foregroundColor, Color borderColor) {
-        button.setBackground(new Color(59, 89, 182));
+        // Set the background color
+        button.setBackground(new Color(128, 0, 128)); // Purple color
+
+        // Set other button properties
         button.setForeground(foregroundColor);
-        button.setOpaque(false);
-        button.setContentAreaFilled(false);
+        button.setOpaque(true); // Set opaque to true to show the background color
+        button.setContentAreaFilled(true);
         button.setBorderPainted(true);
         button.setBorder(BorderFactory.createLineBorder(borderColor, 4));
-        button.setPreferredSize(new Dimension(200, 50));
-
-
+        button.setPreferredSize(new Dimension(250, 70));
+        button.setFocusPainted(false);
     }
 
     private JButton createButton(String text) {
         JButton button = new JButton(text);
-        button.setFont(new Font("Arial", Font.BOLD, 16));
+        button.setFont(new Font("Monospaced", Font.BOLD, 16));
         return button;
     }
 
-    private void savePlayerInfo() {
-        String name = inputField.getText();
-        player = new Player(name);
-    }
-
     private void playMusic() {
-        Thread musicThread = new Thread(() -> {
-            try {
-                soundPlayer = new SoundPlayerUsingClip();
-                soundPlayer.playMusic("Phase2/misc/8bit-music-menu8.wav");
-            } catch (LineUnavailableException e) {
-                e.printStackTrace();
-            }
-        }, "MenuMusicThread");
-
-        musicThread.start();
-    }
-
-    private void stopMusic() {
-        if (soundPlayer != null) {
-            soundPlayer.stop();
-        }
-    }
-
-    private void toggleMusic() {
-        if (musicToggle.isSelected()) {
-            playMusic();
-        } else {
-            stopMusic();
+        try {
+            soundPlayer.playMusic("Phase2/misc/8bit-music-menu8.wav");
+        } catch (LineUnavailableException e) {
+            e.printStackTrace();
         }
     }
 
@@ -227,7 +227,5 @@ public class Menu {
             new Menu();
         });
     }
-
-
 
 }

@@ -11,6 +11,7 @@ import java.awt.geom.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.awt.font.TextLayout;
+import java.util.List;
 
 /**
  * The MainScreen class represents the main game screen of the Pentomino Tetris
@@ -37,6 +38,7 @@ public class MainScreen extends JPanel implements KeyListener {
     private ImagePanel scorePanel;
     private ImageIcon icon;
     public Tetris tetris;
+    public static String playerName;
 
     // Constructor
     public MainScreen(int x, int y, int _size, int[][] upcomingMatrix, Tetris tetris) {
@@ -189,6 +191,34 @@ public class MainScreen extends JPanel implements KeyListener {
         g2d.setFont(font);
         g2d.drawString(speedString, 10, 87);
 
+        int leaderboardWidth = rightFillerWidth * (int) (0.85 * size);
+        int leaderboardHeight = 200; // Adjust the height as needed
+        int leaderboardX = (x + leftFillerWidth) * size + (int) (0.2 * size);
+        ;
+        int leaderboardY = 200;
+
+        g2d.setColor(Color.WHITE);
+        g2d.drawRect(leaderboardX - 1, leaderboardY - 1, leaderboardWidth + 1, leaderboardHeight + 2);
+        g2d.setColor(Color.MAGENTA.darker().darker());
+        g2d.fillRect(leaderboardX, leaderboardY, leaderboardWidth, leaderboardHeight);
+        g2d.setColor(Color.WHITE);
+        g2d.setFont(new Font("Monospaced", Font.BOLD, 14));
+        g2d.drawString("Leaderboard", leaderboardX + 10, leaderboardY + 20);
+
+        // Read existing high scores from the file
+        List<Player> players = Player.readHighScores("bcs_group_33_project_2023\\src\\Phase2\\highscores.txt");
+
+        // Display the first 5 players in the leaderboard
+        g2d.setFont(new Font("Monospaced", Font.PLAIN, 16));
+        int yOffset = 40; // Adjust the starting y-coordinate for player entries
+
+        for (int i = 0; i < Math.min(5, players.size()); i++) {
+            Player player = players.get(i);
+            String leaderboardEntry = player.getName() + ": " + player.getHighScore();
+            g2d.drawString(leaderboardEntry, leaderboardX + 10, leaderboardY + yOffset);
+            yOffset += 20; // Adjust the vertical spacing between entries
+        }
+
         if (!tetris.botPlaying) {
             for (int i = 0; i < tetris.currentPiece.length; i++) {
                 for (int j = 0; j < tetris.currentPiece[0].length; j++) {
@@ -288,16 +318,25 @@ public class MainScreen extends JPanel implements KeyListener {
      * the game.
      */
     public void showGameOver() {
-        if(!tetris.botPlaying){
-        JOptionPane.showMessageDialog(null,
-                "Game Over! Your score is: " + tetris.score + "\nPress R to restart the game.");}
-        else
-        {
-            // JOptionPane.showMessageDialog(null,
-            //     "The bot has finished playing! Your score is: " + tetris.score);
-            //close the window
+        if (!tetris.botPlaying) {
+            // Ask for the player's name if it's empty or null
+            if (playerName == null || playerName.trim().isEmpty()) {
+                playerName = JOptionPane.showInputDialog(null, "Enter your name:");
+            }
+
+            // Display the game over message with the player's name and score
+            JOptionPane.showMessageDialog(null,
+                    "Game Over, " + playerName + "! Your score is: " + tetris.score + "\nPress R to restart the game.");
+
+            // Create a new Player instance with the player's name and high score
+            Player player = new Player(playerName, tetris.highScore);
+            tetris.player = player;
+
+            // Update high scores
+            player.updateHighScores(playerName, tetris.highScore);
+        } else {
+            // Close the window
             window.dispose();
-            // System.out.println(tetris.score);
         }
     }
 
@@ -333,6 +372,7 @@ public class MainScreen extends JPanel implements KeyListener {
             }
         } else {
             if (keyCode == KeyEvent.VK_R) {
+                window.dispose();
                 tetris.gameOver = false;
                 tetris.score = 0;
                 tetris.pieceVelocity = 1000;

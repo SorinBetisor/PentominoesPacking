@@ -25,7 +25,7 @@ public class Tetris {
     public static final int VERTICAL_GRID_SIZE = 15;
     public static final int MAXIMUM_VELOCITY = 950;
     public static final int MINIMUM_VELOCITY = 150;
-    public static final int INITIAL_VELOCITY = 150;
+    public static final int INITIAL_VELOCITY = 800;
     public char[] PIECES = {'I','P','Z','F','U','Y','X','N','L','T','V','W'};
     //'T', 'U', 'P', 'I', 'V', 'L', 'F', 'W', 'X', 'Y', 'Z', 'N'
     //I P Z F U Y X N L T V W
@@ -49,6 +49,8 @@ public class Tetris {
     public boolean accelerateDown = false;
     public int pieceVelocity = INITIAL_VELOCITY;
     public int[][] actualMatrix;
+
+    public Player player;
 
     /**
      * Constructs a new Tetris game instance with a randomly selected piece,
