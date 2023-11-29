@@ -26,9 +26,9 @@ public class Tetris {
     public static final int MAXIMUM_VELOCITY = 950;
     public static final int MINIMUM_VELOCITY = 150;
     public static final int INITIAL_VELOCITY = 150;
-    public char[] PIECES = {'I', 'P', 'Z', 'Y', 'N', 'U', 'X', 'F', 'W', 'L', 'V', 'T'};
+    public char[] PIECES = {'I','P','Z','F','U','Y','X','N','L','T','V','W'};
     //'T', 'U', 'P', 'I', 'V', 'L', 'F', 'W', 'X', 'Y', 'Z', 'N'
-    //I P Z F U Y X N L T V
+    //I P Z F U Y X N L T V W
 
     public int[][] field;
     public int[][] fieldWithoutCurrentPiece;
@@ -56,9 +56,9 @@ public class Tetris {
      * not already exist.
      */
     public Tetris() {
-        // char randomPieceChar = PIECES[random.nextInt(12)];
-        // currentID = characterToID(randomPieceChar);
-        // currentPiece = PentominoDatabase.data[currentID][0];
+        char randomPieceChar = PIECES[random.nextInt(12)];
+        currentID = characterToID(randomPieceChar);
+        currentPiece = PentominoDatabase.data[currentID][0];
 
         currentX = 0;
         currentY = 0;
@@ -66,7 +66,7 @@ public class Tetris {
         currentPieceIndex = 0;
         initializeField();
         // PIECES = shufflePieces(PIECES);
-        getNextPieceFromSequence(PIECES);
+        // getNextPieceFromSequence(PIECES);
 
         fieldWithoutCurrentPiece = Matrix.rotateMatrix(field).clone();
         addPiece(currentPiece, currentID, currentX, currentY);
@@ -103,8 +103,8 @@ public class Tetris {
         score = 0;
         pieceVelocity = INITIAL_VELOCITY;
         initializeField();
-        // getNextRandomPiece();
-        getNextPieceFromSequence(PIECES);
+        getNextRandomPiece();
+        // getNextPieceFromSequence(PIECES);
         screen.setState(field);
         startGameLoop();
     }
@@ -125,14 +125,13 @@ public class Tetris {
                     if (!moveDown()) {
                     actualMatrix = Matrix.rotateMatrix(field);
                     fieldWithoutCurrentPiece = Matrix.deepCopy(Matrix.rotateMatrix(field));
-                    // getNextRandomPiece();
-                    getNextPieceFromSequence(PIECES);
+                    getNextRandomPiece();
+                    // getNextPieceFromSequence(PIECES);
 
                     if(canClearRow())
                         clearRow();
 
                     if (checkGameOver()) {
-                        // System.out.println("Game Over");
                         gameOver = true;
                         if (score > highScore) {
                             highScore = score;

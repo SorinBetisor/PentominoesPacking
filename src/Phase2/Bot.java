@@ -8,17 +8,10 @@ import java.util.Map;
 import Phase2.helperClasses.Criteria;
 import Phase2.helperClasses.Matrix;
 
-// Here is the algorithm:
-
-// For each figure rotation and for each horizontal position, simulate “spacebar” and check the height of our new tower and the number of “holes”.
-// Choose the best one, and
-// Press “up” key if the rotation does not correspond
-// Press “left” or “right” keys to move to the corresponding position.
-// Press “spacebar” if the position is correct.
-
 public class Bot {
     public int[][] workingField;
     public Tetris tetris;
+    private int fitness;
 
     private int currentBestRotation;
     private int currentBestXPos;
@@ -69,9 +62,11 @@ public class Bot {
                         put("height", Criteria.calculateHeight(simulatedBoard));
                         put("gaps", Criteria.calculateGaps(simulatedBoard));
                         put("bumpiness", Criteria.calculateBumpiness());
+                        put("blocksAboveGaps", Criteria.calculateBlocksAboveGaps(simulatedBoard));
                         put("floorTouchingBlocks", Criteria.calculateFloorTouchingBlocks(simulatedBoard));
                         put("wallTouchingBlocks", Criteria.calculateWallTouchingBlocks(simulatedBoard));
                         put("edgesTouchingBlocks", Criteria.calculateEdgesTouchingBlocks(simulatedBoard));
+
                     }
                 });
                 tetris.moveRight();
@@ -91,8 +86,6 @@ public class Bot {
         }
     }
 
-    // write a function that accesses the drops hashmap and calculates the minimum
-    // sum of the criterias
     public int calculateBestMove(List<Map<String, Object>> drops) {
         double maxScore = Integer.MIN_VALUE;
         int bestMoveIndex = -1;
@@ -152,22 +145,26 @@ public class Bot {
         int floorTouchingBlocksScore = (int) drop.get("floorTouchingBlocks");
         int wallTouchingBlocksScore = (int) drop.get("wallTouchingBlocks");
         int edgesTouchingBlocksScore = (int) drop.get("edgesTouchingBlocks");
-
+        Object blocksAboveGapsObj = drop.get("blocksAboveGaps");
+        int blocksAboveGapsScore = (blocksAboveGapsObj != null) ? (int) blocksAboveGapsObj : 0;
+        // System.out.println(blocksAboveGapsScore);
         // System.out.println("Can clear score: " + canClearScore);
         // System.out.println("Height score: " + heightScore);
         // System.out.println("Gaps score: " + gapsScore);
 
-        // You can adjust the weights for each criterion based on importance
-        // TODO: work on weights and criteria
         double totalScore = weights[0] * canClearScore + weights[1] * heightScore + weights[2] * gapsScore
-                + weights[3] * edgesTouchingBlocksScore + weights[4] * wallTouchingBlocksScore + weights[5] * floorTouchingBlocksScore + weights[6] * bumpinessScore;
+                + weights[3] * bumpinessScore + weights[4] * blocksAboveGapsScore
+                + weights[5] * floorTouchingBlocksScore + weights[6] * wallTouchingBlocksScore
+                + weights[7] * edgesTouchingBlocksScore;
 
         return totalScore;
     }
 
     public static void main(String[] args) {
-        Bot bot = new Bot(new double[] { 2.7, -3.71, -4.79, 4.8, 3.22, 4.98, -2.9 });
-        Tetris tetris = bot.tetris; // Access the Tetris instance
+        Bot bot = new Bot(new double[] { 2.7f, -3.78f, -2.31f, -2.9f, -0.59f, 0.65f, 6.52f, 3.97f });
+        // Bot bot = new Bot(new double[] { 2.7, -3.71, -4.79, 4.8, 3.22, 4.98, -2.9 });
+        // 2.5049457971586584 -3.261807386464185 0.930695108263226 -0.2808731681024561
+        Tetris tetris = bot.tetris;
         bot.runBot(tetris.field, tetris.currentPiece, Tetris.HORIZONTAL_GRID_SIZE, Tetris.VERTICAL_GRID_SIZE);
     }
 
@@ -175,5 +172,13 @@ public class Bot {
 
     public void setTetris(Tetris tetris) {
         this.tetris = tetris;
+    }
+
+    public void setFitness(int fitness) {
+        this.fitness = fitness;
+    }
+
+    public int getFitness() {
+        return fitness;
     }
 }
