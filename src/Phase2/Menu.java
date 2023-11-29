@@ -1,7 +1,6 @@
 package Phase2;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
 import java.util.Random;
 import javax.imageio.ImageIO;
 import javax.sound.sampled.LineUnavailableException;
@@ -64,18 +63,8 @@ public class Menu {
         gbc.anchor = GridBagConstraints.CENTER;
 
 
-        // Read the original image
-        BufferedImage originalImage = null;
-        try {
-            originalImage = ImageIO.read(new File("src/Phase2/misc/pentris.jpg"));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        // Resize the image
-        Image resizedImage = originalImage.getScaledInstance(300, 100, Image.SCALE_SMOOTH); // Adjust width and height as needed
-        ImageIcon imageIcon = new ImageIcon(resizedImage);
 
-        JLabel t1=new JLabel("",new ImageIcon(resizedImage),JLabel.CENTER);
+        JLabel t1=new JLabel("",new ImageIcon("src\\Phase2\\misc\\FirstVersions_Tetris_logo.gif"),JLabel.CENTER);
         gbc.insets=new Insets(-5, 0, 20, 0);
         frame.add(t1,gbc);
         t1.setBounds(0, 0, 0, 0);
@@ -84,9 +73,7 @@ public class Menu {
 
 
         backgroundPanel.add(createButtonPanel(), gbc);
-        musicToggle = new JCheckBox("\uD83D\uDD08");
-        musicToggle.setForeground(Color.white);
-        musicToggle.setFont(new Font("Segoe UI Symbol", Font.PLAIN, 24));
+        musicToggle = new JCheckBox("Toggle Music");
         musicToggle.setSelected(true);
         musicToggle.setOpaque(false);
         musicToggle.setContentAreaFilled(false);
@@ -112,8 +99,6 @@ public class Menu {
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new GridLayout(3, 1, 10, 10));
         buttonPanel.setOpaque(false);
-
-
 
         JButton randomOrderButton = createButton("PLAY");
         JButton bestOrderButton = createButton("Bot - Best Order");
@@ -182,16 +167,13 @@ public class Menu {
         controlsLabel.setForeground(Color.WHITE);
         controlsBackground.add(controlsLabel);
 
-
+        // Display the dialog
         controlsDialog.setVisible(true);
     }
 
 
 
     private void customizeButton(JButton button, Color foregroundColor, Color borderColor) {
-
-        ImageIcon buttonBackground = new ImageIcon("src/Phase2/misc/pic1.jpg");
-
         button.setBackground(new Color(59, 89, 182));
         button.setForeground(foregroundColor);
         button.setOpaque(false);
@@ -199,10 +181,6 @@ public class Menu {
         button.setBorderPainted(true);
         button.setBorder(BorderFactory.createLineBorder(borderColor, 4));
         button.setPreferredSize(new Dimension(200, 50));
-
-        button.setIcon(buttonBackground);
-        button.setHorizontalTextPosition(JButton.CENTER);
-        button.setVerticalTextPosition(JButton.CENTER);
 
 
     }

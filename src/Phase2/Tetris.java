@@ -1,6 +1,7 @@
 package Phase2;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 import Phase1.PentominoDatabase;
@@ -25,7 +26,9 @@ public class Tetris {
     public static final int MAXIMUM_VELOCITY = 950;
     public static final int MINIMUM_VELOCITY = 150;
     public static final int INITIAL_VELOCITY = 150;
-    private static final char[] PIECES = { 'T', 'U', 'P', 'I', 'V', 'L', 'F', 'W', 'X', 'Y', 'Z', 'N', 'T','U','P'};
+    public char[] PIECES = {'I', 'P', 'Z', 'Y', 'N', 'U', 'X', 'F', 'W', 'L', 'V', 'T'};
+    //'T', 'U', 'P', 'I', 'V', 'L', 'F', 'W', 'X', 'Y', 'Z', 'N'
+    //I P Z F U Y X N L T V
 
     public int[][] field;
     public int[][] fieldWithoutCurrentPiece;
@@ -42,7 +45,7 @@ public class Tetris {
     public int currentY;
     public int currentLowestY;
     public int currentRotation;
-    public static int currentPieceIndex;
+    public int currentPieceIndex;
     public boolean accelerateDown = false;
     public int pieceVelocity = INITIAL_VELOCITY;
     public int[][] actualMatrix;
@@ -62,6 +65,7 @@ public class Tetris {
         currentRotation = 0;
         currentPieceIndex = 0;
         initializeField();
+        // PIECES = shufflePieces(PIECES);
         getNextPieceFromSequence(PIECES);
 
         fieldWithoutCurrentPiece = Matrix.rotateMatrix(field).clone();
@@ -71,6 +75,8 @@ public class Tetris {
         if (screen == null)
             screen = new MainScreen(HORIZONTAL_GRID_SIZE, VERTICAL_GRID_SIZE, 45,
                     new int[HORIZONTAL_GRID_SIZE][VERTICAL_GRID_SIZE], this);
+        
+    // System.out.println(PIECES);
 
     }
 
@@ -285,10 +291,6 @@ public class Tetris {
         char currentPieceChar = sequence[currentPieceIndex];
         currentID = characterToID(currentPieceChar);
         currentPiece = PentominoDatabase.data[currentID][0];
-        if (currentPieceChar == 'F' || currentPieceChar == 'L' || currentPieceChar == 'P' || currentPieceChar == 'Z'
-                || currentPieceChar == 'T' || currentPieceChar == 'Y') {
-            currentPiece = flipPiece();
-        }
         currentX = 0;
         currentY = 0;
         currentRotation = 0;
@@ -629,5 +631,25 @@ public class Tetris {
             pentID = 11;
         }
         return pentID;
+    }
+
+    public void setPieces(char[] pieces)
+    {
+        PIECES = pieces;
+    }
+
+    public static char[] shufflePieces(char[] pieces) {
+        List<Character> piecesList = new ArrayList<>();
+        for (char piece : pieces) {
+            piecesList.add(piece);
+        }
+        Collections.shuffle(piecesList, new Random());
+
+        char[] shuffledPieces = new char[piecesList.size()];
+        for (int i = 0; i < piecesList.size(); i++) {
+            shuffledPieces[i] = piecesList.get(i);
+        }
+
+        return shuffledPieces;
     }
 }
