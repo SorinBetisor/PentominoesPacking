@@ -1,7 +1,6 @@
 package Phase2;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Random;
 import javax.imageio.ImageIO;
 import javax.sound.sampled.LineUnavailableException;
 import javax.swing.*;
@@ -64,7 +63,7 @@ public class Menu {
 
 
 
-        JLabel t1=new JLabel("",new ImageIcon("src\\Phase2\\misc\\FirstVersions_Tetris_logo.gif"),JLabel.CENTER);
+        JLabel t1=new JLabel("",new ImageIcon("src\\Phase2\\misc\\Pentris-11-29-2023(1).gif"),JLabel.CENTER);
         gbc.insets=new Insets(-5, 0, 20, 0);
         frame.add(t1,gbc);
         t1.setBounds(0, 0, 0, 0);
