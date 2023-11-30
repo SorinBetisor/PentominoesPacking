@@ -21,10 +21,10 @@ public class Menu {
         public BackgroundPanel(String imagePath) {
             try {
                 this.backgroundImage = ImageIO.read(new File(imagePath));
-                icon = new ImageIcon(getClass().getResource("/Phase2/misc/icon.png"));
+                icon = new ImageIcon( "src\\Phase2\\misc\\icon.png");
             } catch (Exception e) {
                 e.printStackTrace();
-            }
+            }   
         }
 
         @Override
@@ -38,11 +38,11 @@ public class Menu {
 
     public Menu() {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(800, 600);
+        frame.setSize(1050, 600);
         frame.setLocationRelativeTo(null);
 
         BackgroundPanel backgroundPanel = new BackgroundPanel(
-                "bcs_group_33_project_2023\\src\\Phase2\\misc\\91655.jpg");
+                "src\\Phase2\\misc\\91655.jpg");
         backgroundPanel.setLayout(new GridBagLayout());
         frame.setContentPane(backgroundPanel);
 
@@ -53,11 +53,12 @@ public class Menu {
         gbc.anchor = GridBagConstraints.CENTER;
 
         JLabel t1 = new JLabel("",
-                new ImageIcon("bcs_group_33_project_2023\\src\\Phase2\\misc\\Pentris-11-29-2023(1).gif"),
+                new ImageIcon("src\\Phase2\\misc\\Pentris-11-29-2023(1).gif"),
                 JLabel.CENTER);
         gbc.insets = new Insets(-5, 0, 20, 0);
         frame.add(t1, gbc);
         t1.setBounds(0, 0, 0, 0);
+        
 
         // Music button
         soundPlayer = new SoundPlayerUsingClip();
@@ -69,7 +70,7 @@ public class Menu {
         musicToggle.setFocusPainted(false);
 
         // Set the speaker icon (adjust the path accordingly)
-        ImageIcon speakerIcon = new ImageIcon("bcs_group_33_project_2023\\src\\Phase2\\misc\\soundIcon.png");
+        ImageIcon speakerIcon = new ImageIcon("src\\Phase2\\misc\\soundIcon.png");
 
         // Resize the icon
         Image scaledImage = speakerIcon.getImage().getScaledInstance(15, 15, Image.SCALE_SMOOTH);
@@ -114,7 +115,7 @@ public class Menu {
         customizeButton(randomOrderButton, Color.BLACK, Color.BLACK);
         customizeButton(botButton, Color.black, Color.black);
         customizeButton(bestOrderButton, Color.BLACK, Color.BLACK);
-        customizeButton(controlsButton, Color.black, Color.black);
+        customizeButton(controlsButton, Color.black, Color.BLACK);
 
         Dimension buttonSize = new Dimension(250, 70); // Set the desired size
 
@@ -166,8 +167,7 @@ public class Menu {
         controlsDialog.setSize(400, 300);
         controlsDialog.setLocationRelativeTo(frame);
 
-        BackgroundPanel controlsBackground = new BackgroundPanel(
-                "bcs_group_33_project_2023\\src\\Phase2\\misc\\photo.jpg");
+        BackgroundPanel controlsBackground = new BackgroundPanel("src\\Phase2\\misc\\controls back.jpg");
         controlsBackground.setLayout(new BorderLayout());
         controlsDialog.setContentPane(controlsBackground);
 
@@ -184,7 +184,7 @@ public class Menu {
 
         JLabel controlsLabel = new JLabel(controlsText, SwingConstants.CENTER);
         controlsLabel.setForeground(Color.WHITE);
-        controlsLabel.setFont(new Font("Monospaced", Font.PLAIN, 14));
+        controlsLabel.setFont(new Font("Monospaced", Font.PLAIN, 16));
         controlsLabel.setOpaque(true);
         controlsLabel.setBackground(new Color(128, 0, 158)); // Black background with 150 alpha (transparency)
 
@@ -204,19 +204,19 @@ public class Menu {
         button.setContentAreaFilled(true);
         button.setBorderPainted(true);
         button.setBorder(BorderFactory.createLineBorder(borderColor, 4));
-        button.setPreferredSize(new Dimension(250, 70));
+        button.setPreferredSize(new Dimension(250, 80));
         button.setFocusPainted(false);
     }
 
     private JButton createButton(String text) {
         JButton button = new JButton(text);
-        button.setFont(new Font("Monospaced", Font.BOLD, 16));
+        button.setFont(new Font("Monospaced", Font.LAYOUT_LEFT_TO_RIGHT, 20));
         return button;
     }
 
     private void playMusic() {
         try {
-            soundPlayer.playMusic("Phase2/misc/8bit-music-menu8.wav");
+            soundPlayer.playMusic("src\\Phase2\\misc\\8bit-music-menu8.wav");
         } catch (LineUnavailableException e) {
             e.printStackTrace();
         }
