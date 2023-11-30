@@ -115,7 +115,7 @@ public class Menu {
         customizeButton(randomOrderButton, Color.BLACK, Color.BLACK);
         customizeButton(botButton, Color.black, Color.black);
         customizeButton(bestOrderButton, Color.BLACK, Color.BLACK);
-        customizeButton(controlsButton, Color.black, Color.black);
+        customizeButton(controlsButton, Color.black, Color.BLACK);
 
         Dimension buttonSize = new Dimension(250, 70); // Set the desired size
 
