@@ -54,6 +54,41 @@ public class Criteria {
         return gaps;
     }
 
+    private static int countBlocksAbove(int row, int col, int[][] field) {
+        int count = 0;
+        for (int i = row - 1; i >= 0; i--) {
+            if (field[i][col] != -1) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    public static int calculateBlocksAboveGaps(int[][] field) {
+        boolean[][] checked = new boolean[field.length][field[0].length];
+        for (int i = 0; i < field.length; i++) {
+            for (int j = 0; j < field[0].length; j++) {
+                checked[i][j] = false;
+            }
+        }
+        int blocks = 0;
+        int blocksum = 0;
+        for (int i = 0; i < field.length; i++) {
+            for (int j = 0; j < field[0].length; j++) {
+                if (checked[i][j])
+                    continue;
+                if (field[i][j] != -1) {
+                    checked[i][j] = true;
+                    continue;
+                }
+                blocks=countBlocksAbove(i, j, field);
+                blocksum+=blocks;
+                floodFillHoles(i, j, field, checked);
+            }
+        }
+        return blocksum;
+    }
+
     private static void floodFillHoles(int row, int col, int[][] field, boolean[][] checked) {
         if (row < 0 || row >= field.length || col < 0 || col >= field[0].length)
             return;
@@ -68,21 +103,23 @@ public class Criteria {
 
     public static int calculateRowTransitions(int[][] matrix) {
         int totalTransitions = 0;
-
+    
         for (int[] row : matrix) {
             int prevCell = row[0];
-
+    
             for (int cell : row) {
+                // Check if both cells are non-empty before counting the transition
                 if ((prevCell == -1 && cell != -1) || (prevCell != -1 && cell == -1)) {
                     totalTransitions++;
                 }
-
+    
                 prevCell = cell;
             }
         }
-
+    
         return totalTransitions;
     }
+    
 
     public static int calculateColumnTransitions(int[][] matrix) {
         int totalTransitions = 0;
@@ -222,24 +259,24 @@ public class Criteria {
 
         for (int row = 0; row < rows; row++) {
             for (int col = 0; col < cols; col++) {
-                if(matrix[row][col] != -1) {
-                    if(row+1<rows) {
-                        if(matrix[row+1][col] != -1) {
+                if (matrix[row][col] != -1) {
+                    if (row + 1 < rows) {
+                        if (matrix[row + 1][col] != -1) {
                             edgesTouchingBlocks++;
                         }
                     }
-                    if(row-1>=0) {
-                        if(matrix[row-1][col] != -1) {
+                    if (row - 1 >= 0) {
+                        if (matrix[row - 1][col] != -1) {
                             edgesTouchingBlocks++;
                         }
                     }
-                    if(col+1<cols) {
-                        if(matrix[row][col+1] != -1) {
+                    if (col + 1 < cols) {
+                        if (matrix[row][col + 1] != -1) {
                             edgesTouchingBlocks++;
                         }
                     }
-                    if(col-1>=0) {
-                        if(matrix[row][col-1] != -1) {
+                    if (col - 1 >= 0) {
+                        if (matrix[row][col - 1] != -1) {
                             edgesTouchingBlocks++;
                         }
                     }
@@ -264,10 +301,10 @@ public class Criteria {
                 { -1, -1, -1, -1, -1 },
                 { -1, -1, -1, -1, -1 },
                 { -1, -1, -1, -1, -1 },
-                { -1, -1, -1, -1, -1 },
-                { -1, -1, -1, 1, -1 },
-                { -1, -1, -1, -1, -1 },
-                { -1, -1, -1, 1, -1 }
+                { -1, -1, -1, -1, 1 },
+                { -1, -1, 1, 1, 1 },
+                { -1, 1, 1, 1, -1 },
+                { -1, 1, -1, 1, 1 }
         };
 
         // System.out.println(calculateHeight(matrix));
@@ -278,7 +315,9 @@ public class Criteria {
         // System.out.println("Bumpiness: " + calculateBumpiness());
         // System.out.println("Floor touching blocks: " +
         // countFloorTouchingBlocks(matrix));
-        System.out.println(calculateColumnTransitions(matrix));
+        // System.out.println(calculateColumnTransitions(matrix));
+        System.out.println(calculateGaps(matrix));
+        System.out.println(calculateBlocksAboveGaps(matrix));
     }
 
 }
