@@ -167,10 +167,9 @@ public class Menu {
         controlsDialog.setSize(400, 300);
         controlsDialog.setLocationRelativeTo(frame);
 
-        BackgroundPanel controlsBackground = new BackgroundPanel("src\\Phase2\\misc\\controls back.jpg");
+        BackgroundPanel controlsBackground = new BackgroundPanel("");
         controlsBackground.setLayout(new BorderLayout());
         controlsDialog.setContentPane(controlsBackground);
-
         String controlsText = "<html><body style='text-align: center;'>"
                 + "<h3 style='font-family: Monospaced;'>Controls:</h3>"
                 + "<p style='font-family: Monospaced;'>SPACE - Drops the piece instantly<br>"
@@ -181,13 +180,13 @@ public class Menu {
                 + "D - Rotate piece clockwise<br>"
                 + "A - Rotate piece anticlockwise</p>"
                 + "</body></html>";
-
+        
+      
         JLabel controlsLabel = new JLabel(controlsText, SwingConstants.CENTER);
         controlsLabel.setForeground(Color.WHITE);
         controlsLabel.setFont(new Font("Monospaced", Font.PLAIN, 16));
         controlsLabel.setOpaque(true);
         controlsLabel.setBackground(new Color(128, 0, 158)); // Black background with 150 alpha (transparency)
-
         controlsBackground.add(controlsLabel);
 
         // Display the dialog
