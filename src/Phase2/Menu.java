@@ -164,7 +164,7 @@ public class Menu {
 
     public void showControlsDialog() {
         JDialog controlsDialog = new JDialog(frame, "Game Controls", true);
-        controlsDialog.setSize(400, 300);
+        controlsDialog.setSize(500, 500);
         controlsDialog.setLocationRelativeTo(frame);
 
         BackgroundPanel controlsBackground = new BackgroundPanel("");
@@ -181,18 +181,30 @@ public class Menu {
                 + "A - Rotate piece anticlockwise</p>"
                 + "</body></html>";
         
-      
-        JLabel controlsLabel = new JLabel(controlsText, SwingConstants.CENTER);
-        controlsLabel.setForeground(Color.WHITE);
-        controlsLabel.setFont(new Font("Monospaced", Font.PLAIN, 16));
+        ImageIcon controlsIcon = new ImageIcon("src\\Phase2\\misc\\Contros__1.jpg");
+        JLabel controlsLabel = new JLabel(controlsIcon);
+        JLabel textLabel = new JLabel(controlsText,SwingConstants.CENTER);
+        textLabel.setForeground(Color.WHITE);
+        textLabel.setFont(new Font("Monospaced", Font.ITALIC, 18));
+        JPanel textPanel = new JPanel(new BorderLayout());
+        textPanel.setOpaque(false);
+        textPanel.add(textLabel, BorderLayout.CENTER);
+        controlsLabel.setLayout(new BorderLayout());
+        controlsLabel.add(textPanel, BorderLayout.CENTER);        
         controlsLabel.setOpaque(true);
         controlsLabel.setBackground(new Color(128, 0, 158)); // Black background with 150 alpha (transparency)
         controlsBackground.add(controlsLabel);
-
-        // Display the dialog
         controlsDialog.setVisible(true);
+        
+    
+    
     }
 
+
+    
+    
+    
+    
     private void customizeButton(JButton button, Color foregroundColor, Color borderColor) {
         // Set the background color
         button.setBackground(new Color(128, 0, 128)); // Purple color
