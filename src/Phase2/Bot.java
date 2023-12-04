@@ -15,12 +15,14 @@ public class Bot {
 
     private int currentBestRotation;
     private int currentBestXPos;
+    private int piecesElapsed;
 
     public double[] weights;
 
     public Bot(double[] weights) {
         tetris = new Tetris();
         this.weights = weights;
+        piecesElapsed = 0;
         tetris.runTetris();
         workingField = tetris.getWorkingField();
     }
@@ -32,7 +34,7 @@ public class Bot {
         while (!tetris.gameOver) {
             getAllPossibleDrops(tetris.getWorkingField(), currentPiece);
             try {
-                Thread.sleep(tetris.getUpdatedPieceVelocity() * 3);
+                Thread.sleep(tetris.getUpdatedPieceVelocity() * 2);
                 // flush terminal
                 // System.out.print("\033[H\033[2J");
             } catch (InterruptedException e) {
@@ -52,7 +54,7 @@ public class Bot {
             for (int xposition = 0; xposition <= (Tetris.HORIZONTAL_GRID_SIZE
                     - (currentPiece[0].length)); xposition++) {
                 final int currentXPos = tetris.currentX;
-                int[][] simulatedBoard = Matrix.rotateMatrix(tetris.getSimulatedDropField());
+                int[][] simulatedBoard = Matrix.rotateMatrix(tetris.getSimulatedDropField(tetris.field));
                 drops.add(new HashMap<String, Object>() {
                     {
                         put("rotation", currentRotation);
@@ -82,8 +84,14 @@ public class Bot {
         tetris.rotateLeft();
 
         if (bestMoveIndex != -1) {
+            // if(piecesElapsed == 0 && tetris.currentID == 4)
+            // {
+            //     tetris.rotateRight();
+            //     tetris.rotateRight();
+            // }
             performBestDrop();
         }
+        piecesElapsed++;
     }
 
     public int calculateBestMove(List<Map<String, Object>> drops) {
