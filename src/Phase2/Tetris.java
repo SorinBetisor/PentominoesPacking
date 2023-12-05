@@ -27,7 +27,7 @@ public class Tetris {
     public static final int MINIMUM_VELOCITY = 150;
     public static final int INITIAL_VELOCITY = 800;
     private List<Character> pieceBag = new ArrayList<>();
-    public char[] PIECES = { 'I', 'P', 'Z', 'F', 'U', 'Y', 'X', 'N', 'L', 'T', 'V', 'W' };
+    public char[] PIECES = { 'I', 'P', 'Z', 'F', 'U', 'Y', 'X', 'N', 'L', 'T', 'V', 'W'};
     // 'T', 'U', 'P', 'I', 'V', 'L', 'F', 'W', 'X', 'Y', 'Z', 'N'
     // I P Z F U Y X N L T V W
 
