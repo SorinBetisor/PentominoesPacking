@@ -11,6 +11,7 @@ public class SequenceBot {
     }
 
     public void runBot(int[][] field, int[][] currentPiece, int fWidth, int fHeight) {
+        Tetris.sequence = true;
         tetris.botPlaying = true;
         while (!tetris.gameOver) {
             try {
@@ -90,7 +91,8 @@ public class SequenceBot {
     }
 
     public static void main(String[] args) {
-        
+                Tetris.sequence = true;
+
         SequenceBot bot = new SequenceBot();
         Tetris tetris = bot.tetris;
         bot.runBot(tetris.field, tetris.currentPiece, Tetris.HORIZONTAL_GRID_SIZE, Tetris.VERTICAL_GRID_SIZE);
