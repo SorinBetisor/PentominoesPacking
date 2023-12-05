@@ -18,10 +18,15 @@ public class Menu {
     class BackgroundPanel extends JPanel {
         private BufferedImage backgroundImage;
 
+        public BackgroundPanel()
+        {
+
+        }
+
         public BackgroundPanel(String imagePath) {
             try {
                 this.backgroundImage = ImageIO.read(new File(imagePath));
-                icon = new ImageIcon( "src\\Phase2\\misc\\icon.png");
+                icon = new ImageIcon( "C:\\Users\\Admin\\Desktop\\Project1-1\\bcs_group_33_project_2023\\src\\Phase2\\misc\\icon.png");
             } catch (Exception e) {
                 e.printStackTrace();
             }   
@@ -42,7 +47,7 @@ public class Menu {
         frame.setLocationRelativeTo(null);
 
         BackgroundPanel backgroundPanel = new BackgroundPanel(
-                "src\\Phase2\\misc\\91655.jpg");
+                "bcs_group_33_project_2023\\src\\Phase2\\misc\\91655.jpg");
         backgroundPanel.setLayout(new GridBagLayout());
         frame.setContentPane(backgroundPanel);
 
@@ -53,7 +58,7 @@ public class Menu {
         gbc.anchor = GridBagConstraints.CENTER;
 
         JLabel t1 = new JLabel("",
-                new ImageIcon("src\\Phase2\\misc\\Pentris-11-29-2023(1).gif"),
+                new ImageIcon("bcs_group_33_project_2023\\src\\Phase2\\misc\\Pentris-11-29-2023(1).gif"),
                 JLabel.CENTER);
         gbc.insets = new Insets(-5, 0, 20, 0);
         frame.add(t1, gbc);
@@ -159,6 +164,24 @@ public class Menu {
             }
         });
 
+        bestOrderButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                frame.dispose();
+                SwingWorker<Void, Void> worker = new SwingWorker<>() {
+                    @Override
+                    protected Void doInBackground() {
+                        SequenceBot bot = new SequenceBot();
+                        Tetris tetris = bot.tetris;
+                        bot.runBot(tetris.field, tetris.currentPiece, Tetris.HORIZONTAL_GRID_SIZE, Tetris.VERTICAL_GRID_SIZE);
+                        return null;
+                    }
+                };
+
+                worker.execute();
+            }
+        });
+
         return buttonPanel;
     }
 
@@ -167,7 +190,7 @@ public class Menu {
         controlsDialog.setSize(500, 500);
         controlsDialog.setLocationRelativeTo(frame);
 
-        BackgroundPanel controlsBackground = new BackgroundPanel("");
+        BackgroundPanel controlsBackground = new BackgroundPanel();
         controlsBackground.setLayout(new BorderLayout());
         controlsDialog.setContentPane(controlsBackground);
         String controlsText = "<html><body style='text-align: center;'>"
@@ -181,7 +204,7 @@ public class Menu {
                 + "A - Rotate piece anticlockwise</p>"
                 + "</body></html>";
         
-        ImageIcon controlsIcon = new ImageIcon("src\\Phase2\\misc\\Contros__1.jpg");
+        ImageIcon controlsIcon = new ImageIcon("bcs_group_33_project_2023\\src\\Phase2\\misc\\Contros__1.jpg");
         JLabel controlsLabel = new JLabel(controlsIcon);
         JLabel textLabel = new JLabel(controlsText,SwingConstants.CENTER);
         textLabel.setForeground(Color.WHITE);
