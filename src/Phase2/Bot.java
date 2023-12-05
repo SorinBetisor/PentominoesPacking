@@ -15,14 +15,12 @@ public class Bot {
 
     private int currentBestRotation;
     private int currentBestXPos;
-    private int piecesElapsed;
 
     public double[] weights;
 
     public Bot(double[] weights) {
         tetris = new Tetris();
         this.weights = weights;
-        piecesElapsed = 0;
         tetris.runTetris();
         workingField = tetris.getWorkingField();
     }
@@ -39,6 +37,9 @@ public class Bot {
                 e.printStackTrace();
             }
         }
+
+        //show a game over dialog panel
+        //write the code here
 
     }
 
@@ -90,7 +91,6 @@ public class Bot {
             // }
             performBestDrop();
         }
-        piecesElapsed++;
     }
 
     public int calculateBestMove(List<Map<String, Object>> drops) {

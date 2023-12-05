@@ -10,7 +10,11 @@ import java.awt.event.*;
 import java.awt.geom.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.awt.font.TextLayout;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -206,7 +210,24 @@ public class MainScreen extends JPanel implements KeyListener {
         g2d.drawString("Leaderboard", leaderboardX + 10, leaderboardY + 20);
 
         // Read existing high scores from the file
-        List<Player> players = Player.readHighScores("bcs_group_33_project_2023\\src\\Phase2\\highscores.txt");
+        String path1 = "bcs_group_33_project_2023\\src\\Phase2\\highscores.txt";
+        String path2 = "src/Phase2/highscores.txt";
+
+        List<Player> players = null;
+
+        if (fileExists(path1)) {
+            players = Player.readHighScores(path1);
+        } else if (fileExists(path2)) {
+            players = Player.readHighScores(path2);
+        } else {
+            System.out.println("Both paths do not exist.");
+            players = new ArrayList<>();
+            players.add(new Player("Grish", 34));
+            players.add(new Player("Alex", 20));
+            players.add(new Player("Jana", 13));
+            players.add(new Player("Sorin", 12));
+            players.add(new Player("dan", 9));
+        }
 
         // Display the first 5 players in the leaderboard
         g2d.setFont(new Font("Monospaced", Font.PLAIN, 16));
@@ -246,6 +267,11 @@ public class MainScreen extends JPanel implements KeyListener {
                 }
             }
         }
+    }
+
+    private static boolean fileExists(String path) {
+        Path filePath = Paths.get(path);
+        return Files.exists(filePath) && Files.isRegularFile(filePath);
     }
 
     // Returns the color associated with a given ID
@@ -336,7 +362,7 @@ public class MainScreen extends JPanel implements KeyListener {
             player.updateHighScores(playerName, tetris.highScore);
         } else {
             // Close the window
-            window.dispose();
+            JOptionPane.showMessageDialog(null, "Game Over! The bot got the score:  " + tetris.score);
         }
     }
 
