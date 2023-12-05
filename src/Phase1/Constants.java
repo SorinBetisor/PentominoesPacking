@@ -2,9 +2,9 @@ package Phase1;
 import java.util.Scanner;
 
 public class Constants {
-	public static int HORIZONTAL_GRID_SIZE = 6;
-	public static int VERTICAL_GRID_SIZE = 5;
-	public static char[] INPUT = { 'T', 'U', 'P', 'I', 'V', 'L' };
+	public static int HORIZONTAL_GRID_SIZE = 5;
+	public static int VERTICAL_GRID_SIZE = 12;
+	public static char[] INPUT = { 'T', 'U', 'P', 'I', 'V', 'L', 'F', 'W', 'X', 'Y', 'Z', 'N'};
 
 	public static void inputGameInfo() {
 		Scanner scanner = new Scanner(System.in);
