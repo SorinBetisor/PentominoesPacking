@@ -185,7 +185,7 @@ public class Menu {
         JLabel controlsLabel = new JLabel(controlsIcon);
         JLabel textLabel = new JLabel(controlsText,SwingConstants.CENTER);
         textLabel.setForeground(Color.WHITE);
-        textLabel.setFont(new Font("Monospaced", Font.ITALIC, 18));
+        textLabel.setFont(new Font("Monospaced", Font.ITALIC | Font.BOLD, 18));
         JPanel textPanel = new JPanel(new BorderLayout());
         textPanel.setOpaque(false);
         textPanel.add(textLabel, BorderLayout.CENTER);
