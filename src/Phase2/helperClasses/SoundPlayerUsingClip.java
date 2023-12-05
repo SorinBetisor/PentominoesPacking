@@ -1,5 +1,7 @@
 package Phase2.helperClasses;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.InputStream;
 import javax.sound.sampled.*;
 import java.io.IOException;
@@ -35,14 +37,13 @@ public class SoundPlayerUsingClip implements LineListener {
      */
     public void playMusic(String path) throws LineUnavailableException {
         try {
-            InputStream inputStream = SoundPlayerUsingClip.class.getClassLoader().getResourceAsStream(path);
-            AudioInputStream audioStream = AudioSystem.getAudioInputStream(inputStream);
+            File audioFile = new File(path);
+            AudioInputStream audioStream = AudioSystem.getAudioInputStream(audioFile);
 
             AudioFormat audioFormat = audioStream.getFormat();
             DataLine.Info info = new DataLine.Info(SourceDataLine.class, audioFormat);
             audioLine = (SourceDataLine) AudioSystem.getLine(info);
-            SoundPlayerUsingClip soundPlayer = new SoundPlayerUsingClip();
-            audioLine.addLineListener(soundPlayer);
+            audioLine.addLineListener(this);
             audioLine.open(audioFormat);
             audioLine.start();
 
@@ -52,14 +53,13 @@ public class SoundPlayerUsingClip implements LineListener {
 
             int bufferSize = 4096;
             byte[] buffer = new byte[bufferSize];
-            int bytesRead = 0;
+            int bytesRead;
 
             while ((bytesRead = audioStream.read(buffer, 0, buffer.length)) != -1) {
                 if (!isPaused) {
                     audioLine.write(buffer, 0, bytesRead);
                 }
             }
-            
 
             audioLine.drain();
             audioLine.close();
@@ -67,6 +67,8 @@ public class SoundPlayerUsingClip implements LineListener {
             e.printStackTrace();
         }
     }
+
+
 
     /**
      * Stops the audio playback.

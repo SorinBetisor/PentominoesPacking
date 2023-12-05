@@ -206,7 +206,7 @@ public class MainScreen extends JPanel implements KeyListener {
         g2d.drawString("Leaderboard", leaderboardX + 10, leaderboardY + 20);
 
         // Read existing high scores from the file
-        List<Player> players = Player.readHighScores("bcs_group_33_project_2023\\src\\Phase2\\highscores.txt");
+        List<Player> players = Player.readHighScores("src/Phase2/highscores.txt");
 
         // Display the first 5 players in the leaderboard
         g2d.setFont(new Font("Monospaced", Font.PLAIN, 16));

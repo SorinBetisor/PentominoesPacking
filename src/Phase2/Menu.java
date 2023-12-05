@@ -26,7 +26,7 @@ public class Menu {
         public BackgroundPanel(String imagePath) {
             try {
                 this.backgroundImage = ImageIO.read(new File(imagePath));
-                icon = new ImageIcon( "C:\\Users\\Admin\\Desktop\\Project1-1\\bcs_group_33_project_2023\\src\\Phase2\\misc\\icon.png");
+                icon = new ImageIcon( "src/Phase2/misc/icon.png");
             } catch (Exception e) {
                 e.printStackTrace();
             }   
@@ -47,7 +47,7 @@ public class Menu {
         frame.setLocationRelativeTo(null);
 
         BackgroundPanel backgroundPanel = new BackgroundPanel(
-                "bcs_group_33_project_2023\\src\\Phase2\\misc\\91655.jpg");
+                "src/Phase2/misc/91655.jpg");
         backgroundPanel.setLayout(new GridBagLayout());
         frame.setContentPane(backgroundPanel);
 
@@ -58,7 +58,7 @@ public class Menu {
         gbc.anchor = GridBagConstraints.CENTER;
 
         JLabel t1 = new JLabel("",
-                new ImageIcon("bcs_group_33_project_2023\\src\\Phase2\\misc\\Pentris-11-29-2023(1).gif"),
+                new ImageIcon("src/Phase2/misc/Pentris-11-29-2023(1).gif"),
                 JLabel.CENTER);
         gbc.insets = new Insets(-5, 0, 20, 0);
         frame.add(t1, gbc);
@@ -75,7 +75,7 @@ public class Menu {
         musicToggle.setFocusPainted(false);
 
         // Set the speaker icon (adjust the path accordingly)
-        ImageIcon speakerIcon = new ImageIcon("src\\Phase2\\misc\\soundIcon.png");
+        ImageIcon speakerIcon = new ImageIcon("src/Phase2/misc/soundIcon.png");
 
         // Resize the icon
         Image scaledImage = speakerIcon.getImage().getScaledInstance(15, 15, Image.SCALE_SMOOTH);
@@ -205,7 +205,7 @@ public class Menu {
                 + "A - Rotate piece anticlockwise</p>"
                 + "</body></html>";
         
-        ImageIcon controlsIcon = new ImageIcon("bcs_group_33_project_2023\\src\\Phase2\\misc\\Contros__1.jpg");
+        ImageIcon controlsIcon = new ImageIcon("src/Phase2/misc/Contros__1.jpg");
         JLabel controlsLabel = new JLabel(controlsIcon);
         JLabel textLabel = new JLabel(controlsText,SwingConstants.CENTER);
         textLabel.setForeground(Color.WHITE);
@@ -251,7 +251,7 @@ public class Menu {
 
     private void playMusic() {
         try {
-            soundPlayer.playMusic("src\\Phase2\\misc\\8bit-music-menu8.wav");
+            soundPlayer.playMusic("src/Phase2/misc/8bit-music-menu8.wav");
         } catch (LineUnavailableException e) {
             e.printStackTrace();
         }
@@ -261,6 +261,8 @@ public class Menu {
         SwingUtilities.invokeLater(() -> {
             new Menu();
         });
+
+
     }
 
 }
