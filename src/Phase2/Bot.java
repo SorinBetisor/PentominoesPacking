@@ -72,7 +72,7 @@ public class Bot {
                 });
                 tetris.moveRight();
             }
-            tetris.moveLeftToTheBorder();
+            // tetris.moveLeftToTheBorder();
             tetris.rotateRight();
             // System.out.print("\033[H\033[2J");
             // System.out.println(drops);
@@ -152,12 +152,6 @@ public class Bot {
         int floorTouchingBlocksScore = (int) drop.get("floorTouchingBlocks");
         int wallTouchingBlocksScore = (int) drop.get("wallTouchingBlocks");
         int edgesTouchingBlocksScore = (int) drop.get("edgesTouchingBlocks");
-        // Object blocksAboveGapsObj = drop.get("blocksAboveGaps");
-        // int blocksAboveGapsScore = (blocksAboveGapsObj != null) ? (int) blocksAboveGapsObj : 0;
-        // System.out.println(blocksAboveGapsScore);
-        // System.out.println("Can clear score: " + canClearScore);
-        // System.out.println("Height score: " + heightScore);
-        // System.out.println("Gaps score: " + gapsScore);
 
         double totalScore = weights[0] * heightScore + weights[1] * canClearScore + weights[2] * gapsScore + weights[3] * bumpinessScore
                 + weights[4] * floorTouchingBlocksScore + weights[5] * wallTouchingBlocksScore + weights[6] * edgesTouchingBlocksScore;
