@@ -12,11 +12,8 @@ public class BotTrain {
     private static final int NUM_BOTS = 60;
     private static final int NUM_GENERATIONS = 50;
     private static final int TOURNAMENT_SIZE = 20;
-    private static final double MUTATION_RATE = 0.4;
+    private static final double MUTATION_RATE = 0.2;
     private static final Object fitnessLock = new Object();
-
-    private static final int NUM_ELITE_BOTS = 70;
-    private static List<Bot> eliteBots = new ArrayList<>();
     private static Bot bestBot;
 
     public static void main(String[] args) {
@@ -40,20 +37,13 @@ public class BotTrain {
             }
 
             evaluateFitness(population);
-            synchronized (fitnessLock) {
-                eliteBots.addAll(population);
-            }
-            
-            eliteBots.sort(Comparator.comparingDouble(Bot::getFitness).reversed());
-            eliteBots = eliteBots.subList(0, Math.min(NUM_ELITE_BOTS, eliteBots.size()));
-
             updateBestBot(population);
-            System.out.println("Top 10 Elite Bots:");
-            for (int i = 0; i < Math.min(10, eliteBots.size()); i++) {
-                Bot eliteBot = eliteBots.get(i);
-                System.out.println("Bot " + (i + 1) + " - Score: " + eliteBot.tetris.score);
-                System.out.println("Weights: " + arrayToString(eliteBot.weights));
-            }
+            // System.out.println("Top 10 Bots:");
+            // for (int i = 0; i < Math.min(10, population.size()); i++) {
+            //     Bot eliteBot = population.get(i);
+            //     System.out.println("Bot " + (i + 1) + " - Score: " + eliteBot.tetris.score);
+            //     System.out.println("Weights: " + arrayToString(eliteBot.weights));
+            // }
             List<Bot> parents = selectParents(population);
 
             List<Bot> nextGeneration = createNextGeneration(parents);
@@ -88,7 +78,7 @@ public class BotTrain {
 
     private static void evaluateFitness(List<Bot> population) {
         List<Bot> currentPopulation = new ArrayList<>(population);
-    
+
         synchronized (fitnessLock) {
             for (Bot bot : currentPopulation) {
                 runBot(bot, "Bot");
@@ -96,13 +86,12 @@ public class BotTrain {
             }
         }
     }
-    
+
 
     private static List<Bot> selectParents(List<Bot> population) {
         List<Bot> parents = new ArrayList<>();
 
-        parents.addAll(eliteBots);
-        for (int i = 0; i < NUM_BOTS - eliteBots.size(); i++) {
+        for (int i = 0; i < NUM_BOTS; i++) {
             List<Bot> tournament = new ArrayList<>();
             for (int j = 0; j < TOURNAMENT_SIZE; j++) {
                 tournament.add(population.get(new Random().nextInt(population.size())));
@@ -115,17 +104,7 @@ public class BotTrain {
 
     private static List<Bot> createNextGeneration(List<Bot> parents) {
         List<Bot> nextGeneration = new ArrayList<>();
-    
-        // Select the top 70 bots from the elite bots
-        nextGeneration.addAll(eliteBots.subList(0, Math.min(70, eliteBots.size())));
-    
-        // Add 30% new bots to the next generation
-        int numRandomBots = (int) (0.3 * NUM_BOTS);
-        for (int i = 0; i < numRandomBots; i++) {
-            double[] newBotWeights = generateRandomArray();
-            nextGeneration.add(new Bot(newBotWeights));
-        }
-    
+
         // Continue with crossover and mutation for the remaining parents
         for (int i = 0; i < parents.size() - 1; i += 2) {
             Bot parent1 = parents.get(i);
@@ -134,14 +113,13 @@ public class BotTrain {
             mutate(childWeights);
             nextGeneration.add(new Bot(childWeights));
         }
-    
+
         if (parents.size() % 2 != 0) {
             nextGeneration.add(parents.get(parents.size() - 1));
         }
-    
+
         return nextGeneration;
     }
-    
 
     private static double[] crossover(double[] parent1, double[] parent2) {
         int crossoverPoint = new Random().nextInt(parent1.length - 1) + 1;  // Ensure crossover point is not at the extremes
@@ -162,11 +140,11 @@ public class BotTrain {
         Tetris tetris = bot.tetris;
         bot.runBot(tetris.field, tetris.currentPiece, Tetris.HORIZONTAL_GRID_SIZE, Tetris.VERTICAL_GRID_SIZE);
         if (tetris.checkGameOver()) {
-            // if (tetris.score >= 8) {
-            // System.out.println(botName + " Score: " + tetris.score);
-            // System.out.println(botName + " Weights: " + arrayToString(bot.weights));
-            // System.out.println("Sequence: " + Arrays.toString(tetris.PIECES));
-            // }
+            if (tetris.score >= 8) {
+            System.out.println(botName + " Score: " + tetris.score);
+            System.out.println(botName + " Weights: " + arrayToString(bot.weights));
+            System.out.println("Sequence: " + Arrays.toString(tetris.PIECES));
+            }
         }
     }
 

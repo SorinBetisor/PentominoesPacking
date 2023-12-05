@@ -10,7 +10,12 @@ import java.awt.event.*;
 import java.awt.geom.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.awt.font.TextLayout;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -195,7 +200,7 @@ public class MainScreen extends JPanel implements KeyListener {
         int leaderboardHeight = 200; // Adjust the height as needed
         int leaderboardX = (x + leftFillerWidth) * size + (int) (0.2 * size);
         ;
-        int leaderboardY = 200;
+        int leaderboardY = 10;
 
         g2d.setColor(Color.WHITE);
         g2d.drawRect(leaderboardX - 1, leaderboardY - 1, leaderboardWidth + 1, leaderboardHeight + 2);
@@ -206,19 +211,126 @@ public class MainScreen extends JPanel implements KeyListener {
         g2d.drawString("Leaderboard", leaderboardX + 10, leaderboardY + 20);
 
         // Read existing high scores from the file
-        List<Player> players = Player.readHighScores("bcs_group_33_project_2023\\src\\Phase2\\highscores.txt");
+        String path1 = "bcs_group_33_project_2023\\src\\Phase2\\highscores.txt";
+        String path2 = "src/Phase2/highscores.txt";
+
+        List<Player> players = null;
+
+        if (fileExists(path1)) {
+            players = Player.readHighScores(path1);
+        } else if (fileExists(path2)) {
+            players = Player.readHighScores(path2);
+        } else {
+            System.out.println("Both paths do not exist.");
+            players = new ArrayList<>();
+            players.add(new Player("Grish", 34));
+            players.add(new Player("Alex", 20));
+            players.add(new Player("Jana", 13));
+            players.add(new Player("Sorin", 12));
+            players.add(new Player("dan", 9));
+        }
 
         // Display the first 5 players in the leaderboard
         g2d.setFont(new Font("Monospaced", Font.PLAIN, 16));
         int yOffset = 40; // Adjust the starting y-coordinate for player entries
 
-        for (int i = 0; i < Math.min(5, players.size()); i++) {
+        for (int i = 0; i < Math.min(8, players.size()); i++) {
             Player player = players.get(i);
             String leaderboardEntry = player.getName() + ": " + player.getHighScore();
             g2d.drawString(leaderboardEntry, leaderboardX + 10, leaderboardY + yOffset);
             yOffset += 20; // Adjust the vertical spacing between entries
         }
 
+        if(!tetris.botPlaying || !Tetris.sequence){
+        int nextPieceXOffset = leaderboardX + 10;
+        int nextPieceYOffset = leaderboardY + leaderboardHeight + 20;
+        int nextPieceSize = rightFillerWidth * (int) (0.65 * size);
+
+        int borderThickness2 = 2;
+        g2d.setColor(Color.WHITE);
+        g2d.fillRect(nextPieceXOffset - borderThickness2, nextPieceYOffset - borderThickness2,
+                nextPieceSize + 2 * borderThickness2, nextPieceSize + 2 * borderThickness2);
+
+        // Draw the white rectangle background
+        g2d.setColor(Color.MAGENTA.darker().darker());
+        g2d.fillRect(nextPieceXOffset, nextPieceYOffset, nextPieceSize, nextPieceSize);
+
+        String labelText = "Next Piece";
+        Font labelFont = new Font("Monospaced", Font.BOLD, 14);
+
+        // Define the gradient for the text
+        GradientPaint labelGradient = new GradientPaint(
+                nextPieceXOffset, nextPieceYOffset + nextPieceSize + 20, Color.WHITE.brighter(),
+                nextPieceXOffset + labelFont.getSize() * labelText.length(), nextPieceYOffset + nextPieceSize + 20,
+                Color.WHITE);
+
+        // Draw the border for the text
+        g2d.setColor(Color.BLACK);
+        g2d.setFont(labelFont);
+
+        int borderThickness = 1;
+        for (int i = -borderThickness; i <= borderThickness; i++) {
+            for (int j = -borderThickness; j <= borderThickness; j++) {
+                if (i != 0 || j != 0) {
+                    g2d.drawString(labelText, nextPieceXOffset + i, nextPieceYOffset + nextPieceSize + 20 + j);
+                }
+            }
+        }
+
+        // Draw the text with the gradient
+        g2d.setPaint(labelGradient);
+        g2d.drawString(labelText, nextPieceXOffset, nextPieceYOffset + nextPieceSize + 20);
+
+        // Draw the lookAheadPiece inside the white square
+        int pieceSize = (int) (size * 0.4); // Adjust the piece size as needed
+        int padding = 2; // Padding between pieces in the lookahead area
+        int pieceID = tetris.nextPieceID;
+
+        if (pieceID == 1) {
+            pieceSize = (int) (size * 0.35);
+            nextPieceYOffset += 30;
+        } else {
+            pieceSize = (int) (size * 0.4);
+            nextPieceYOffset = leaderboardY + leaderboardHeight + 20;
+        }
+
+        for (int i = 0; i < tetris.lookAheadPiece.length; i++) {
+            for (int j = 0; j < tetris.lookAheadPiece[0].length; j++) {
+
+                int xCoordinate;
+                int yCoordinate;
+                if (pieceID == 1) {
+                    xCoordinate = nextPieceXOffset + i * pieceSize + padding * i;
+                    yCoordinate = 8 + nextPieceYOffset + j * pieceSize + padding * j;
+                }
+                else
+                {
+                    xCoordinate = 8+nextPieceXOffset + i * pieceSize + padding * i;
+                    yCoordinate = 8 + nextPieceYOffset + j * pieceSize + padding * j;
+                }
+
+                if (tetris.lookAheadPiece[i][j] == 0) {
+                    // Draw a white rectangle
+                    g2d.setColor(Color.MAGENTA.darker().darker());
+                    g2d.fill(new Rectangle2D.Double(xCoordinate, yCoordinate, pieceSize, pieceSize));
+
+                    // Draw the border if needed
+                    // g2d.setColor(Color.GRAY);
+                    // g2d.draw(new Rectangle2D.Double(xCoordinate, yCoordinate, pieceSize,
+                    // pieceSize));
+                } else {
+                    // Draw a colored rectangle based on pieceID
+                    g2d.setColor(GetColorOfID(pieceID).brighter());
+                    g2d.fill(new Rectangle2D.Double(xCoordinate, yCoordinate, pieceSize, pieceSize));
+
+                    // Draw the border if needed
+                    // g2d.setColor(Color.GRAY);
+                    // g2d.draw(new Rectangle2D.Double(xCoordinate, yCoordinate, pieceSize,
+                    // pieceSize));
+                }
+            }
+        }
+    }
         if (!tetris.botPlaying) {
             for (int i = 0; i < tetris.currentPiece.length; i++) {
                 for (int j = 0; j < tetris.currentPiece[0].length; j++) {
@@ -246,6 +358,11 @@ public class MainScreen extends JPanel implements KeyListener {
                 }
             }
         }
+    }
+
+    public static boolean fileExists(String path) {
+        Path filePath = Paths.get(path);
+        return Files.exists(filePath) && Files.isRegularFile(filePath);
     }
 
     // Returns the color associated with a given ID
@@ -336,7 +453,7 @@ public class MainScreen extends JPanel implements KeyListener {
             player.updateHighScores(playerName, tetris.highScore);
         } else {
             // Close the window
-            window.dispose();
+            JOptionPane.showMessageDialog(null, "Game Over! The bot got the score:  " + tetris.score);
         }
     }
 

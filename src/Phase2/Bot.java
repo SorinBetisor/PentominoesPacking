@@ -15,22 +15,18 @@ public class Bot {
 
     private int currentBestRotation;
     private int currentBestXPos;
-    private int piecesElapsed;
 
     public double[] weights;
 
     public Bot(double[] weights) {
         tetris = new Tetris();
         this.weights = weights;
-        piecesElapsed = 0;
         tetris.runTetris();
         workingField = tetris.getWorkingField();
     }
 
     public void runBot(int[][] field, int[][] currentPiece, int fWidth, int fHeight) {
         tetris.botPlaying = true;
-        // System.out.println(Arrays.deepToString(tetris.getWorkingField()));
-        // System.out.println("Bot is playing");
         while (!tetris.gameOver) {
             getAllPossibleDrops(tetris.getWorkingField(), currentPiece);
             try {
@@ -41,6 +37,9 @@ public class Bot {
                 e.printStackTrace();
             }
         }
+
+        //show a game over dialog panel
+        //write the code here
 
     }
 
@@ -68,11 +67,13 @@ public class Bot {
                         put("floorTouchingBlocks", Criteria.calculateFloorTouchingBlocks(simulatedBoard));
                         put("wallTouchingBlocks", Criteria.calculateWallTouchingBlocks(simulatedBoard));
                         put("edgesTouchingBlocks", Criteria.calculateEdgesTouchingBlocks(simulatedBoard));
-
+                        put("rowTransitions", Criteria.calculateRowTransitions(simulatedBoard));
+                        put("columnTransitions", Criteria.calculateColumnTransitions(simulatedBoard));
                     }
                 });
                 tetris.moveRight();
             }
+            // tetris.moveLeftToTheBorder();
             tetris.rotateRight();
             // System.out.print("\033[H\033[2J");
             // System.out.println(drops);
@@ -80,7 +81,6 @@ public class Bot {
         int bestMoveIndex = calculateBestMove(drops);
         tetris.rotateLeft();
         tetris.rotateLeft();
-
         tetris.rotateLeft();
 
         if (bestMoveIndex != -1) {
@@ -91,7 +91,6 @@ public class Bot {
             // }
             performBestDrop();
         }
-        piecesElapsed++;
     }
 
     public int calculateBestMove(List<Map<String, Object>> drops) {
@@ -110,10 +109,6 @@ public class Bot {
                 currentBestXPos = (int) drop.get("xpos");
             }
         }
-        // System.out.println("Best move index: " + bestMoveIndex);
-        // System.out.println("Best move score: " + maxScore);
-        // System.out.println("Current best rotation: " + currentBestRotation);
-        // System.out.println("Current best x position: " + currentBestXPos);
         return bestMoveIndex;
     }
 
@@ -153,25 +148,19 @@ public class Bot {
         int floorTouchingBlocksScore = (int) drop.get("floorTouchingBlocks");
         int wallTouchingBlocksScore = (int) drop.get("wallTouchingBlocks");
         int edgesTouchingBlocksScore = (int) drop.get("edgesTouchingBlocks");
-        Object blocksAboveGapsObj = drop.get("blocksAboveGaps");
-        int blocksAboveGapsScore = (blocksAboveGapsObj != null) ? (int) blocksAboveGapsObj : 0;
-        // System.out.println(blocksAboveGapsScore);
-        // System.out.println("Can clear score: " + canClearScore);
-        // System.out.println("Height score: " + heightScore);
-        // System.out.println("Gaps score: " + gapsScore);
 
-        double totalScore = weights[0] * canClearScore + weights[1] * heightScore + weights[2] * gapsScore
-                + weights[3] * bumpinessScore + weights[4] * blocksAboveGapsScore
-                + weights[5] * floorTouchingBlocksScore + weights[6] * wallTouchingBlocksScore
-                + weights[7] * edgesTouchingBlocksScore;
-
+        double totalScore = weights[0] * heightScore + weights[1] * canClearScore + weights[2] * gapsScore + weights[3] * bumpinessScore
+                + weights[4] * floorTouchingBlocksScore + weights[5] * wallTouchingBlocksScore + weights[6] * edgesTouchingBlocksScore;
         return totalScore;
     }
 
     public static void main(String[] args) {
-        Bot bot = new Bot(new double[] { 2.7f, -3.78f, -2.31f, -2.9f, -0.59f, 0.65f, 6.52f, 3.97f });
-        // Bot bot = new Bot(new double[] { 2.7, -3.71, -4.79, 4.8, 3.22, 4.98, -2.9 });
-        // 2.5049457971586584 -3.261807386464185 0.930695108263226 -0.2808731681024561
+        
+        Bot bot = new Bot(new double[] { -3.71, 2.7, -4.79, -2.9, 4.98, 3.22, 4.8});
+        //double totalScore = 2.7 * canClearScore + -3.71 * heightScore + -4.79 * gapsScore
+        // + 4.8 * edgesTouchingBlocksScore + 3.22 * wallTouchingBlocksScore + 4.98 * floorTouchingBlocksScore + -2.9 * bumpinessScore;
+        //Bot Weights: -4.600673152844697 3.310091433303091 -0.12420655245284395 0.0028305865270259467 2.594705313488695 3.8407725676586573 1.6460572978501622 4.850516530488642
+        //Bot 5 Weights: -2.5597737207890123 2.4475682375585786 3.738909159509415 -2.920070396573741 1.3458430406816955 1.3983726844940332 4.651933572309237 4.243388641986979
         Tetris tetris = bot.tetris;
         bot.runBot(tetris.field, tetris.currentPiece, Tetris.HORIZONTAL_GRID_SIZE, Tetris.VERTICAL_GRID_SIZE);
     }

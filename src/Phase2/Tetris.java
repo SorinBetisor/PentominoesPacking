@@ -25,9 +25,9 @@ public class Tetris {
     public static final int VERTICAL_GRID_SIZE = 15;
     public static final int MAXIMUM_VELOCITY = 950;
     public static final int MINIMUM_VELOCITY = 150;
-    public static final int INITIAL_VELOCITY = 800;
+    public static final int INITIAL_VELOCITY = 700;
     private List<Character> pieceBag = new ArrayList<>();
-    public char[] PIECES = { 'I', 'P', 'Z', 'F', 'U', 'Y', 'X', 'N', 'L', 'T', 'V', 'W'};
+    public char[] PIECES = { 'P', 'Z', 'V', 'Y', 'F', 'W', 'N', 'T', 'I', 'L', 'X', 'U' };
     // 'T', 'U', 'P', 'I', 'V', 'L', 'F', 'W', 'X', 'Y', 'Z', 'N'
     // I P Z F U Y X N L T V W
 
@@ -51,8 +51,9 @@ public class Tetris {
     public boolean accelerateDown = false;
     public int pieceVelocity = INITIAL_VELOCITY;
     public int[][] actualMatrix;
-
+    public int nextPieceID;
     public Player player;
+    public static boolean sequence = false;
 
     /**
      * Constructs a new Tetris game instance with a randomly selected piece,
@@ -60,17 +61,21 @@ public class Tetris {
      * not already exist.
      */
     public Tetris() {
-        getNextRandomPiece();
+        
         currentX = 0;
         currentY = 0;
         currentRotation = 0;
-        currentPieceIndex = 0;
+        // currentPieceIndex = 0;
         initializeField();
         // PIECES = shufflePieces(PIECES);
-        // getNextPieceFromSequence(PIECES);
+        if (sequence)
+            getNextPieceFromSequence(PIECES);
+        else
+        {
+            getNextRandomPiece();
+        }
 
         fieldWithoutCurrentPiece = Matrix.rotateMatrix(field).clone();
-        addPiece(currentPiece, currentID, currentX, currentY);
 
         if (screen == null)
             screen = new MainScreen(HORIZONTAL_GRID_SIZE, VERTICAL_GRID_SIZE, 45,
@@ -104,8 +109,11 @@ public class Tetris {
         score = 0;
         pieceVelocity = INITIAL_VELOCITY;
         initializeField();
-        getNextRandomPiece();
-        // getNextPieceFromSequence(PIECES);
+        if (!sequence) {
+            getNextRandomPiece();
+        } else {
+            getNextPieceFromSequence(PIECES);
+        }
         screen.setState(field);
         startGameLoop();
     }
@@ -126,8 +134,10 @@ public class Tetris {
                 if (!moveDown()) {
                     actualMatrix = Matrix.rotateMatrix(field);
                     fieldWithoutCurrentPiece = Matrix.deepCopy(Matrix.rotateMatrix(field));
-                    getNextRandomPiece();
-                    // getNextPieceFromSequence(PIECES);
+                    if(!sequence){
+                    getNextRandomPiece();}
+                    else{
+                        getNextPieceFromSequence(PIECES);}
 
                     if (canClearRow())
                         clearRow();
@@ -272,7 +282,7 @@ public class Tetris {
      * If the randomly selected piece is one of the pieces that can be flipped,
      * there is a 50% chance that the piece will be flipped.
      */
-    private String initialID;
+    public String initialID;
 
     private void getNextRandomPiece() {
         // Check if the bag is empty and refill if needed
@@ -295,18 +305,16 @@ public class Tetris {
             char randomPieceChar2 = pieceBag.remove(randomIndex2);
             lookAheadPiece = PentominoDatabase.data[characterToID(randomPieceChar2)][0];
             initialID = String.valueOf(randomPieceChar2);
+            nextPieceID = characterToID(randomPieceChar2);
         } else {
             int randomIndex2 = random.nextInt(pieceBag.size());
             char randomPieceChar2 = pieceBag.remove(randomIndex2);
             currentPiece = lookAheadPiece;
             currentID = characterToID(initialID.charAt(0));
             initialID = String.valueOf(randomPieceChar2);
-            // System.out.println(initialID);
-
             lookAheadPiece = PentominoDatabase.data[characterToID(randomPieceChar2)][0];
+            nextPieceID = characterToID(randomPieceChar2);
         }
-
-
 
         currentX = 0;
         currentY = 0;
@@ -334,6 +342,10 @@ public class Tetris {
         if (currentPieceIndex == sequence.length) {
             currentPieceIndex = 0;
         }
+
+        // if(currentID == 11 || currentID == 10 || currentID == 7 || currentID ==
+        // 8){currentPiece = flipPiece();}
+        // if(currentID == 8 || currentID == 9){currentPiece = flipPiece();}
         // System.out.println(currentPieceIndex);
     }
 
@@ -582,14 +594,13 @@ public class Tetris {
         return fieldWithoutCurrentPiece;
     }
 
-    public int[][] getSimulatedDropField(int [][] field) {
+    public int[][] getSimulatedDropField(int[][] field) {
         // Create a deep copy of the current field
         int[][] copy = Matrix.deepCopy(field);
 
         // Remove the current piece from the copy
         removePiece(copy, currentPiece, currentX, currentY);
 
-        // Find the lowest position where the current piece can be placed
         int lowestY = 0;
         while (canPlace(copy, currentPiece, currentX, lowestY + 1)) {
             if (lowestY + 1 > VERTICAL_GRID_SIZE - currentPiece.length) {
@@ -599,7 +610,6 @@ public class Tetris {
             lowestY++;
         }
 
-        // Simulate dropping the piece to the lowest position
         int[][] simulatedDropField = Matrix.deepCopy(copy);
         addPiece(simulatedDropField, currentPiece, currentID, currentX, lowestY);
 
@@ -665,10 +675,6 @@ public class Tetris {
             pentID = 11;
         }
         return pentID;
-    }
-
-    public void setPieces(char[] pieces) {
-        PIECES = pieces;
     }
 
     public static char[] shufflePieces(char[] pieces) {
