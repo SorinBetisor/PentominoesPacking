@@ -171,6 +171,7 @@ public class Menu {
                 SwingWorker<Void, Void> worker = new SwingWorker<>() {
                     @Override
                     protected Void doInBackground() {
+                        Tetris.sequence = true;
                         SequenceBot bot = new SequenceBot();
                         Tetris tetris = bot.tetris;
                         bot.runBot(tetris.field, tetris.currentPiece, Tetris.HORIZONTAL_GRID_SIZE, Tetris.VERTICAL_GRID_SIZE);
