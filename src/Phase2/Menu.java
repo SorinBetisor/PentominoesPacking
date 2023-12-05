@@ -18,18 +18,24 @@ public class Menu {
     class BackgroundPanel extends JPanel {
         private BufferedImage backgroundImage;
 
-        public BackgroundPanel()
-        {
+        public BackgroundPanel() {
 
         }
 
         public BackgroundPanel(String imagePath) {
             try {
                 this.backgroundImage = ImageIO.read(new File(imagePath));
-                icon = new ImageIcon( "src/Phase2/misc/icon.png");
+                if (MainScreen.fileExists("src/Phase2/misc/icon.png")) {
+                    icon = new ImageIcon("src/Phase2/misc/icon.png");
+                } else if (MainScreen.fileExists("bcs_group_33_project_2023\\src\\Phase2\\misc\\icon.png")) {
+                    icon = new ImageIcon("bcs_group_33_project_2023\\src\\Phase2\\misc\\icon.png");
+                } else {
+                    System.out.println("Both paths do not exist.");
+                }
+
             } catch (Exception e) {
                 e.printStackTrace();
-            }   
+            }
         }
 
         @Override
@@ -46,8 +52,17 @@ public class Menu {
         frame.setSize(1050, 600);
         frame.setLocationRelativeTo(null);
 
-        BackgroundPanel backgroundPanel = new BackgroundPanel(
-                "src/Phase2/misc/91655.jpg");
+        BackgroundPanel backgroundPanel = null;
+        if (MainScreen.fileExists("src/Phase2/misc/91655.jpg")) {
+            backgroundPanel = new BackgroundPanel(
+                    "src/Phase2/misc/91655.jpg");
+        } else if (MainScreen.fileExists("bcs_group_33_project_2023\\src\\Phase2\\misc\\91655.jpg")) {
+            backgroundPanel = new BackgroundPanel(
+                    "bcs_group_33_project_2023\\src\\Phase2\\misc\\91655.jpg");
+        } else {
+            System.out.println("Both paths do not exist.");
+        }
+
         backgroundPanel.setLayout(new GridBagLayout());
         frame.setContentPane(backgroundPanel);
 
@@ -57,13 +72,22 @@ public class Menu {
         gbc.gridwidth = GridBagConstraints.REMAINDER;
         gbc.anchor = GridBagConstraints.CENTER;
 
-        JLabel t1 = new JLabel("",
-                new ImageIcon("src/Phase2/misc/Pentris-11-29-2023(1).gif"),
-                JLabel.CENTER);
+        JLabel t1 = null;
+
+        if (MainScreen.fileExists("src/Phase2/misc/Pentris-11-29-2023(1).gif")) {
+            t1 = new JLabel("",
+                    new ImageIcon("src/Phase2/misc/Pentris-11-29-2023(1).gif"),
+                    JLabel.CENTER);
+        } else if (MainScreen.fileExists("bcs_group_33_project_2023\\src\\Phase2\\misc\\Pentris-11-29-2023(1).gif")) {
+            t1 = new JLabel("",
+                    new ImageIcon("bcs_group_33_project_2023\\src\\Phase2\\misc\\Pentris-11-29-2023(1).gif"),
+                    JLabel.CENTER);
+        } else {
+            System.out.println("Both paths do not exist.");
+        }
         gbc.insets = new Insets(-5, 0, 20, 0);
         frame.add(t1, gbc);
         t1.setBounds(0, 0, 0, 0);
-        
 
         // Music button
         soundPlayer = new SoundPlayerUsingClip();
@@ -75,7 +99,13 @@ public class Menu {
         musicToggle.setFocusPainted(false);
 
         // Set the speaker icon (adjust the path accordingly)
-        ImageIcon speakerIcon = new ImageIcon("src/Phase2/misc/soundIcon.png");
+        ImageIcon speakerIcon = null;
+
+        if (MainScreen.fileExists("src/Phase2/misc/soundIcon.png")) {
+            speakerIcon = new ImageIcon("src/Phase2/misc/soundIcon.png");
+        } else if (MainScreen.fileExists("bcs_group_33_project_2023\\src\\Phase2\\misc\\soundIcon.png")) {
+            speakerIcon = new ImageIcon("bcs_group_33_project_2023\\src\\Phase2\\misc\\soundIcon.png");
+        }
 
         // Resize the icon
         Image scaledImage = speakerIcon.getImage().getScaledInstance(15, 15, Image.SCALE_SMOOTH);
@@ -148,14 +178,14 @@ public class Menu {
                 protected Void doInBackground() {
                     Bot bot = new Bot(new double[] { 2.7f, -3.78f, -2.31f, -2.9f, -0.59f, 0.65f, 6.52f, 3.97f });
                     Tetris tetris = bot.tetris;
-                    bot.runBot(tetris.field, tetris.currentPiece, Tetris.HORIZONTAL_GRID_SIZE, Tetris.VERTICAL_GRID_SIZE);
+                    bot.runBot(tetris.field, tetris.currentPiece, Tetris.HORIZONTAL_GRID_SIZE,
+                            Tetris.VERTICAL_GRID_SIZE);
                     return null;
                 }
             };
-    
+
             worker.execute();
         });
-        
 
         controlsButton.addActionListener(new ActionListener() {
             @Override
@@ -174,7 +204,8 @@ public class Menu {
                         Tetris.sequence = true;
                         SequenceBot bot = new SequenceBot();
                         Tetris tetris = bot.tetris;
-                        bot.runBot(tetris.field, tetris.currentPiece, Tetris.HORIZONTAL_GRID_SIZE, Tetris.VERTICAL_GRID_SIZE);
+                        bot.runBot(tetris.field, tetris.currentPiece, Tetris.HORIZONTAL_GRID_SIZE,
+                                Tetris.VERTICAL_GRID_SIZE);
                         return null;
                     }
                 };
@@ -204,31 +235,31 @@ public class Menu {
                 + "D - Rotate piece clockwise<br>"
                 + "A - Rotate piece anticlockwise</p>"
                 + "</body></html>";
-        
+
         ImageIcon controlsIcon = new ImageIcon("src/Phase2/misc/Contros__1.jpg");
+
+        if (MainScreen.fileExists("src/Phase2/misc/Contros__1.jpg")) {
+            controlsIcon = new ImageIcon("src/Phase2/misc/Contros__1.jpg");
+        } else if (MainScreen
+                .fileExists("bcs_group_33_project_2023\\src\\Phase2\\misc\\Contros__1.jpg")) {
+            controlsIcon = new ImageIcon("bcs_group_33_project_2023\\src\\Phase2\\misc\\Contros__1.jpg");
+        }
         JLabel controlsLabel = new JLabel(controlsIcon);
-        JLabel textLabel = new JLabel(controlsText,SwingConstants.CENTER);
+        JLabel textLabel = new JLabel(controlsText, SwingConstants.CENTER);
         textLabel.setForeground(Color.WHITE);
         textLabel.setFont(new Font("Monospaced", Font.ITALIC | Font.BOLD, 18));
         JPanel textPanel = new JPanel(new BorderLayout());
         textPanel.setOpaque(false);
         textPanel.add(textLabel, BorderLayout.CENTER);
         controlsLabel.setLayout(new BorderLayout());
-        controlsLabel.add(textPanel, BorderLayout.CENTER);        
+        controlsLabel.add(textPanel, BorderLayout.CENTER);
         controlsLabel.setOpaque(true);
         controlsLabel.setBackground(new Color(128, 0, 158)); // Black background with 150 alpha (transparency)
         controlsBackground.add(controlsLabel);
         controlsDialog.setVisible(true);
-        
-    
-    
+
     }
 
-
-    
-    
-    
-    
     private void customizeButton(JButton button, Color foregroundColor, Color borderColor) {
         // Set the background color
         button.setBackground(new Color(128, 0, 128)); // Purple color
@@ -251,7 +282,15 @@ public class Menu {
 
     private void playMusic() {
         try {
-            soundPlayer.playMusic("src/Phase2/misc/8bit-music-menu8.wav");
+
+            if (MainScreen.fileExists("src/Phase2/misc/8bit-music-menu8.wav")) {
+                soundPlayer.playMusic("src/Phase2/misc/8bit-music-menu8.wav");
+            } else if (MainScreen
+                    .fileExists("bcs_group_33_project_2023\\src\\Phase2\\misc\\8bit-music-menu8.wav")) {
+                soundPlayer.playMusic("Phase2\\misc\\8bit-music-menu8.wav");
+            } else {
+                return;
+            }
         } catch (LineUnavailableException e) {
             e.printStackTrace();
         }
@@ -261,7 +300,6 @@ public class Menu {
         SwingUtilities.invokeLater(() -> {
             new Menu();
         });
-
 
     }
 

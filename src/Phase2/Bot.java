@@ -109,10 +109,6 @@ public class Bot {
                 currentBestXPos = (int) drop.get("xpos");
             }
         }
-        // System.out.println("Best move index: " + bestMoveIndex);
-        // System.out.println("Best move score: " + maxScore);
-        // System.out.println("Current best rotation: " + currentBestRotation);
-        // System.out.println("Current best x position: " + currentBestXPos);
         return bestMoveIndex;
     }
 
