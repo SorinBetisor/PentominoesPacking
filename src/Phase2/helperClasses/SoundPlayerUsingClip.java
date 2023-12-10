@@ -1,5 +1,7 @@
 package Phase2.helperClasses;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.InputStream;
 import javax.sound.sampled.*;
 import java.io.IOException;
@@ -17,7 +19,7 @@ public class SoundPlayerUsingClip implements LineListener {
     /**
      * This method is called when a LineEvent is triggered.
      * It handles the logic for starting and stopping playback of a sound.
-     * 
+     *
      * @param event The LineEvent that triggered the update.
      */
     @Override
@@ -29,20 +31,19 @@ public class SoundPlayerUsingClip implements LineListener {
 
     /**
      * Plays music from the specified file path.
-     * 
+     *
      * @param path the path of the music file to be played
      * @throws LineUnavailableException if a line cannot be opened due to resource restrictions
      */
     public void playMusic(String path) throws LineUnavailableException {
         try {
-            InputStream inputStream = SoundPlayerUsingClip.class.getClassLoader().getResourceAsStream(path);
-            AudioInputStream audioStream = AudioSystem.getAudioInputStream(inputStream);
+            File audioFile = new File(path);
+            AudioInputStream audioStream = AudioSystem.getAudioInputStream(audioFile);
 
             AudioFormat audioFormat = audioStream.getFormat();
             DataLine.Info info = new DataLine.Info(SourceDataLine.class, audioFormat);
             audioLine = (SourceDataLine) AudioSystem.getLine(info);
-            SoundPlayerUsingClip soundPlayer = new SoundPlayerUsingClip();
-            audioLine.addLineListener(soundPlayer);
+            audioLine.addLineListener(this);
             audioLine.open(audioFormat);
             audioLine.start();
 
@@ -52,14 +53,13 @@ public class SoundPlayerUsingClip implements LineListener {
 
             int bufferSize = 4096;
             byte[] buffer = new byte[bufferSize];
-            int bytesRead = 0;
+            int bytesRead;
 
             while ((bytesRead = audioStream.read(buffer, 0, buffer.length)) != -1) {
                 if (!isPaused) {
                     audioLine.write(buffer, 0, bytesRead);
                 }
             }
-            
 
             audioLine.drain();
             audioLine.close();
@@ -67,6 +67,8 @@ public class SoundPlayerUsingClip implements LineListener {
             e.printStackTrace();
         }
     }
+
+
 
     /**
      * Stops the audio playback.
@@ -108,7 +110,7 @@ public class SoundPlayerUsingClip implements LineListener {
 
     /**
      * Decreases the volume of the sound player by the specified decrement value.
-     * 
+     *
      * @param decrementValue the value by which the volume should be decreased
      */
     public void decreaseVolume(float decrementValue) {
@@ -120,7 +122,7 @@ public class SoundPlayerUsingClip implements LineListener {
 
     /**
      * Increases the volume of the sound player by the specified increment value.
-     * 
+     *
      * @param incrementValue the value by which to increase the volume
      */
     public void increaseVolume(float incrementValue) {
