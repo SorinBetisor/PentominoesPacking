@@ -17,8 +17,8 @@ The Pentominoes project provides an interactive platform for solving these puzzl
 
 ## Version or Date:
 
-Version 1.1
-Date: [12.10.2023]
+Version 2.4
+Date: [11.12.2023]
 
 ## How to Start This Project:
 
@@ -33,9 +33,9 @@ Date: [12.10.2023]
 
 **3. Generate Pentominoes Database:**
 
-* After copying the project files, run `PentominoesBuilder.java` in your IDE to generate the pentominoes database (`pentominoes.csv`).
+* After copying the project files, run `PentominoesBuilder.java` in your IDE to generate the pentominoes database (`pentominoes.csv`).# Phase 1:
 
-**4. Run AlgorithmSelectorUI.java:**
+**Run AlgorithmSelectorUI.java:**
 
 * Run `AlgorithmSelectorUI.java` in your IDE.
 * Input the grid sizes and desired pentomino letters.
@@ -43,11 +43,11 @@ Date: [12.10.2023]
 
 **Alternatively, run Search.java and input the desired Algorithm number.**
 
-**5. Select the Desired Algorithm:**
+**Select the Desired Algorithm:**
 
 * In the UI, select the algorithm you want to run (e.g., "FloodFill").
 
-**6. Follow the Application Flow:**
+**Follow the Application Flow:**
 
 * Follow the UI interactions in your program to execute the selected algorithm.
 
@@ -77,9 +77,12 @@ Once the algorithm has completed its execution, the results will be displayed. H
 
 *Figure 3: Viewing the Solutions* - The application provides a visual representation of the solutions found, with pentomino shapes placed on the grid.
 
-## Known Issues an Limitations
+# *Phase 2*
 
-1. **Unique Solution Finding** : Because of the structure of Algorithm X (Dancing Links), it also return solutions that use duplicate pieces. It returns ~10^6 solutions per minute so filtering them to find the ones that don't use duplicate pieces consumes time.
+### **Run the Application:**
+
+- Run `Menu.java`.
+- Select the game mode (Play, Bot, Sequence), click the corresponding button.
 
 ## Authors:
 
@@ -89,7 +92,3 @@ Once the algorithm has completed its execution, the results will be displayed. H
 * Klara Suchan
 * Armanto Tsollakou
 * Akhmed Mukhtar
-
-## User Instructions:
-
-* Feel free to provide feedback or report any issues for future improvements.

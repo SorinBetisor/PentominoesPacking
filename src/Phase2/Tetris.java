@@ -22,7 +22,7 @@ import java.awt.event.ActionListener;
 public class Tetris {
     public static Random random = new Random();
     public static final int HORIZONTAL_GRID_SIZE = 5;
-    public static final int VERTICAL_GRID_SIZE = 15;
+    public static final int VERTICAL_GRID_SIZE = 15 + 1;
     public static final int MAXIMUM_VELOCITY = 950;
     public static final int MINIMUM_VELOCITY = 150;
     public static final int INITIAL_VELOCITY = 800;
@@ -585,13 +585,24 @@ public class Tetris {
      * Finally, it rotates the matrix and sets it as the actual matrix.
      */
     public void initializeField() {
+        if(!botPlaying){
         field = new int[HORIZONTAL_GRID_SIZE][VERTICAL_GRID_SIZE];
         for (int i = 0; i < field.length; i++) {
             for (int j = 0; j < field[0].length; j++) {
                 field[i][j] = -1;
             }
         }
-        actualMatrix = Matrix.rotateMatrix(field);
+        actualMatrix = Matrix.rotateMatrix(field);}
+        else
+        {
+            field = new int[HORIZONTAL_GRID_SIZE][VERTICAL_GRID_SIZE+5];
+            for (int i = 0; i < field.length; i++) {
+                for (int j = 0; j < field[0].length-5; j++) {
+                    field[i][j] = -1;
+                }
+            }
+            actualMatrix = Matrix.rotateMatrix(field);
+        }
     }
 
     public static void main(String[] args) {
@@ -607,8 +618,24 @@ public class Tetris {
     }
 
     public int[][] getWorkingField() {
-        return fieldWithoutCurrentPiece;
+        int newVerticalSize = VERTICAL_GRID_SIZE + 5;
+        int[][] extendedField = new int[HORIZONTAL_GRID_SIZE][newVerticalSize];
+    
+        // Copy the existing fieldWithoutCurrentPiece to the top part of the extendedField
+        for (int i = 0; i < HORIZONTAL_GRID_SIZE; i++) {
+            System.arraycopy(fieldWithoutCurrentPiece[i], 0, extendedField[i], 0, HORIZONTAL_GRID_SIZE);
+        }
+    
+        // Set the additional rows to -1 or any other desired value
+        for (int i = VERTICAL_GRID_SIZE; i < newVerticalSize; i++) {
+            for (int j = 0; j < HORIZONTAL_GRID_SIZE; j++) {
+                extendedField[j][i] = -1;
+            }
+        }
+    
+        return extendedField;
     }
+    
 
     /**
      * Returns a simulated drop field by creating a copy of the given field and

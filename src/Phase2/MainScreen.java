@@ -357,7 +357,7 @@ public class MainScreen extends JPanel implements KeyListener {
 
                         }
                         g2d.draw(new Rectangle2D.Double((i + leftFillerWidth + tetris.currentX) * size + 1,
-                                (j + (15 - y)) * size, size, size));
+                                (j + (Tetris.VERTICAL_GRID_SIZE - y)) * size, size, size));
                     }
                 }
             }

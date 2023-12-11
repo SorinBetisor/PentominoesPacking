@@ -15,6 +15,7 @@ public class Bot {
 
     private int currentBestRotation;
     private int currentBestXPos;
+    private static boolean firstPiece = true;
 
     public double[] weights;
 
@@ -28,11 +29,16 @@ public class Bot {
     public void runBot(int[][] field, int[][] currentPiece, int fWidth, int fHeight) {
         tetris.botPlaying = true;
         while (!tetris.gameOver) {
-            getAllPossibleDrops(tetris.getWorkingField(), currentPiece);
+            if (firstPiece) {
+                baseCases();
+            }
+            if (!firstPiece)
+                getAllPossibleDrops(tetris.getWorkingField(), currentPiece);
+
+            if (firstPiece)
+                firstPiece = false;
             try {
-                Thread.sleep((int)(tetris.getUpdatedPieceVelocity() * 2.5));
-                // flush terminal
-                // System.out.print("\033[H\033[2J");
+                Thread.sleep((int) (tetris.getUpdatedPieceVelocity() * 1.95));
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -43,13 +49,8 @@ public class Bot {
 
         List<Map<String, Object>> drops = new ArrayList<>();
         tetris.moveLeftToTheBorder();
-        int maxRotations = 3;
-        if (tetris.currentID == 0) {
-            maxRotations = 0;
-        } else if (tetris.currentID == 1) {
-            maxRotations = 1;
-        }
-        for (int rotation = 0; rotation <= 3; rotation++) { // rotations.size()
+
+        for (int rotation = 0; rotation <= 3; rotation++) {
             final int currentRotation = rotation;
             tetris.currentRotation = rotation;
             for (int xposition = 0; xposition <= (Tetris.HORIZONTAL_GRID_SIZE
@@ -79,6 +80,7 @@ public class Bot {
                 // }
             }
             tetris.moveLeftToTheBorder(); // check this
+
             // thread sleep
             // try {
             // Thread.sleep(30);
@@ -86,6 +88,7 @@ public class Bot {
             // e.printStackTrace();
             // }
             tetris.rotateRight();
+            tetris.moveLeftToTheBorder();
             // thread sleep
             // try {
             // Thread.sleep(30);
@@ -95,10 +98,9 @@ public class Bot {
             // System.out.print("\033[H\033[2J");
             // System.out.println(drops);
         }
-        int bestMoveIndex = calculateBestMove(drops);
-        if (bestMoveIndex != -1)
-            performBestDrop();
-
+        tetris.moveLeftToTheBorder();
+        calculateBestMove(drops);
+        performBestDrop();
     }
 
     public int calculateBestMove(List<Map<String, Object>> drops) {
@@ -117,13 +119,12 @@ public class Bot {
                 currentBestXPos = (int) drop.get("xpos");
             }
         }
-        System.out.println("Best Move: " + drops.get(bestMoveIndex));
+        // System.out.println("Best Move: " + drops.get(bestMoveIndex));
         return bestMoveIndex;
     }
 
     public void performBestDrop() {
 
-        tetris.moveLeftToTheBorder();
         tetris.removePiece(tetris.field, tetris.currentPiece, tetris.currentX, tetris.currentY);
         while (tetris.currentX < currentBestXPos) {
             tetris.moveRight();
@@ -141,10 +142,12 @@ public class Bot {
                 tetris.rotateLeft();
             }
         }
-
-        tetris.currentX = currentBestXPos;
-        tetris.currentRotation = currentBestRotation;
-        tetris.addPiece(tetris.currentPiece, tetris.currentID, tetris.currentX, tetris.currentY);
+        
+        if (tetris.currentX != currentBestXPos && tetris.currentRotation != currentBestRotation) {
+            tetris.currentX = currentBestXPos;
+            tetris.currentRotation = currentBestRotation;
+            tetris.addPiece(tetris.currentPiece, tetris.currentID, tetris.currentX, tetris.currentY);
+        }
 
         tetris.dropPiece();
     }
@@ -164,6 +167,37 @@ public class Bot {
                 + weights[4] * floorTouchingBlocksScore + weights[5] * wallTouchingBlocksScore
                 + weights[6] * edgesTouchingBlocksScore;
         return totalScore;
+    }
+
+    public void baseCases() {
+        if (tetris.currentID == 2) {
+            tetris.rotateRight();
+            tetris.dropPiece();
+        } else if (tetris.currentID == 10) {
+            tetris.rotateRight();
+            tetris.moveRight();
+            tetris.moveRight();
+            tetris.dropPiece();
+        } else if (tetris.currentID == 8) {
+            tetris.rotateRight();
+            tetris.rotateRight();
+            tetris.dropPiece();
+        } else if (tetris.currentID == 3) {
+            tetris.rotateLeft();
+            tetris.rotateLeft();
+            tetris.rotateLeft();
+            tetris.moveRight();
+            tetris.moveRight();
+            tetris.dropPiece();
+        } else if (tetris.currentID == 7) {
+            tetris.rotateRight();
+            tetris.rotateRight();
+            tetris.moveRight();
+            tetris.dropPiece();
+        } else if (tetris.currentID == 11) {
+            tetris.rotateRight();
+            tetris.dropPiece();
+        }
     }
 
     public static void main(String[] args) {

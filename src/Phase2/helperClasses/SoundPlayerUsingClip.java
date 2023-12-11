@@ -1,8 +1,6 @@
 package Phase2.helperClasses;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
 import javax.sound.sampled.*;
 import java.io.IOException;
 

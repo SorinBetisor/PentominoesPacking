@@ -66,13 +66,16 @@ public class Menu {
 
     /**
      * Constructs a Menu object.
-     * Initializes the frame, sets its size and location, and sets the default close operation.
+     * Initializes the frame, sets its size and location, and sets the default close
+     * operation.
      * Creates a background panel and sets it as the content pane of the frame.
      * Sets the icon image of the frame.
      * Creates a label with an image icon and adds it to the frame.
-     * Creates a music toggle button with a speaker icon and adds it to the background panel.
+     * Creates a music toggle button with a speaker icon and adds it to the
+     * background panel.
      * Starts a new thread to play background music.
-     * Adds an action listener to the music toggle button to pause or resume the music.
+     * Adds an action listener to the music toggle button to pause or resume the
+     * music.
      */
     public Menu() {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -208,7 +211,7 @@ public class Menu {
             SwingWorker<Void, Void> worker = new SwingWorker<>() {
                 @Override
                 protected Void doInBackground() {
-                    Bot bot = new Bot(new double[] { 2.7f, -3.78f, -2.31f, -2.9f, -0.59f, 0.65f, 6.52f, 3.97f });
+                    Bot bot = new Bot(new double[] { -3.71, 3.7, -4.79, -2.9, 4.98, 3.22, 4.8 });
                     Tetris tetris = bot.tetris;
                     bot.runBot(tetris.field, tetris.currentPiece, Tetris.HORIZONTAL_GRID_SIZE,
                             Tetris.VERTICAL_GRID_SIZE);
@@ -296,11 +299,12 @@ public class Menu {
     }
 
     /**
-     * Customizes a JButton by setting its background color, foreground color, and border color.
+     * Customizes a JButton by setting its background color, foreground color, and
+     * border color.
      * 
-     * @param button         the JButton to be customized
+     * @param button          the JButton to be customized
      * @param foregroundColor the foreground color of the button
-     * @param borderColor    the border color of the button
+     * @param borderColor     the border color of the button
      */
     private void customizeButton(JButton button, Color foregroundColor, Color borderColor) {
         // Set the background color
@@ -330,7 +334,8 @@ public class Menu {
 
     /**
      * Plays the menu music.
-     * If the music file exists in the specified paths, it will be played using the soundPlayer.
+     * If the music file exists in the specified paths, it will be played using the
+     * soundPlayer.
      * If the file does not exist, the method will return without playing any music.
      * 
      * @throws LineUnavailableException if the audio line is unavailable
@@ -342,7 +347,7 @@ public class Menu {
                 soundPlayer.playMusic("src/Phase2/misc/8bit-music-menu8.wav");
             } else if (MainScreen
                     .fileExists("bcs_group_33_project_2023\\src\\Phase2\\misc\\8bit-music-menu8.wav")) {
-                soundPlayer.playMusic("Phase2\\misc\\8bit-music-menu8.wav");
+                soundPlayer.playMusic("bcs_group_33_project_2023\\src\\Phase2\\misc\\8bit-music-menu8.wav");
             } else {
                 return;
             }
@@ -353,7 +358,8 @@ public class Menu {
 
     /**
      * The main method is the entry point of the program.
-     * It initializes the SwingUtilities and creates a new instance of the Menu class.
+     * It initializes the SwingUtilities and creates a new instance of the Menu
+     * class.
      */
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
