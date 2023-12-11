@@ -12,6 +12,10 @@ public class GeneticAlgorithm {
     private static final int TOURNAMENT_SIZE = 5;
     private static final double MUTATION_RATE = 0.1;
 
+    
+    /** 
+     * @param args
+     */
     public static void main(String[] args) {
         // Initialization of population
         List<Bot> population = initializePopulation(NUM_BOTS);

@@ -605,6 +605,10 @@ public class Tetris {
         }
     }
 
+    
+    /** 
+     * @param args
+     */
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             Tetris tetris = new Tetris();

@@ -41,6 +41,10 @@ public class Search {
 		return true;
 	}
 
+	
+	/** 
+	 * @param selectedAlgorithm
+	 */
 	public static void search(int selectedAlgorithm) {
 
 		emptyBoard(field);

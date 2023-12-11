@@ -8,6 +8,9 @@ import java.util.Map;
 import Phase2.helperClasses.Criteria;
 import Phase2.helperClasses.Matrix;
 
+/**
+ * The Bot class represents a bot player in the Tetris game. It uses a set of weights to make decisions on where to place the Tetris pieces.
+ */
 public class Bot {
     public int[][] workingField;
     public Tetris tetris;
@@ -19,6 +22,11 @@ public class Bot {
 
     public double[] weights;
 
+    /**
+     * Creates a new instance of the Bot class with the specified weights.
+     * 
+     * @param weights the weights used by the bot for decision making
+     */
     public Bot(double[] weights) {
         tetris = new Tetris();
         this.weights = weights;
@@ -26,6 +34,13 @@ public class Bot {
         workingField = tetris.getWorkingField();
     }
 
+    
+    /** 
+     * @param field
+     * @param currentPiece
+     * @param fWidth
+     * @param fHeight
+     */
     public void runBot(int[][] field, int[][] currentPiece, int fWidth, int fHeight) {
         tetris.botPlaying = true;
         while (!tetris.gameOver) {
@@ -45,6 +60,14 @@ public class Bot {
         }
     }
 
+    /**
+     * Calculates all possible drops for the current piece on the game field.
+     * Each drop is represented as a map containing various criteria values.
+     * The drops are stored in a list and later used to determine the best move.
+     *
+     * @param afield The game field represented as a 2D array.
+     * @param currentPiece The current piece represented as a 2D array.
+     */
     public void getAllPossibleDrops(int[][] afield, int[][] currentPiece) {
 
         List<Map<String, Object>> drops = new ArrayList<>();
@@ -103,6 +126,14 @@ public class Bot {
         performBestDrop();
     }
 
+    /**
+     * Calculates the best move from a list of drops.
+     * The best move is determined by the highest score calculated using the calculateScore method.
+     * Updates the currentBestRotation and currentBestXPos variables with the rotation and xpos of the best move.
+     *
+     * @param drops the list of drops to evaluate
+     * @return the index of the best move in the drops list
+     */
     public int calculateBestMove(List<Map<String, Object>> drops) {
         double maxScore = Integer.MIN_VALUE;
         int bestMoveIndex = -1;
@@ -123,6 +154,10 @@ public class Bot {
         return bestMoveIndex;
     }
 
+    /**
+     * Performs the best drop by moving the current piece to the best position and rotation,
+     * and then dropping it.
+     */
     public void performBestDrop() {
 
         tetris.removePiece(tetris.field, tetris.currentPiece, tetris.currentX, tetris.currentY);
@@ -152,6 +187,13 @@ public class Bot {
         tetris.dropPiece();
     }
 
+    /**
+     * Calculates the score based on the given drop parameters.
+     *
+     * @param drop a map containing the drop parameters including canClear, height, gaps, bumpiness,
+     *             floorTouchingBlocks, wallTouchingBlocks, and edgesTouchingBlocks.
+     * @return the calculated score.
+     */
     private double calculateScore(Map<String, Object> drop) {
         int canClearScore = (int) drop.get("canClear");
         int heightScore = (int) drop.get("height");
@@ -169,6 +211,16 @@ public class Bot {
         return totalScore;
     }
 
+    /**
+     * Executes the base cases for the Tetris game.
+     * The base cases include specific actions for different current piece IDs.
+     * - If the current piece ID is 2, it rotates right and drops the piece.
+     * - If the current piece ID is 10, it rotates right, moves right twice, and drops the piece.
+     * - If the current piece ID is 8, it rotates right twice and drops the piece.
+     * - If the current piece ID is 3, it rotates left three times, moves right twice, and drops the piece.
+     * - If the current piece ID is 7, it rotates right twice, moves right, and drops the piece.
+     * - If the current piece ID is 11, it rotates right and drops the piece.
+     */
     public void baseCases() {
         if (tetris.currentID == 2) {
             tetris.rotateRight();

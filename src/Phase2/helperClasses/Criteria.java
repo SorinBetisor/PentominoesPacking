@@ -6,6 +6,11 @@ public class Criteria {
 
     public static int[] columnHeights = new int[Tetris.HORIZONTAL_GRID_SIZE];
 
+    
+    /** 
+     * @param field
+     * @return int
+     */
     public static int calculateHeight(int[][] field) {
         int currentHeight = 0;
         int maxHeight = 0;

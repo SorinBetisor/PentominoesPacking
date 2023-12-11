@@ -375,6 +375,11 @@ public class MainScreen extends JPanel implements KeyListener {
         return Files.exists(filePath) && Files.isRegularFile(filePath);
     }
 
+    
+    /** 
+     * @param i
+     * @return Color
+     */
     // Returns the color associated with a given ID
     private Color GetColorOfID(int i) {
         if (i == 0) {

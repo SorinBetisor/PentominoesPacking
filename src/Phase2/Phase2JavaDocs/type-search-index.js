@@ -1,0 +1,1 @@
+typeSearchIndex = [{"l":"All Classes","url":"allclasses-index.html"},{"p":"Phase2","l":"Bot"},{"p":"Phase2","l":"GeneticAlgorithm"},{"p":"Phase2","l":"MainScreen"},{"p":"Phase2","l":"Menu"},{"p":"Phase2","l":"Player"},{"p":"Phase2","l":"SequenceBot"},{"p":"Phase2","l":"Tetris"}]

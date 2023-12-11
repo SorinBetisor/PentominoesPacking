@@ -110,6 +110,10 @@ public class Cell {
         return U;
     }
 
+    
+    /** 
+     * @param u
+     */
     public void setU(Cell u) {
         U = u;
     }

@@ -46,6 +46,11 @@ public class Matrix {
         return rotatedMatrix;
     }
 
+    
+    /** 
+     * @param field
+     * @return int[][]
+     */
     public static int[][] wipeField(int[][] field)
     {
         int[][] newField = new int[field.length][field[0].length];

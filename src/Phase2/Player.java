@@ -23,6 +23,11 @@ public class Player {
         this.highScore = highScore;
     }
 
+    
+    /** 
+     * @param playerName
+     * @param score
+     */
     public void updateHighScores(String playerName, int score) {
         // File path to store high scores
         String filePath = "bcs_group_33_project_2023\\src\\Phase2\\highscores.txt";
