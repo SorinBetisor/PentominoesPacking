@@ -25,7 +25,7 @@ public class Tetris {
     public static final int VERTICAL_GRID_SIZE = 15;
     public static final int MAXIMUM_VELOCITY = 950;
     public static final int MINIMUM_VELOCITY = 150;
-    public static final int INITIAL_VELOCITY = 700;
+    public static final int INITIAL_VELOCITY = 800;
     private List<Character> pieceBag = new ArrayList<>();
     public char[] PIECES = { 'P', 'Z', 'V', 'Y', 'F', 'W', 'N', 'T', 'I', 'L', 'X', 'U' };
     // 'T', 'U', 'P', 'I', 'V', 'L', 'F', 'W', 'X', 'Y', 'Z', 'N'
@@ -61,7 +61,7 @@ public class Tetris {
      * not already exist.
      */
     public Tetris() {
-        
+
         currentX = 0;
         currentY = 0;
         currentRotation = 0;
@@ -70,8 +70,7 @@ public class Tetris {
         // PIECES = shufflePieces(PIECES);
         if (sequence)
             getNextPieceFromSequence(PIECES);
-        else
-        {
+        else {
             getNextRandomPiece();
         }
 
@@ -134,10 +133,11 @@ public class Tetris {
                 if (!moveDown()) {
                     actualMatrix = Matrix.rotateMatrix(field);
                     fieldWithoutCurrentPiece = Matrix.deepCopy(Matrix.rotateMatrix(field));
-                    if(!sequence){
-                    getNextRandomPiece();}
-                    else{
-                        getNextPieceFromSequence(PIECES);}
+                    if (!sequence) {
+                        getNextRandomPiece();
+                    } else {
+                        getNextPieceFromSequence(PIECES);
+                    }
 
                     if (canClearRow())
                         clearRow();
@@ -206,7 +206,7 @@ public class Tetris {
      *         otherwise
      */
     public static boolean canPlace(int[][] field, int[][] piece, int row, int col) {
-        if (row < 0 || col < 0 || row + piece.length > field.length || col + piece[0].length > field[0].length) {
+        if (row < 0 || col < 0 || row + piece.length > field.length || col + piece[0].length > field[0].length ) {
             return false;
         }
 
@@ -322,6 +322,9 @@ public class Tetris {
 
     }
 
+    /**
+     * Refills the piece bag with all the available pieces and shuffles them.
+     */
     private void refillPieceBag() {
         pieceBag.clear();
         for (char piece : PIECES) {
@@ -331,6 +334,12 @@ public class Tetris {
         Collections.shuffle(pieceBag);
     }
 
+    /**
+     * Retrieves the next piece from the given sequence and updates the current
+     * piece variables.
+     * 
+     * @param sequence an array of characters representing the sequence of pieces
+     */
     private void getNextPieceFromSequence(char[] sequence) {
         char currentPieceChar = sequence[currentPieceIndex];
         currentID = characterToID(currentPieceChar);
@@ -342,14 +351,14 @@ public class Tetris {
         if (currentPieceIndex == sequence.length) {
             currentPieceIndex = 0;
         }
-
-        // if(currentID == 11 || currentID == 10 || currentID == 7 || currentID ==
-        // 8){currentPiece = flipPiece();}
-        // if(currentID == 8 || currentID == 9){currentPiece = flipPiece();}
-        // System.out.println(currentPieceIndex);
     }
 
     // CLEARING ROWS
+    /**
+     * Checks if a row in the matrix can be cleared.
+     * 
+     * @return true if a row can be cleared, false otherwise.
+     */
     private boolean canClearRow() {
         for (int i = 0; i < actualMatrix.length; i++) {
             boolean canClear = true;
@@ -507,6 +516,13 @@ public class Tetris {
         screen.setState(field); // Update the MainScreen
     }
 
+    /**
+     * Moves the current piece to the left border of the field.
+     * Removes the current piece from its current position, then continuously moves
+     * it to the left until it reaches the left border or encounters an obstacle.
+     * Finally, adds the current piece to the leftmost position and updates the
+     * MainScreen.
+     */
     public void moveLeftToTheBorder() {
         removePiece(field, currentPiece, currentX, currentY);
         while (canPlace(field, currentPiece, currentX - 1, currentY)) {
@@ -594,11 +610,20 @@ public class Tetris {
         return fieldWithoutCurrentPiece;
     }
 
+    /**
+     * Returns a simulated drop field by creating a copy of the given field and
+     * simulating the drop of the current piece.
+     * The current piece is removed from the copied field, and then the lowest
+     * possible position for the piece to drop is determined.
+     * The piece is then added to the copied field at the lowest position, and the
+     * resulting field is returned.
+     *
+     * @param field The original field.
+     * @return The simulated drop field.
+     */
     public int[][] getSimulatedDropField(int[][] field) {
-        // Create a deep copy of the current field
         int[][] copy = Matrix.deepCopy(field);
 
-        // Remove the current piece from the copy
         removePiece(copy, currentPiece, currentX, currentY);
 
         int lowestY = 0;
@@ -616,6 +641,13 @@ public class Tetris {
         return simulatedDropField;
     }
 
+    /**
+     * Returns the lowest Y-coordinate of the current piece on the Tetris field.
+     * The lowest Y-coordinate represents the bottommost row occupied by the current
+     * piece.
+     *
+     * @return The lowest Y-coordinate of the current piece.
+     */
     public int getLowestY() {
         int[][] copy = Matrix.deepCopy(field);
         removePiece(copy, currentPiece, currentX, currentY);
@@ -677,6 +709,13 @@ public class Tetris {
         return pentID;
     }
 
+    /**
+     * This method shuffles the order of the Tetris pieces.
+     *
+     * @param pieces An array of characters representing the Tetris pieces to be
+     *               shuffled.
+     * @return A new array of characters representing the shuffled Tetris pieces.
+     */
     public static char[] shufflePieces(char[] pieces) {
         List<Character> piecesList = new ArrayList<>();
         for (char piece : pieces) {

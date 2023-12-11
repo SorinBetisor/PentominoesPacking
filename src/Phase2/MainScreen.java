@@ -15,7 +15,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.awt.font.TextLayout;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -97,7 +96,12 @@ public class MainScreen extends JPanel implements KeyListener {
         }
     }
 
-    // Paints the game screen
+    /**
+     * Overrides the paintComponent method to customize the appearance of the component.
+     * This method is responsible for painting the game board, grid lines, Tetris pieces, labels, and leaderboard.
+     * 
+     * @param g The Graphics object used for painting.
+     */
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -360,6 +364,12 @@ public class MainScreen extends JPanel implements KeyListener {
         }
     }
 
+    /**
+     * Checks if a file exists at the specified path.
+     * 
+     * @param path the path of the file to check
+     * @return true if the file exists and is a regular file, false otherwise
+     */
     public static boolean fileExists(String path) {
         Path filePath = Paths.get(path);
         return Files.exists(filePath) && Files.isRegularFile(filePath);
@@ -436,24 +446,20 @@ public class MainScreen extends JPanel implements KeyListener {
      */
     public void showGameOver() {
         if (!tetris.botPlaying) {
-            // Ask for the player's name if it's empty or null
             if (playerName == null || playerName.trim().isEmpty()) {
                 playerName = JOptionPane.showInputDialog(null, "Enter your name:");
             }
 
-            // Display the game over message with the player's name and score
             JOptionPane.showMessageDialog(null,
                     "Game Over, " + playerName + "! Your score is: " + tetris.score + "\nPress R to restart the game.");
 
-            // Create a new Player instance with the player's name and high score
             Player player = new Player(playerName, tetris.highScore);
             tetris.player = player;
 
-            // Update high scores
             player.updateHighScores(playerName, tetris.highScore);
         } else {
-            // Close the window
             JOptionPane.showMessageDialog(null, "Game Over! The bot got the score:  " + tetris.score);
+            // window.dispose();
         }
     }
 

@@ -30,23 +30,25 @@ public class Bot {
         while (!tetris.gameOver) {
             getAllPossibleDrops(tetris.getWorkingField(), currentPiece);
             try {
-                Thread.sleep(tetris.getUpdatedPieceVelocity() * 2);
+                Thread.sleep((int)(tetris.getUpdatedPieceVelocity() * 2.5));
                 // flush terminal
                 // System.out.print("\033[H\033[2J");
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
-
-        //show a game over dialog panel
-        //write the code here
-
     }
 
     public void getAllPossibleDrops(int[][] afield, int[][] currentPiece) {
 
         List<Map<String, Object>> drops = new ArrayList<>();
         tetris.moveLeftToTheBorder();
+        int maxRotations = 3;
+        if (tetris.currentID == 0) {
+            maxRotations = 0;
+        } else if (tetris.currentID == 1) {
+            maxRotations = 1;
+        }
         for (int rotation = 0; rotation <= 3; rotation++) { // rotations.size()
             final int currentRotation = rotation;
             tetris.currentRotation = rotation;
@@ -58,39 +60,45 @@ public class Bot {
                     {
                         put("rotation", currentRotation);
                         put("xpos", currentXPos);
-                        // put("simulatedBoard", simulatedBoard);
                         put("canClear", Criteria.calculateClearRows(simulatedBoard));
                         put("height", Criteria.calculateHeight(simulatedBoard));
                         put("gaps", Criteria.calculateGaps(simulatedBoard));
-                        put("bumpiness", Criteria.calculateBumpiness());
+                        put("bumpiness", Criteria.calculateBumpiness(simulatedBoard));
                         put("blocksAboveGaps", Criteria.calculateBlocksAboveGaps(simulatedBoard));
                         put("floorTouchingBlocks", Criteria.calculateFloorTouchingBlocks(simulatedBoard));
                         put("wallTouchingBlocks", Criteria.calculateWallTouchingBlocks(simulatedBoard));
                         put("edgesTouchingBlocks", Criteria.calculateEdgesTouchingBlocks(simulatedBoard));
-                        put("rowTransitions", Criteria.calculateRowTransitions(simulatedBoard));
-                        put("columnTransitions", Criteria.calculateColumnTransitions(simulatedBoard));
                     }
                 });
                 tetris.moveRight();
+                // thread sleep
+                // try {
+                // Thread.sleep(30);
+                // } catch (InterruptedException e) {
+                // e.printStackTrace();
+                // }
             }
-            // tetris.moveLeftToTheBorder();
+            tetris.moveLeftToTheBorder(); // check this
+            // thread sleep
+            // try {
+            // Thread.sleep(30);
+            // } catch (InterruptedException e) {
+            // e.printStackTrace();
+            // }
             tetris.rotateRight();
+            // thread sleep
+            // try {
+            // Thread.sleep(30);
+            // } catch (InterruptedException e) {
+            // e.printStackTrace();
+            // }
             // System.out.print("\033[H\033[2J");
             // System.out.println(drops);
         }
         int bestMoveIndex = calculateBestMove(drops);
-        tetris.rotateLeft();
-        tetris.rotateLeft();
-        tetris.rotateLeft();
-
-        if (bestMoveIndex != -1) {
-            // if(piecesElapsed == 0 && tetris.currentID == 4)
-            // {
-            //     tetris.rotateRight();
-            //     tetris.rotateRight();
-            // }
+        if (bestMoveIndex != -1)
             performBestDrop();
-        }
+
     }
 
     public int calculateBestMove(List<Map<String, Object>> drops) {
@@ -109,6 +117,7 @@ public class Bot {
                 currentBestXPos = (int) drop.get("xpos");
             }
         }
+        System.out.println("Best Move: " + drops.get(bestMoveIndex));
         return bestMoveIndex;
     }
 
@@ -145,22 +154,22 @@ public class Bot {
         int heightScore = (int) drop.get("height");
         int gapsScore = (int) drop.get("gaps");
         int bumpinessScore = (int) drop.get("bumpiness");
+        // int bumpinessScore = 0;
         int floorTouchingBlocksScore = (int) drop.get("floorTouchingBlocks");
         int wallTouchingBlocksScore = (int) drop.get("wallTouchingBlocks");
         int edgesTouchingBlocksScore = (int) drop.get("edgesTouchingBlocks");
 
-        double totalScore = weights[0] * heightScore + weights[1] * canClearScore + weights[2] * gapsScore + weights[3] * bumpinessScore
-                + weights[4] * floorTouchingBlocksScore + weights[5] * wallTouchingBlocksScore + weights[6] * edgesTouchingBlocksScore;
+        double totalScore = weights[0] * heightScore + weights[1] * canClearScore + weights[2] * gapsScore
+                + weights[3] * bumpinessScore
+                + weights[4] * floorTouchingBlocksScore + weights[5] * wallTouchingBlocksScore
+                + weights[6] * edgesTouchingBlocksScore;
         return totalScore;
     }
 
     public static void main(String[] args) {
-        
-        Bot bot = new Bot(new double[] { -3.71, 2.7, -4.79, -2.9, 4.98, 3.22, 4.8});
-        //double totalScore = 2.7 * canClearScore + -3.71 * heightScore + -4.79 * gapsScore
-        // + 4.8 * edgesTouchingBlocksScore + 3.22 * wallTouchingBlocksScore + 4.98 * floorTouchingBlocksScore + -2.9 * bumpinessScore;
-        //Bot Weights: -4.600673152844697 3.310091433303091 -0.12420655245284395 0.0028305865270259467 2.594705313488695 3.8407725676586573 1.6460572978501622 4.850516530488642
-        //Bot 5 Weights: -2.5597737207890123 2.4475682375585786 3.738909159509415 -2.920070396573741 1.3458430406816955 1.3983726844940332 4.651933572309237 4.243388641986979
+
+        Bot bot = new Bot(new double[] { -3.71, 3.7, -4.79, -2.9, 4.98, 3.22, 4.8 });
+
         Tetris tetris = bot.tetris;
         bot.runBot(tetris.field, tetris.currentPiece, Tetris.HORIZONTAL_GRID_SIZE, Tetris.VERTICAL_GRID_SIZE);
     }

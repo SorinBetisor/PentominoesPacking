@@ -17,14 +17,15 @@ public class Criteria {
 
             }
             columnHeights[j] = currentHeight;
+            // System.out.println("Column " + j + " height: " + currentHeight);
             if (currentHeight > maxHeight) {
                 maxHeight = currentHeight;
             }
-            currentHeight = 0;
 
         }
         return maxHeight;
     }
+    
 
     public static int calculateGaps(int[][] field) {
         boolean[][] checked = new boolean[field.length][field[0].length];
@@ -81,8 +82,8 @@ public class Criteria {
                     checked[i][j] = true;
                     continue;
                 }
-                blocks=countBlocksAbove(i, j, field);
-                blocksum+=blocks;
+                blocks = countBlocksAbove(i, j, field);
+                blocksum += blocks;
                 floodFillHoles(i, j, field, checked);
             }
         }
@@ -103,23 +104,22 @@ public class Criteria {
 
     public static int calculateRowTransitions(int[][] matrix) {
         int totalTransitions = 0;
-    
+
         for (int[] row : matrix) {
             int prevCell = row[0];
-    
+
             for (int cell : row) {
                 // Check if both cells are non-empty before counting the transition
                 if ((prevCell == -1 && cell != -1) || (prevCell != -1 && cell == -1)) {
                     totalTransitions++;
                 }
-    
+
                 prevCell = cell;
             }
         }
-    
+
         return totalTransitions;
     }
-    
 
     public static int calculateColumnTransitions(int[][] matrix) {
         int totalTransitions = 0;
@@ -286,6 +286,58 @@ public class Criteria {
         return edgesTouchingBlocks;
     }
 
+    public static int calculateAggregateHeight(int[][] matrix) {
+        int rows = matrix.length;
+        int cols = matrix[0].length;
+        int heightSum = 0;
+        int[] columnHeights = new int[cols];
+    
+        for (int j = 0; j < cols; j++) {
+            int height = -1;
+            for (int i = 0; i < rows; i++) {
+                if (matrix[i][j] != -1) {
+                    height = Math.max(height, rows - i);
+                }
+            }
+            columnHeights[j] = height; // Do not add 1 here, as it's already the correct height
+            if(columnHeights[j] == -1)
+                columnHeights[j] = 0;
+        }
+    
+        for (int height : columnHeights) {
+            heightSum += height;
+        }
+        return heightSum;
+    }
+    
+    public static int calculateBumpiness(int[][] matrix) {
+        int rows = matrix.length;
+        int cols = matrix[0].length;
+        int bumpinessSum = 0;
+    
+        int[] columnHeights = new int[cols];
+    
+        for (int j = 0; j < cols; j++) {
+            int height = -1;
+            for (int i = 0; i < rows; i++) {
+                if (matrix[i][j] != -1) {
+                    height = Math.max(height, rows - i);
+                }
+            }
+            columnHeights[j] = height; // Do not add 1 here, as it's already the correct height
+            if(columnHeights[j] == -1)
+                columnHeights[j] = 0;
+        }
+
+        for (int i = 0; i < columnHeights.length - 1; i++) {
+            int absoluteDifference = Math.abs(columnHeights[i] - columnHeights[i + 1]);
+            bumpinessSum += absoluteDifference;
+        }
+    
+        return bumpinessSum;
+    }
+    
+
     public static void main(String[] args) {
 
         int[][] matrix = {
@@ -301,10 +353,9 @@ public class Criteria {
                 { -1, -1, -1, -1, -1 },
                 { -1, -1, -1, -1, -1 },
                 { -1, -1, -1, -1, -1 },
-                { -1, -1, -1, -1, 1 },
-                { -1, -1, 1, 1, 1 },
-                { -1, 1, 1, 1, -1 },
-                { -1, 1, -1, 1, 1 }
+                { -1, -1, 2, -1, -1 },
+                { -1, -1, -1, -1, -1 },
+                { -1, -1, 2, 2, 2 }
         };
 
         // System.out.println(calculateHeight(matrix));
@@ -312,12 +363,13 @@ public class Criteria {
         // System.out.println(calculateGaps(matrix));
         // int[] columnHeights = calculateColumnHeights(matrix);
 
-        // System.out.println("Bumpiness: " + calculateBumpiness());
+        // System.out.println("Bumpiness: " + calculateBumpiness(matrix));
         // System.out.println("Floor touching blocks: " +
         // countFloorTouchingBlocks(matrix));
         // System.out.println(calculateColumnTransitions(matrix));
-        System.out.println(calculateGaps(matrix));
-        System.out.println(calculateBlocksAboveGaps(matrix));
+        // System.out.println(calculateGaps(matrix));
+        // System.out.println(calculateBlocksAboveGaps(matrix));
+        System.out.println(calculateAggregateHeight(matrix));
     }
 
 }

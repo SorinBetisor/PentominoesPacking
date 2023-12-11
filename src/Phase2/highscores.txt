@@ -1,5 +1,6 @@
 Grish,34
 Alex,20
+null,17
 king,16
 Jana,13
 Sorin,12
@@ -13,7 +14,12 @@ r,5
 darius,4
 null,4
 null,4
+null,4
+null,4
+null,4
 sorin,3
 null,3
+null,3
+null,2
 null,2
 null,0

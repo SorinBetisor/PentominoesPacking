@@ -46,6 +46,19 @@ public class Matrix {
         return rotatedMatrix;
     }
 
+    public static int[][] wipeField(int[][] field)
+    {
+        int[][] newField = new int[field.length][field[0].length];
+        for(int i = 0; i < field.length; i++)
+        {
+            for(int j = 0; j < field[0].length; j++)
+            {
+                newField[i][j] = -1;
+            }
+        }
+        return newField;
+    }
+
     /**
      * Creates a deep copy of a 2D integer array.
      * 

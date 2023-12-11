@@ -9,6 +9,10 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
+/**
+ * The Player class represents a player in the game.
+ * It stores the player's name, current score, and high score.
+ */
 public class Player {
     private String name;
     private int currentScore = 0;
@@ -83,6 +87,8 @@ public class Player {
             e.printStackTrace();
         }
     }
+
+    //getters and setters
 
     public int getHighScore() {
         return highScore;

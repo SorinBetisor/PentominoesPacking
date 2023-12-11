@@ -10,18 +10,35 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 
+/**
+ * The Menu class represents the main menu of the PENTRIS game.
+ * It provides a graphical user interface with various buttons and options.
+ * The menu allows the user to start the game, control the music, and access
+ * game controls.
+ */
 public class Menu {
     private static JFrame frame = new JFrame("PENTRIS Menu");
     private SoundPlayerUsingClip soundPlayer;
     private ImageIcon icon;
 
+    /**
+     * A custom JPanel class that displays a background image.
+     */
     class BackgroundPanel extends JPanel {
         private BufferedImage backgroundImage;
 
+        /**
+         * Constructs a new BackgroundPanel with no background image.
+         */
         public BackgroundPanel() {
 
         }
 
+        /**
+         * Constructs a new BackgroundPanel with the specified background image.
+         *
+         * @param imagePath the path to the background image file
+         */
         public BackgroundPanel(String imagePath) {
             try {
                 this.backgroundImage = ImageIO.read(new File(imagePath));
@@ -47,6 +64,16 @@ public class Menu {
         }
     }
 
+    /**
+     * Constructs a Menu object.
+     * Initializes the frame, sets its size and location, and sets the default close operation.
+     * Creates a background panel and sets it as the content pane of the frame.
+     * Sets the icon image of the frame.
+     * Creates a label with an image icon and adds it to the frame.
+     * Creates a music toggle button with a speaker icon and adds it to the background panel.
+     * Starts a new thread to play background music.
+     * Adds an action listener to the music toggle button to pause or resume the music.
+     */
     public Menu() {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(1050, 600);
@@ -137,6 +164,11 @@ public class Menu {
         });
     }
 
+    /**
+     * Creates a JPanel for the button panel.
+     * 
+     * @return the created JPanel
+     */
     private JPanel createButtonPanel() {
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
@@ -217,6 +249,9 @@ public class Menu {
         return buttonPanel;
     }
 
+    /**
+     * Displays a dialog box with game controls information.
+     */
     public void showControlsDialog() {
         JDialog controlsDialog = new JDialog(frame, "Game Controls", true);
         controlsDialog.setSize(500, 500);
@@ -260,6 +295,13 @@ public class Menu {
 
     }
 
+    /**
+     * Customizes a JButton by setting its background color, foreground color, and border color.
+     * 
+     * @param button         the JButton to be customized
+     * @param foregroundColor the foreground color of the button
+     * @param borderColor    the border color of the button
+     */
     private void customizeButton(JButton button, Color foregroundColor, Color borderColor) {
         // Set the background color
         button.setBackground(new Color(128, 0, 128)); // Purple color
@@ -274,12 +316,25 @@ public class Menu {
         button.setFocusPainted(false);
     }
 
+    /**
+     * Creates a JButton with the specified text.
+     *
+     * @param text the text to be displayed on the button
+     * @return the created JButton
+     */
     private JButton createButton(String text) {
         JButton button = new JButton(text);
         button.setFont(new Font("Monospaced", Font.LAYOUT_LEFT_TO_RIGHT, 20));
         return button;
     }
 
+    /**
+     * Plays the menu music.
+     * If the music file exists in the specified paths, it will be played using the soundPlayer.
+     * If the file does not exist, the method will return without playing any music.
+     * 
+     * @throws LineUnavailableException if the audio line is unavailable
+     */
     private void playMusic() {
         try {
 
@@ -296,6 +351,10 @@ public class Menu {
         }
     }
 
+    /**
+     * The main method is the entry point of the program.
+     * It initializes the SwingUtilities and creates a new instance of the Menu class.
+     */
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             new Menu();
