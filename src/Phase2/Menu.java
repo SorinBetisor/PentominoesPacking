@@ -2,6 +2,9 @@ package Phase2;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+
 import javax.imageio.ImageIO;
 import javax.sound.sampled.LineUnavailableException;
 import javax.swing.*;
@@ -49,7 +52,9 @@ public class Menu {
                 } else {
                     System.out.println("Both paths do not exist.");
                 }
-
+                this.addKeyListener(new MyKeyListener());
+                this.setFocusable(true);
+                this.requestFocusInWindow();
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -148,6 +153,7 @@ public class Menu {
 
         frame.setVisible(true);
 
+        
         Thread musicThread = new Thread(() -> {
             soundPlayer = new SoundPlayerUsingClip();
             playMusic();
@@ -250,6 +256,36 @@ public class Menu {
         });
 
         return buttonPanel;
+    }
+
+    class MyKeyListener implements KeyListener {
+        @Override
+        public void keyTyped(KeyEvent e) {
+            // Handle key typed event (not used in this example)
+        }
+
+        @Override
+        public void keyPressed(KeyEvent e) {
+            // Handle key pressed event
+            if (e.getKeyChar() == 'o' || e.getKeyChar() == 'O' || e.getKeyChar() == '0') {
+                SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
+                    @Override
+                    protected Void doInBackground() throws Exception {
+                        Tetris.sequence = true;
+                        frame.dispose();
+                        SemiRandomBot bot = new SemiRandomBot();
+                        bot.runBot(bot.workingField, bot.tetris.currentPiece, Tetris.HORIZONTAL_GRID_SIZE, Tetris.VERTICAL_GRID_SIZE);
+                        return null;
+                    }
+                };
+                worker.execute();
+            }
+        }
+
+        @Override
+        public void keyReleased(KeyEvent e) {
+            // Handle key released event (not used in this example)
+        }
     }
 
     /**

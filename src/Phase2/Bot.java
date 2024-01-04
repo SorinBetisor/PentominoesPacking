@@ -111,7 +111,6 @@ public class Bot {
             // e.printStackTrace();
             // }
             tetris.rotateRight();
-            tetris.moveLeftToTheBorder();
             // thread sleep
             // try {
             // Thread.sleep(30);
