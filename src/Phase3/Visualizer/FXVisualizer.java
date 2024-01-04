@@ -1,5 +1,7 @@
 package Phase3.Visualizer;
 
+import Phase3.PiecesDB.ParcelDB;
+import Phase3.PiecesDB.PentominoesDB;
 import javafx.application.Application;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
@@ -8,6 +10,7 @@ import javafx.scene.Camera;
 import javafx.scene.Group;
 import javafx.scene.PerspectiveCamera;
 import javafx.scene.Scene;
+import javafx.scene.input.ScrollEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.Box;
@@ -22,28 +25,30 @@ public class FXVisualizer extends Application {
     private final int SCREEN_WIDTH = 750;
     private final int SCREEN_HEIGHT = 1200;
     private final double ROTATION_SPEED = 0.2;
-    private final int BLOCK_SIZE = 10;
+    private final int BLOCK_SIZE = 5;
+    private final double PADDING = 0.5;
     public static int CARGO_HEIGHT = 8;
     public static int CARGO_WIDTH = 5;
     public static int CARGO_DEPTH = 33;
+    private final int xCoord = (CARGO_WIDTH * BLOCK_SIZE) / 2;
+    private final int yCoord = (CARGO_HEIGHT * BLOCK_SIZE) / 2;
+    private final int zCoord = (CARGO_DEPTH * BLOCK_SIZE) / 2;
 
     private double anchorX, anchorY;
     private double anchorAngleX = 0;
     private double anchorAngleY = 0;
     private final DoubleProperty angleX = new SimpleDoubleProperty(0);
     private final DoubleProperty angleY = new SimpleDoubleProperty(0);
+    private RotatableGroup piecesGroup = new RotatableGroup();
+
+    int[][][] testArray = ParcelDB.cRotInt[0];
 
     @Override
     public void start(Stage stage) {
-        Box box = new Box(100, 20, 50);
-        box.setMaterial(new PhongMaterial(Color.RED));
-
         RotatableGroup root = new RotatableGroup();
         root.translateXProperty().set(SCREEN_WIDTH / 2.0 + 225);
-        root.translateYProperty().set(SCREEN_HEIGHT / 3); // Adjust this value as needed
-        root.translateZProperty().set(500);
-
-        // root.getChildren().add(box);
+        root.translateYProperty().set(SCREEN_HEIGHT / 4); // Adjust this value as needed
+        root.translateZProperty().set(-700);
         createCargoContainerOutlines(root);
 
         Camera camera = new PerspectiveCamera();
@@ -53,7 +58,8 @@ public class FXVisualizer extends Application {
         stage.setTitle("Rotating Cube");
 
         // addKeyRotationHandlers(scene, root);
-        addMouseRotationHandler(scene, root);
+        addMouseRotationHandler(scene, root, stage);
+        drawContainer(testArray, root);
 
         stage.setScene(scene);
 
@@ -64,35 +70,52 @@ public class FXVisualizer extends Application {
         launch(args);
     }
 
-    public void createCargoContainerOutlines(Group root)
-    {
-        int spacing = -(BLOCK_SIZE*2);
-        Point3D p1 = new Point3D(0, 0, 0);
-        Point3D p2 = new Point3D(CARGO_WIDTH*spacing, 0, 0);
-        Point3D p3 = new Point3D(0, CARGO_HEIGHT*spacing, 0);
-        Point3D p4 = new Point3D(CARGO_WIDTH*spacing, CARGO_HEIGHT*spacing, 0);
-        Point3D p5 = new Point3D(0, 0, CARGO_DEPTH*spacing);
-        Point3D p6 = new Point3D(CARGO_WIDTH*spacing, 0, CARGO_DEPTH*spacing);
-        Point3D p7 = new Point3D(0, CARGO_HEIGHT*spacing, CARGO_DEPTH*spacing);
-        Point3D p8 = new Point3D(CARGO_WIDTH*spacing, CARGO_HEIGHT*spacing, CARGO_DEPTH*spacing);
-
-
-        drawLine(p1, p2,root);
-        drawLine(p1, p3,root);
-        drawLine(p1, p5,root);
-        drawLine(p2, p6,root);
-        drawLine(p2, p4,root);
-        drawLine(p3, p4,root);
-        drawLine(p3, p7,root);
-        drawLine(p4, p8,root);
-        drawLine(p5, p6,root);
-        drawLine(p5, p7,root);
-        drawLine(p6, p8,root);
-        drawLine(p7, p8,root);
+    public void createCargoContainerOutlines(Group root) {
+        int cargoWidth = xCoord * 2;
+        int cargoHeight = yCoord * 2;
+        int cargoDepth = zCoord * 2;
+        int padding = -(BLOCK_SIZE / 2);
+        Point3D[] points = {
+                new Point3D(padding, padding, padding),
+                new Point3D(cargoWidth + padding, padding, padding),
+                new Point3D(padding, cargoHeight + padding, padding),
+                new Point3D(cargoWidth + padding, cargoHeight + padding, padding),
+                new Point3D(padding, padding, cargoDepth + padding),
+                new Point3D(cargoWidth + padding, padding, cargoDepth + padding),
+                new Point3D(padding, cargoHeight + padding, cargoDepth + padding),
+                new Point3D(cargoWidth + padding, cargoHeight + padding, cargoDepth + padding)
+        };
+        int[][] lines = {
+                { 0, 1 }, { 0, 2 }, { 0, 4 }, { 1, 5 }, { 1, 3 }, { 2, 3 },
+                { 2, 6 }, { 3, 7 }, { 4, 5 }, { 4, 6 }, { 5, 7 }, { 6, 7 }
+        };
+        for (int[] line : lines) {
+            drawLine(points[line[0]], points[line[1]], root);
+        }
     }
 
-    public void drawLine(Point3D origin, Point3D target, Group root) {
-        double lineWidth = 1.4;
+    private void drawContainer(int[][][] field, RotatableGroup root) {
+        piecesGroup.getChildren().clear();
+        for (int z = 0; z < field.length; z++) {
+            for (int y = 0; y < field[z].length; y++) {
+                for (int x = 0; x < field[z][y].length; x++) {
+                    if(field[z][y][x] != 0){
+                        Box box = new Box(BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
+                        PhongMaterial material = new PhongMaterial();
+                        material.setDiffuseColor(getColor(field[z][y][x]));
+                        box.setMaterial(material);
+                        box.setTranslateX(x * BLOCK_SIZE + PADDING);
+                        box.setTranslateY(y * BLOCK_SIZE + PADDING);
+                        box.setTranslateZ(z * BLOCK_SIZE + PADDING);
+                        piecesGroup.getChildren().add(box);}
+                }
+            }
+        }
+        root.getChildren().add(piecesGroup);
+    }
+
+    private void drawLine(Point3D origin, Point3D target, Group root) {
+        double lineWidth = 1.0;
         Point3D yAxis = new Point3D(0, 1, 0);
         Point3D lineVector = target.subtract(origin);
         double lineHeight = lineVector.magnitude();
@@ -107,15 +130,12 @@ public class FXVisualizer extends Application {
         root.getChildren().addAll(line);
     }
 
-    // 
-
-    public void addMouseRotationHandler(Scene scene, RotatableGroup root) {
+    public void addMouseRotationHandler(Scene scene, RotatableGroup root, Stage stage) {
         Rotate xRotate;
         Rotate yRotate;
         root.getTransforms().addAll(
                 xRotate = new Rotate(0, Rotate.X_AXIS),
-                yRotate = new Rotate(0, Rotate.Y_AXIS)
-        );
+                yRotate = new Rotate(0, Rotate.Y_AXIS));
         xRotate.angleProperty().bind(angleX);
         yRotate.angleProperty().bind(angleY);
 
@@ -127,8 +147,13 @@ public class FXVisualizer extends Application {
         });
 
         scene.setOnMouseDragged(event -> {
-            angleX.set(anchorAngleX - ROTATION_SPEED*(anchorY - event.getSceneY()));
-            angleY.set(anchorAngleY + ROTATION_SPEED*(anchorX - event.getSceneX()));
+            angleX.set(anchorAngleX - ROTATION_SPEED * (anchorY - event.getSceneY()));
+            angleY.set(anchorAngleY + ROTATION_SPEED * (anchorX - event.getSceneX()));
+        });
+
+        stage.addEventHandler(ScrollEvent.SCROLL, event -> {
+            double delta = event.getDeltaY();
+            root.translateZProperty().set(root.getTranslateZ() + delta);
         });
     }
 
@@ -158,37 +183,44 @@ public class FXVisualizer extends Application {
         }
     }
 
+    private Color getColor(int i)
+    {
+        if(i==1){return Color.RED;}
+        if(i==2){return Color.BLUE;}
+        if(i==3){return Color.GREEN;}
+        return null;
+    }
 
     // public void addKeyRotationHandlers(Scene scene, RotatableGroup root) {
-    //     scene.setOnKeyPressed(event -> {
-    //         switch (event.getCode()) {
-    //             case W:
-    //                 root.rotateByX(-ROTATION_SPEED);
-    //                 break;
-    //             case S:
-    //                 root.rotateByX(ROTATION_SPEED);
-    //                 break;
-    //             case A:
-    //                 root.rotateByY(-ROTATION_SPEED);
-    //                 break;
-    //             case D:
-    //                 root.rotateByY(ROTATION_SPEED);
-    //                 break;
-    //             case Q:
-    //                 root.rotateByZ(-ROTATION_SPEED);
-    //                 break;
-    //             case E:
-    //                 root.rotateByZ(ROTATION_SPEED);
-    //                 break;
-    //             case UP:
-    //                 root.translateZProperty().set(root.getTranslateZ() + 10);
-    //                 break;
-    //             case DOWN: 
-    //                 root.translateZProperty().set(root.getTranslateZ() - 10);
-    //                 break;
-    //             default:
-    //                 break;
-    //         }
-    //     });
+    // scene.setOnKeyPressed(event -> {
+    // switch (event.getCode()) {
+    // case W:
+    // root.rotateByX(-ROTATION_SPEED);
+    // break;
+    // case S:
+    // root.rotateByX(ROTATION_SPEED);
+    // break;
+    // case A:
+    // root.rotateByY(-ROTATION_SPEED);
+    // break;
+    // case D:
+    // root.rotateByY(ROTATION_SPEED);
+    // break;
+    // case Q:
+    // root.rotateByZ(-ROTATION_SPEED);
+    // break;
+    // case E:
+    // root.rotateByZ(ROTATION_SPEED);
+    // break;
+    // case UP:
+    // root.translateZProperty().set(root.getTranslateZ() + 10);
+    // break;
+    // case DOWN:
+    // root.translateZProperty().set(root.getTranslateZ() - 10);
+    // break;
+    // default:
+    // break;
+    // }
+    // });
     // }
 }
