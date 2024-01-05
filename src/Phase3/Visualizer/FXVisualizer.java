@@ -1,7 +1,5 @@
 package Phase3.Visualizer;
-
-import Phase3.PiecesDB.ParcelDB;
-import Phase3.PiecesDB.PentominoesDB;
+import Phase3.Solvers.Greedy;
 import javafx.application.Application;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
@@ -25,14 +23,14 @@ public class FXVisualizer extends Application {
     private final int SCREEN_WIDTH = 750;
     private final int SCREEN_HEIGHT = 1200;
     private final double ROTATION_SPEED = 0.2;
-    private final int BLOCK_SIZE = 5;
+    private final int BLOCK_SIZE = 10;
     private final double PADDING = 0.5;
-    public static int CARGO_HEIGHT = 8;
-    public static int CARGO_WIDTH = 5;
-    public static int CARGO_DEPTH = 33;
-    private final int xCoord = (CARGO_WIDTH * BLOCK_SIZE) / 2;
-    private final int yCoord = (CARGO_HEIGHT * BLOCK_SIZE) / 2;
-    private final int zCoord = (CARGO_DEPTH * BLOCK_SIZE) / 2;
+    public static final int CARGO_HEIGHT = 8;
+    public static final int CARGO_WIDTH = 5;
+    public static final int CARGO_DEPTH = 33;
+    private final int CARGO_X = (CARGO_WIDTH * BLOCK_SIZE) / 2;
+    private final int CARGO_Y = (CARGO_HEIGHT * BLOCK_SIZE) / 2;
+    private final int CARGO_Z = (CARGO_DEPTH * BLOCK_SIZE) / 2;
 
     private double anchorX, anchorY;
     private double anchorAngleX = 0;
@@ -40,29 +38,24 @@ public class FXVisualizer extends Application {
     private final DoubleProperty angleX = new SimpleDoubleProperty(0);
     private final DoubleProperty angleY = new SimpleDoubleProperty(0);
     private RotatableGroup piecesGroup = new RotatableGroup();
+    public RotatableGroup root = new RotatableGroup();
 
-    int[][][] testArray = ParcelDB.cRotInt[0];
+    int[][][] field = new int[CARGO_DEPTH][CARGO_HEIGHT][CARGO_WIDTH];
 
     @Override
     public void start(Stage stage) {
-        RotatableGroup root = new RotatableGroup();
         root.translateXProperty().set(SCREEN_WIDTH / 2.0 + 225);
-        root.translateYProperty().set(SCREEN_HEIGHT / 4); // Adjust this value as needed
-        root.translateZProperty().set(-700);
+        root.translateYProperty().set(SCREEN_HEIGHT / 4);
+        root.translateZProperty().set(-500);
         createCargoContainerOutlines(root);
-
         Camera camera = new PerspectiveCamera();
         Scene scene = new Scene(root, SCREEN_HEIGHT, SCREEN_WIDTH, true);
         scene.setCamera(camera);
-
-        stage.setTitle("Rotating Cube");
-
-        // addKeyRotationHandlers(scene, root);
+        stage.setTitle("Cargo Visualizer");
         addMouseRotationHandler(scene, root, stage);
-        drawContainer(testArray, root);
-
+        Greedy.fillParcels(field);
+        drawContainer(field, root);
         stage.setScene(scene);
-
         stage.show();
     }
 
@@ -71,9 +64,9 @@ public class FXVisualizer extends Application {
     }
 
     public void createCargoContainerOutlines(Group root) {
-        int cargoWidth = xCoord * 2;
-        int cargoHeight = yCoord * 2;
-        int cargoDepth = zCoord * 2;
+        int cargoWidth = CARGO_X * 2;
+        int cargoHeight = CARGO_Y * 2;
+        int cargoDepth = CARGO_Z * 2;
         int padding = -(BLOCK_SIZE / 2);
         Point3D[] points = {
                 new Point3D(padding, padding, padding),
@@ -189,6 +182,11 @@ public class FXVisualizer extends Application {
         if(i==2){return Color.BLUE;}
         if(i==3){return Color.GREEN;}
         return null;
+    }
+
+    public void setState(int[][][] field) {
+        root.getChildren().clear();
+        drawContainer(field, piecesGroup);
     }
 
     // public void addKeyRotationHandlers(Scene scene, RotatableGroup root) {
