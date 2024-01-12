@@ -1,12 +1,12 @@
-package Phase1.DX;
-
+package Phase3.Solvers.DancingLinks;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import Phase1.PentominoDatabase;
 import Phase1.Search;
 import Phase1.UI;
+import Phase3.PiecesDB.PentominoesDB;
+import Phase3.Visualizer.FXVisualizer;
 
 /**
  * DXSearch is a class that contains methods for solving pentomino puzzles using
@@ -17,18 +17,23 @@ public class DXSearch {
 	private static final int HORIZONTAL_GRID_SIZE = Search.HORIZONTAL_GRID_SIZE;
 	private static final int VERTICAL_GRID_SIZE = Search.VERTICAL_GRID_SIZE;
 	public static int[][] field = Search.field;
-	public static UI ui = Search.ui;
 
 	public static List<Row> rows = new ArrayList<Row>();
 
-	public static double start;
+	public int depth = FXVisualizer.CARGO_DEPTH;
+    public int height = FXVisualizer.CARGO_HEIGHT;
+    public int width = FXVisualizer.CARGO_WIDTH;
+	boolean[][][][] A = PentominoesDB.lPentBool;
+    boolean[][][][] B = PentominoesDB.pPentBool;
+    boolean[][][][] C = PentominoesDB.tPentBool;
+    public boolean[][][][][] shapes = new boolean[][][][][]{A, B, C};
 
 	/**
 	 * Solves a pentomino puzzle using the Dancing Links algorithm.
 	 */
 	public static void dxSearch() {
 		Search.emptyBoard(field);
-		DancingLinks dance = new DancingLinks(HORIZONTAL_GRID_SIZE * VERTICAL_GRID_SIZE);
+		DancingLinks2 dance = new DancingLinks2(HORIZONTAL_GRID_SIZE * VERTICAL_GRID_SIZE);
 		int nr = 0;
 		for (int i = 0; i < INPUT.length; i++) {
 			int pentID = Search.characterToID(INPUT[i]);
@@ -42,29 +47,16 @@ public class DXSearch {
 							continue;
 						}
 
-						List<Integer> xs = getOccupiedCellsX(pieceToPlace, x, y);
+						List<Integer> xs = getOccupiedCellsX(pieceToPlace, x, y,0);
 						List<Integer> ys = getOccupiedCellsY(pieceToPlace, x, y);
-						dance.AddRow(nr, pentID, x, y, mutation, new int[] { // TODO: SWITCH ARRAYLISTS WITH ARRAYS
+						dance.AddRow(nr, pentID,new int[] { // TODO: SWITCH ARRAYLISTS WITH ARRAYS
 								xs.get(0) + HORIZONTAL_GRID_SIZE * (ys.get(0)),
 								xs.get(1) + HORIZONTAL_GRID_SIZE * (ys.get(1)),
 								xs.get(2) + HORIZONTAL_GRID_SIZE * (ys.get(2)),
 								xs.get(3) + HORIZONTAL_GRID_SIZE * (ys.get(3)),
 								xs.get(4) + HORIZONTAL_GRID_SIZE * (ys.get(4)),
 						});
-						rows.add(new Row(nr, x, y, pentID, mutation));
-						// System.out.println(nr + " ID" + pentID + " M" + mutation + " X" + x + " Y" +
-						// y); // y?
-						System.out.println(xs.toString());
-						System.out.println(ys.toString());
-						int[] h = new int[] 
-						{
-							xs.get(0) + HORIZONTAL_GRID_SIZE * (ys.get(0)),
-								xs.get(1) + HORIZONTAL_GRID_SIZE * (ys.get(1)),
-								xs.get(2) + HORIZONTAL_GRID_SIZE * (ys.get(2)),
-								xs.get(3) + HORIZONTAL_GRID_SIZE * (ys.get(3)),
-								xs.get(4) + HORIZONTAL_GRID_SIZE * (ys.get(4)),
-						};
-						System.out.println(Arrays.toString(h));
+						// rows.add(new Row(nr, x, y, pentID, mutation));
 						nr++;
 					}
 				}
@@ -79,6 +71,11 @@ public class DXSearch {
 		
 		dance.algorithmX(0);
 		
+	}
+
+	public static void dxSearch2()
+	{
+
 	}
 
 	/**
@@ -109,7 +106,7 @@ public class DXSearch {
 	 * @param col   the column where the pentomino piece is placed
 	 * @return a list of x-coordinates of occupied cells
 	 */
-	public static List<Integer> getOccupiedCellsX(int[][] pieceToplace, int row, int col) {
+	public static List<Integer> getOccupiedCellsX(int[][] pieceToplace, int x0, int y0,int z0) {
 		List<Integer> arrX = new ArrayList<>();
 		int distanceX = -1;
 		for (int x = 0; x < pieceToplace.length; x++) {
@@ -127,7 +124,7 @@ public class DXSearch {
 		for (int x = 0; x < pieceToplace.length; x++) {
 			for (int j = 0; j < pieceToplace[0].length; j++) {
 				if (pieceToplace[x][j] != 0) {
-					arrX.add(x + row);
+					arrX.add(x + x0);
 				}
 			}
 		}

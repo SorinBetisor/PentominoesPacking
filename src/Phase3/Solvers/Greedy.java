@@ -2,11 +2,14 @@ package Phase3.Solvers;
 import Phase3.PiecesDB.ParcelDB;
 
 public class Greedy {
-
+    //red - 3
+    //blue - 4
+    //green - 5
     public static int currentValue = 0;
     public static int[][][] fillParcels(int[][][] field) {
         int[] values = {3,4,5};
         int[][][][][] parcels = {ParcelDB.aRotInt,ParcelDB.bRotInt,ParcelDB.cRotInt};
+        // int[][][][][] parcels = {ParcelDB.aRotInt,ParcelDB.bRotInt,ParcelDB.cRotInt};
         for(int parcel=0;parcel<3;parcel++)
         {
             int bestValueIndex = 0;
@@ -33,6 +36,7 @@ public class Greedy {
             }
             values[bestValueIndex] = 0;
         }
+        System.out.println("Greedy: "+currentValue);
         return null;
     }
     

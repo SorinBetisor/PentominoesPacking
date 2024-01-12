@@ -1,20 +1,27 @@
 package Phase3.Visualizer;
+
+import Phase1.DX.DancingLinks;
+import Phase3.PiecesDB.ParcelDB;
 import Phase3.Solvers.Greedy;
+import Phase3.Solvers.SearchWrapper;
+import Phase3.Solvers.DancingLinks.DLX3D;
+import Phase3.Solvers.DancingLinks.DancingLinks2;
 import javafx.application.Application;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.geometry.Point3D;
 import javafx.scene.Camera;
 import javafx.scene.Group;
+import javafx.scene.Parent;
 import javafx.scene.PerspectiveCamera;
 import javafx.scene.Scene;
+import javafx.scene.SceneAntialiasing;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.Box;
 import javafx.scene.shape.Cylinder;
 import javafx.scene.transform.Rotate;
-import javafx.scene.transform.Transform;
 import javafx.scene.transform.Translate;
 import javafx.stage.Stage;
 
@@ -36,34 +43,50 @@ public class FXVisualizer extends Application {
     private double anchorAngleX = 0;
     private double anchorAngleY = 0;
     private final DoubleProperty angleX = new SimpleDoubleProperty(0);
-    private final DoubleProperty angleY = new SimpleDoubleProperty(0);
+    private final DoubleProperty angleY = new SimpleDoubleProperty(70);
     private RotatableGroup piecesGroup = new RotatableGroup();
-    public RotatableGroup root = new RotatableGroup();
+    public RotatableGroup rootGroup = new RotatableGroup();
+    public Scene visualizerScene;
+    public Stage stage;
+    public Camera camera;
 
     int[][][] field = new int[CARGO_DEPTH][CARGO_HEIGHT][CARGO_WIDTH];
 
+    Parent uiRoot;
+
     @Override
     public void start(Stage stage) {
-        root.translateXProperty().set(SCREEN_WIDTH / 2.0 + 225);
-        root.translateYProperty().set(SCREEN_HEIGHT / 4);
-        root.translateZProperty().set(-500);
-        createCargoContainerOutlines(root);
-        Camera camera = new PerspectiveCamera();
-        Scene scene = new Scene(root, SCREEN_HEIGHT, SCREEN_WIDTH, true);
-        scene.setCamera(camera);
+        rootGroup.translateXProperty().set(SCREEN_WIDTH / 2.0 + 100);
+        rootGroup.translateYProperty().set(SCREEN_HEIGHT / 4 + 25);
+        rootGroup.translateZProperty().set(-500);
+
+        visualizerScene = new Scene(rootGroup, SCREEN_HEIGHT, SCREEN_WIDTH, true, SceneAntialiasing.BALANCED);
+        camera = new PerspectiveCamera();
+        visualizerScene.setCamera(camera);
         stage.setTitle("Cargo Visualizer");
-        addMouseRotationHandler(scene, root, stage);
-        Greedy.fillParcels(field);
-        drawContainer(field, root);
-        stage.setScene(scene);
+        this.stage = stage;
+        stage.setScene(visualizerScene);
+        initializeVisualizer();
+        addMouseRotationHandler(visualizerScene, rootGroup, stage, camera);
+        addKeyRotationHandlers(visualizerScene, rootGroup, camera, uiRoot);
         stage.show();
+    }
+
+    public void initializeVisualizer() {
+        createCargoContainerOutlines(rootGroup);
+        // Greedy.fillParcels(field);
+        DLX3D dlx3D = new DLX3D();
+        dlx3D.createPositions();
+        SearchWrapper.addPiece(field, ParcelDB.aRotInt[0], new int[]{0, 0, 0});
+        System.out.println("Fully covered: " + SearchWrapper.checkFullCover(field));
+        drawContainer(field, rootGroup);
     }
 
     public static void main(String args[]) {
         launch(args);
     }
 
-    public void createCargoContainerOutlines(Group root) {
+    public void createCargoContainerOutlines(Group rootGroup) {
         int cargoWidth = CARGO_X * 2;
         int cargoHeight = CARGO_Y * 2;
         int cargoDepth = CARGO_Z * 2;
@@ -83,16 +106,16 @@ public class FXVisualizer extends Application {
                 { 2, 6 }, { 3, 7 }, { 4, 5 }, { 4, 6 }, { 5, 7 }, { 6, 7 }
         };
         for (int[] line : lines) {
-            drawLine(points[line[0]], points[line[1]], root);
+            drawLine(points[line[0]], points[line[1]], rootGroup);
         }
     }
 
-    private void drawContainer(int[][][] field, RotatableGroup root) {
+    private void drawContainer(int[][][] field, RotatableGroup rootGroup) {
         piecesGroup.getChildren().clear();
         for (int z = 0; z < field.length; z++) {
             for (int y = 0; y < field[z].length; y++) {
                 for (int x = 0; x < field[z][y].length; x++) {
-                    if(field[z][y][x] != 0){
+                    if (field[z][y][x] != 0) {
                         Box box = new Box(BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
                         PhongMaterial material = new PhongMaterial();
                         material.setDiffuseColor(getColor(field[z][y][x]));
@@ -100,14 +123,15 @@ public class FXVisualizer extends Application {
                         box.setTranslateX(x * BLOCK_SIZE + PADDING);
                         box.setTranslateY(y * BLOCK_SIZE + PADDING);
                         box.setTranslateZ(z * BLOCK_SIZE + PADDING);
-                        piecesGroup.getChildren().add(box);}
+                        piecesGroup.getChildren().add(box);
+                    }
                 }
             }
         }
-        root.getChildren().add(piecesGroup);
+        rootGroup.getChildren().add(piecesGroup);
     }
 
-    private void drawLine(Point3D origin, Point3D target, Group root) {
+    private void drawLine(Point3D origin, Point3D target, Group rootGroup) {
         double lineWidth = 1.0;
         Point3D yAxis = new Point3D(0, 1, 0);
         Point3D lineVector = target.subtract(origin);
@@ -120,13 +144,13 @@ public class FXVisualizer extends Application {
         Cylinder line = new Cylinder(lineWidth, lineHeight);
         line.setMaterial(new PhongMaterial(Color.BLACK));
         line.getTransforms().addAll(moveToOriginCenter, rotateTransform);
-        root.getChildren().addAll(line);
+        rootGroup.getChildren().addAll(line);
     }
 
-    public void addMouseRotationHandler(Scene scene, RotatableGroup root, Stage stage) {
+    public void addMouseRotationHandler(Scene scene, RotatableGroup rootGroup, Stage stage, Camera camera) {
         Rotate xRotate;
         Rotate yRotate;
-        root.getTransforms().addAll(
+        rootGroup.getTransforms().addAll(
                 xRotate = new Rotate(0, Rotate.X_AXIS),
                 yRotate = new Rotate(0, Rotate.Y_AXIS));
         xRotate.angleProperty().bind(angleX);
@@ -146,79 +170,77 @@ public class FXVisualizer extends Application {
 
         stage.addEventHandler(ScrollEvent.SCROLL, event -> {
             double delta = event.getDeltaY();
-            root.translateZProperty().set(root.getTranslateZ() + delta);
+            rootGroup.translateZProperty().set(rootGroup.getTranslateZ() + delta);
         });
     }
 
-    class RotatableGroup extends Group {
-        Rotate r;
-        Transform t = new Rotate();
-
-        void rotateByX(int ang) {
-            r = new Rotate(ang, Rotate.X_AXIS);
-            t = t.createConcatenation(r);
-            this.getTransforms().clear();
-            this.getTransforms().addAll(t);
+    private Color getColor(int i) {
+        if (i == 1) {
+            return Color.RED;
         }
-
-        void rotateByY(int ang) {
-            r = new Rotate(ang, Rotate.Y_AXIS);
-            t = t.createConcatenation(r);
-            this.getTransforms().clear();
-            this.getTransforms().addAll(t);
+        if (i == 2) {
+            return Color.BLUE;
         }
-
-        void rotateByZ(int ang) {
-            r = new Rotate(ang, Rotate.Z_AXIS);
-            t = t.createConcatenation(r);
-            this.getTransforms().clear();
-            this.getTransforms().addAll(t);
+        if (i == 3) {
+            return Color.GREEN.darker();
         }
-    }
-
-    private Color getColor(int i)
-    {
-        if(i==1){return Color.RED;}
-        if(i==2){return Color.BLUE;}
-        if(i==3){return Color.GREEN;}
         return null;
     }
 
     public void setState(int[][][] field) {
-        root.getChildren().clear();
+        rootGroup.getChildren().clear();
         drawContainer(field, piecesGroup);
     }
 
-    // public void addKeyRotationHandlers(Scene scene, RotatableGroup root) {
-    // scene.setOnKeyPressed(event -> {
-    // switch (event.getCode()) {
-    // case W:
-    // root.rotateByX(-ROTATION_SPEED);
-    // break;
-    // case S:
-    // root.rotateByX(ROTATION_SPEED);
-    // break;
-    // case A:
-    // root.rotateByY(-ROTATION_SPEED);
-    // break;
-    // case D:
-    // root.rotateByY(ROTATION_SPEED);
-    // break;
-    // case Q:
-    // root.rotateByZ(-ROTATION_SPEED);
-    // break;
-    // case E:
-    // root.rotateByZ(ROTATION_SPEED);
-    // break;
-    // case UP:
-    // root.translateZProperty().set(root.getTranslateZ() + 10);
-    // break;
-    // case DOWN:
-    // root.translateZProperty().set(root.getTranslateZ() - 10);
-    // break;
-    // default:
-    // break;
-    // }
-    // });
-    // }
+    public void addKeyRotationHandlers(Scene scene, RotatableGroup rootGroup, Camera camera, Parent uiRoot) {
+        Translate cameraTranslate = new Translate();
+        scene.setOnKeyPressed(event -> {
+            switch (event.getCode()) {
+                case W:
+                    cameraTranslate.setY(cameraTranslate.getY() + 10);
+                    break;
+                case S:
+                    cameraTranslate.setY(cameraTranslate.getY() - 10);
+                    break;
+                case A:
+                    cameraTranslate.setZ(cameraTranslate.getZ() + 10);
+                    break;
+                case D:
+                    cameraTranslate.setZ(cameraTranslate.getZ() - 10);
+                    break;
+                case Q:
+                    cameraTranslate.setX(cameraTranslate.getX() + 10);
+                    break;
+                case E:
+                    cameraTranslate.setX(cameraTranslate.getX() - 10);
+                    break;
+                default:
+                    break;
+            }
+
+            // Preserve existing rotations
+            Rotate xRotate = rootGroup.getTransforms().stream()
+                    .filter(transform -> transform instanceof Rotate && ((Rotate) transform).getAxis() == Rotate.X_AXIS)
+                    .map(transform -> (Rotate) transform)
+                    .findFirst()
+                    .orElse(new Rotate(0, Rotate.X_AXIS));
+
+            Rotate yRotate = rootGroup.getTransforms().stream()
+                    .filter(transform -> transform instanceof Rotate && ((Rotate) transform).getAxis() == Rotate.Y_AXIS)
+                    .map(transform -> (Rotate) transform)
+                    .findFirst()
+                    .orElse(new Rotate(0, Rotate.Y_AXIS));
+
+            // Apply camera translation and preserve existing rotations
+            rootGroup.getTransforms().clear();
+            rootGroup.getTransforms().addAll(
+                    xRotate,
+                    yRotate,
+                    new Translate(camera.getTranslateX(), camera.getTranslateY(), camera.getTranslateZ()),
+                    cameraTranslate);
+
+            // Also, make sure to update the layout of the UI elements
+            // uiRoot.layout();
+        });
+    }
 }

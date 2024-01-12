@@ -35,5 +35,18 @@ public class SearchWrapper {
         return true;
     }
 
+    public static boolean checkFullCover(int[][][] field) {
+        for (int z = 0; z < field.length; z++) {
+            for (int y = 0; y < field[z].length; y++) {
+                for (int x = 0; x < field[z][y].length; x++) {
+                    if (field[z][y][x] == 0) {
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
     
 }
