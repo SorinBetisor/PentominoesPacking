@@ -50,7 +50,7 @@ public class FXVisualizer extends Application {
     public Stage stage;
     public Camera camera;
 
-    int[][][] field = new int[CARGO_DEPTH][CARGO_HEIGHT][CARGO_WIDTH];
+    public static int[][][] field = new int[CARGO_DEPTH][CARGO_HEIGHT][CARGO_WIDTH];
 
     Parent uiRoot;
 
@@ -74,11 +74,11 @@ public class FXVisualizer extends Application {
 
     public void initializeVisualizer() {
         createCargoContainerOutlines(rootGroup);
-        Greedy.fillParcels(field);
-        // DLX3D dlx3D = new DLX3D();
-        // dlx3D.createPositions();
-        // SearchWrapper.addPiece(field, ParcelDB.aRotInt[0], new int[]{0, 0, 0});
-        // System.out.println("Fully covered: " + SearchWrapper.checkFullCover(field));
+        // Greedy.fillParcels(field);
+        DLX3D dlx3D = new DLX3D();
+        dlx3D.createPositions();
+        // Greedy.fillParcels(field);
+        System.out.println("Fully covered: " + SearchWrapper.checkFullCover(field));
         drawContainer(field, rootGroup);
     }
 

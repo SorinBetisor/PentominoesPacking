@@ -9,6 +9,7 @@ public class Row {
     int x0;
     int y0;
     int z0;
+    int pieceValue;
 
     /**
      * Constructs a new row with the specified attributes.
@@ -19,12 +20,13 @@ public class Row {
      * @param pentID   The identifier of the pentomino.
      * @param rotation The rotation/mutation of the pentomino.
      */
-    public Row(int id, int x, int y, int z0, int pentID, int rotation, int[][][] shape) {
+    public Row(int id, int x, int y, int z0, int pentID, int[][][] shape, int pieceValue) {
         this.id = id;
         this.x0 = x;
         this.y0 = y;
         this.z0 = z0;
         this.pentID = pentID;
         this.shape = shape;
+        this.pieceValue = pieceValue;
     }
 }

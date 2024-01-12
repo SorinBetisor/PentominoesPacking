@@ -12,6 +12,7 @@ public class Cell {
     public Header C;
 
     public int pentID;
+    public int[][][] shape;
 
      /**
      * Constructs a new cell linked to the specified header.
@@ -27,6 +28,7 @@ public class Cell {
         C = header;
 
         pentID=-1;
+        shape = null;
     }
 
     /**

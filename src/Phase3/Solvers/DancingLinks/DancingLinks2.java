@@ -1,6 +1,7 @@
 package Phase3.Solvers.DancingLinks;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Stack;
 import Phase3.Solvers.SearchWrapper;
@@ -20,7 +21,7 @@ public class DancingLinks2 {
     public static int depth = FXVisualizer.CARGO_DEPTH;
     public static int height = FXVisualizer.CARGO_HEIGHT;
     public static int width = FXVisualizer.CARGO_WIDTH;
-    public static int[][][] field = new int[width][height][depth];
+    public static int[][][] field = new int[depth][height][width];
 
     /**
      * Constructs a DancingLinks object with the specified number of columns.
@@ -62,13 +63,14 @@ public class DancingLinks2 {
      *                 covering each constraint.
      */
     // accepts indexes of one only in increasing order!
-    public void AddRow(int row, int pentId, int[] ones) {
+    public void AddRow(int row, int pentId, int[] ones, int[][][] piece) {
         int last = -1;
         Cell first = null;
         for (int x : ones) {
             Cell cell = new Cell(headers[x]);
             headers[x].InsertUp(cell);
             cell.row = row;
+            cell.shape = piece;
             cell.pentID = pentId;
 
             headers[x].size++;
@@ -128,15 +130,42 @@ public class DancingLinks2 {
      *             problems like pentominoes.
      */
 
-    public static int count = 0;
+    public static boolean c = false;
+
     public void algorithmX(int step) {
+        if(c) return;
         if (root.R == root) {
             System.out.println("Solution found!");
         }
-        // if(DLX3D.value > 14)
-        // {
-        //     System.out.println("Solution found!");
-        // }
+        List<Row> rows = new ArrayList<Row>();
+        if(answer.size() > 100){
+            DLX3D.totalValue = 0;
+            for(var row : answer)
+            {
+                Row r = DLX3D.rows.get(row);
+                rows.add(r);
+
+            }
+
+            for(var row : rows)
+            {
+                int[] coords = new int[]{row.z0,row.y0,row.x0};
+                // System.out.println(Arrays.toString(coords));
+                SearchWrapper.addPiece(field, row.shape, coords);
+                DLX3D.totalValue += row.pieceValue;
+            }
+            // if(DLX3D.totalValue < 1000){return;}
+            FXVisualizer.field = field;
+            System.out.println("Solution found!");
+            System.out.println("Total value: " + DLX3D.totalValue);
+            if(DLX3D.totalValue > 1179){
+                c = true;
+                return;
+            }
+        }
+        {
+            
+        }
 
         Header head = (Header) root.R;
         int minSize = head.size;

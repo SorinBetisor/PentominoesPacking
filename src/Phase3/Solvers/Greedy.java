@@ -1,5 +1,6 @@
 package Phase3.Solvers;
 import Phase3.PiecesDB.ParcelDB;
+import Phase3.PiecesDB.PentominoesDB;
 
 public class Greedy {
     //red - 3
@@ -8,7 +9,7 @@ public class Greedy {
     public static int currentValue = 0;
     public static int[][][] fillParcels(int[][][] field) {
         int[] values = {3,4,5};
-        int[][][][][] parcels = {ParcelDB.aRotInt,ParcelDB.bRotInt,ParcelDB.cRotInt};
+        int[][][][][] parcels = {PentominoesDB.lPentInt,PentominoesDB.pPentInt,PentominoesDB.tPentInt};
         // int[][][][][] parcels = {ParcelDB.aRotInt,ParcelDB.bRotInt,ParcelDB.cRotInt};
         for(int parcel=0;parcel<3;parcel++)
         {

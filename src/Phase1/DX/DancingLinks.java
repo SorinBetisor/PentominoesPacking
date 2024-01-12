@@ -138,7 +138,8 @@ public class DancingLinks {
             List<Row> rows = new ArrayList<Row>();
             List<Integer> pentIDSList = new ArrayList<Integer>();
 
-            if (duplicateSolutionsFound % 10000 == 0) {
+            if (duplicateSolutionsFound % 10000 == 0) 
+            {
                 System.out.println("Found " + duplicateSolutionsFound + " solutions that use duplicate pieces");
             }
 

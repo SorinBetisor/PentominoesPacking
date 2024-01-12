@@ -1,9 +1,7 @@
 package Phase3.Solvers.DancingLinks;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-
 import Phase1.PentominoDatabase;
 import Phase3.PiecesDB.ParcelDB;
 import Phase3.PiecesDB.PentominoesDB;
@@ -16,11 +14,12 @@ public class DLX3D {
     public static int depth = FXVisualizer.CARGO_DEPTH;
     public static int height = FXVisualizer.CARGO_HEIGHT;
     public static int width = FXVisualizer.CARGO_WIDTH;
-    private ArrayList<int[][][]> positions = new ArrayList<>();
+    public static int totalValue = 0;
     int[][][][] A = PentominoesDB.lPentInt;
     int[][][][] B = PentominoesDB.pPentInt;
     int[][][][] C = PentominoesDB.tPentInt;
-    public int[][][][][] shapes = new int[][][][][]{A, B, C};
+    public int[][][][][] shapes = new int[][][][][]{C,A,B};
+    public int[] values = new int[]{5,4,3};
     DancingLinks2 dance = new DancingLinks2(width * height * depth);
     public static List<Row> rows = new ArrayList<Row>();
     public static int value = 0;
@@ -57,28 +56,23 @@ public class DLX3D {
     }
 
     public void createPositions(){ 
-
-        int typeNumber = 0;
+        int currentPieceValue = 0;
+        int typeNumber = 1;
         int nr = 0;
         for(int[][][][] typeOfShape : shapes){
+            currentPieceValue = values[typeNumber-1];
             for(int[][][] shape : typeOfShape){
-                int shapeWidth = shape[0][0].length;
-                int shapeHeight = shape[0].length;
-                int shapeDepth = shape.length;
-
                 for(int zPlacementStart=0; zPlacementStart < depth; zPlacementStart++){
                     for(int yPlacementStart=0; yPlacementStart < height; yPlacementStart++){
                         for(int xPlacementStart=0; xPlacementStart < width; xPlacementStart++){
                             boolean can = isPlaceable(xPlacementStart, yPlacementStart, zPlacementStart, shape);
-
                             if(!can){
                                 continue;
                             }
-
                             List<Integer> xs = getOccupiedCellsX(shape, xPlacementStart, yPlacementStart, zPlacementStart);
                             List<Integer> ys = getOccupiedCellsY(shape, xPlacementStart, yPlacementStart, zPlacementStart);
                             List<Integer> zs = getOccupiedCellsZ(shape, xPlacementStart, yPlacementStart, zPlacementStart);
-                            nr++;
+
                             int[] dobavkaFinal = new int[5];
                             int[] dobavkaX = new int[xs.size() ];
                             int[] dobavkaY = new int[ys.size() ];
@@ -95,22 +89,14 @@ public class DLX3D {
                             for(int i = 0; i < dobavkaX.length; i++){
                                 dobavkaFinal[i] = depth * height * dobavkaX[i] + depth * dobavkaY[i] + dobavkaZ[i];
                             }
-                            dance.AddRow(nr,typeNumber,dobavkaFinal);
-                            // System.out.println("NEW LINE START");
-                            // System.out.println(Arrays.toString(dobavkaX));
-                            // System.out.println(Arrays.toString(dobavkaY));
-                            // System.out.println(Arrays.toString(dobavkaZ));
-                            // System.out.println(Arrays.toString(dobavkaFinal));
-                            // System.out.println("NEW LINE END");
-                            value++;
+                            rows.add(new Row(nr, xPlacementStart, yPlacementStart, zPlacementStart, typeNumber, shape, currentPieceValue));
+                            dance.AddRow(nr,typeNumber,dobavkaFinal,shape);
+                            nr++;
                         }
                     }
                 }
             }
-            typeNumber++;
-            System.out.println("Type number: " + typeNumber);
-            System.out.println("Row number: " + nr);
-            
+            typeNumber++;    
         }
         dance.algorithmX(0);
     }
@@ -245,7 +231,6 @@ public class DLX3D {
 
 
     public static void main(String[] args) {
-        int[][][] field = new int[depth][height][width];
         DLX3D dlx = new DLX3D();
         dlx.createPositions();
         // System.out.println(dlx.getOccupiedCellsX(ParcelDB.aRotInt[0], 0, 0, 0).toString());
