@@ -1,6 +1,7 @@
 package Phase3.Solvers.DancingLinks;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import Phase1.PentominoDatabase;
 import Phase3.PiecesDB.ParcelDB;
@@ -15,9 +16,12 @@ public class DLX3D {
     public static int height = FXVisualizer.CARGO_HEIGHT;
     public static int width = FXVisualizer.CARGO_WIDTH;
     public static int totalValue = 0;
-    int[][][][] A = PentominoesDB.lPentInt;
-    int[][][][] B = PentominoesDB.pPentInt;
-    int[][][][] C = PentominoesDB.tPentInt;
+    // int[][][][] A = PentominoesDB.lPentInt;
+    // int[][][][] B = PentominoesDB.pPentInt;
+    // int[][][][] C = PentominoesDB.tPentInt;
+    int[][][][] A = ParcelDB.aRotInt;
+    int[][][][] B = ParcelDB.bRotInt;
+    int[][][][] C = ParcelDB.cRotInt;
     public int[][][][][] shapes = new int[][][][][]{C,A,B};
     public int[] values = new int[]{5,4,3};
     DancingLinks2 dance = new DancingLinks2(width * height * depth);
@@ -55,11 +59,15 @@ public class DLX3D {
         return startZ + shapeDepth <= depth;
     }
 
+    public static int pieceCount = 0;
     public void createPositions(){ 
         int currentPieceValue = 0;
         int typeNumber = 1;
         int nr = 0;
         for(int[][][][] typeOfShape : shapes){
+            int shapeWidth = typeOfShape[0][0][0].length;
+            int shapeHeight = typeOfShape[0][0].length;
+            int shapeDepth = typeOfShape[0].length;
             currentPieceValue = values[typeNumber-1];
             for(int[][][] shape : typeOfShape){
                 for(int zPlacementStart=0; zPlacementStart < depth; zPlacementStart++){
@@ -73,7 +81,7 @@ public class DLX3D {
                             List<Integer> ys = getOccupiedCellsY(shape, xPlacementStart, yPlacementStart, zPlacementStart);
                             List<Integer> zs = getOccupiedCellsZ(shape, xPlacementStart, yPlacementStart, zPlacementStart);
 
-                            int[] dobavkaFinal = new int[5];
+                            int[] dobavkaFinal = new int[shapeDepth * shapeHeight * shapeWidth];
                             int[] dobavkaX = new int[xs.size() ];
                             int[] dobavkaY = new int[ys.size() ];
                             int[] dobavkaZ = new int[zs.size() ];
@@ -89,6 +97,7 @@ public class DLX3D {
                             for(int i = 0; i < dobavkaX.length; i++){
                                 dobavkaFinal[i] = depth * height * dobavkaX[i] + depth * dobavkaY[i] + dobavkaZ[i];
                             }
+                            // System.out.println(Arrays.toString(dobavkaFinal));
                             rows.add(new Row(nr, xPlacementStart, yPlacementStart, zPlacementStart, typeNumber, shape, currentPieceValue));
                             dance.AddRow(nr,typeNumber,dobavkaFinal,shape);
                             nr++;

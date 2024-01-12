@@ -138,7 +138,8 @@ public class DancingLinks2 {
             System.out.println("Solution found!");
         }
         List<Row> rows = new ArrayList<Row>();
-        if(answer.size() > 100){
+        if(answer.size() > 1){
+            DLX3D.pieceCount = 0;
             DLX3D.totalValue = 0;
             for(var row : answer)
             {
@@ -152,13 +153,15 @@ public class DancingLinks2 {
                 int[] coords = new int[]{row.z0,row.y0,row.x0};
                 // System.out.println(Arrays.toString(coords));
                 SearchWrapper.addPiece(field, row.shape, coords);
+                DLX3D.pieceCount++;
                 DLX3D.totalValue += row.pieceValue;
             }
             // if(DLX3D.totalValue < 1000){return;}
             FXVisualizer.field = field;
             System.out.println("Solution found!");
             System.out.println("Total value: " + DLX3D.totalValue);
-            if(DLX3D.totalValue > 1179){
+            System.out.println("Piece count: " + DLX3D.pieceCount);
+            if(DLX3D.totalValue > 255){
                 c = true;
                 return;
             }
