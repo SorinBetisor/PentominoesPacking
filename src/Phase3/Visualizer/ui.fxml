@@ -8,7 +8,6 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.text.Font?>
 
-
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Phase3.Visualizer.Controller">
    <center>
       <SplitPane dividerPositions="0.4040178571428572" prefHeight="160.0" prefWidth="200.0" BorderPane.alignment="CENTER">
@@ -18,16 +17,16 @@
                   <AnchorPane layoutX="-1.0" layoutY="-1.0" prefHeight="400.0" prefWidth="273.0" />
                </children>
             </AnchorPane>
-          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="326.0" style="-fx-background-color: grey;">
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="326.0" style="-fx-background-color: black;">
                <children>
-                  <ChoiceBox id="choiceBox1" layoutX="14.0" layoutY="131.0" prefWidth="150.0" />
+                  <ChoiceBox id="pieces" layoutX="14.0" layoutY="131.0" prefWidth="150.0" />
                   <Label id="label1" layoutX="22.0" layoutY="99.0" prefHeight="32.0" prefWidth="154.0" text="PIECES" textFill="WHITE">
                      <font>
                         <Font name="AGA Arabesque Desktop" size="21.0" />
                      </font>
                   </Label>
-                  <ChoiceBox id="choiceBox2" layoutX="176.0" layoutY="131.0" prefWidth="150.0" />
-                  <Label id="label2" layoutX="176.0" layoutY="99.0" prefHeight="32.0" prefWidth="154.0" text="ALGOROTHIM" textFill="WHITE">
+                  <ChoiceBox id="algorothim" layoutX="176.0" layoutY="131.0" prefWidth="150.0" />
+                  <Label id="algorithm" layoutX="176.0" layoutY="99.0" prefHeight="32.0" prefWidth="154.0" text="ALGORITHM" textFill="WHITE">
                      <font>
                         <Font name="AGA Arabesque Desktop" size="21.0" />
                      </font>
