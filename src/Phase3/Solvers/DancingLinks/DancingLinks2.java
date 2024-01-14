@@ -42,27 +42,6 @@ public class DancingLinks2 {
         }
     }
 
-    /**
-     * Adds a row to the Dancing Links matrix to represent the placement of a
-     * pentomino on
-     * the board.
-     *
-     * @param row      The row number to be added to the matrix.
-     * @param pentId   The identifier of the pentomino to be placed in this row.
-     * @param x0       The X-coordinate on the board where the pentomino is placed.
-     * @param y0       The Y-coordinate on the board where the pentomino is placed.
-     * @param mutation The specific mutation or rotation of the pentomino to be
-     *                 placed.
-     * @param ones     An array of column indexes where the pentomino is covering,
-     *                 indicating
-     *                 the cells that are occupied by the pentomino.
-     *
-     *                 This method adds a row to the matrix, linking cells to column
-     *                 headers, and incrementing
-     *                 the size of the headers to track the number of elements
-     *                 covering each constraint.
-     */
-    // accepts indexes of one only in increasing order!
     public void AddRow(int row, int pentId, int[] ones, int[][][] piece) {
         int last = -1;
         Cell first = null;
@@ -161,7 +140,7 @@ public class DancingLinks2 {
             System.out.println("Solution found!");
             System.out.println("Total value: " + DLX3D.totalValue);
             System.out.println("Piece count: " + DLX3D.pieceCount);
-            if(DLX3D.totalValue > 255){
+            if(DLX3D.totalValue > 255){ //TODO: change to dynamic
                 c = true;
                 return;
             }
@@ -201,52 +180,6 @@ public class DancingLinks2 {
 
         }
         uncover(head);
-    }
-
-    /**
-     * Delete rows in the Dancing Links matrix that correspond to a specific
-     * pentomino ID.
-     *
-     * @param pentID The pentomino ID for which rows are to be deleted.
-     */
-    public void deleteRowsByPentID(int pentID) {
-        List<Cell> cellsToDelete = new ArrayList<>();
-
-        for (Cell iCell = root.D; iCell != root; iCell = iCell.D) {
-            if (iCell.pentID == pentID) {
-                // Collect all the cells in the row for deletion
-                for (Cell jCell = iCell.R; jCell != iCell; jCell = jCell.R) {
-                    cellsToDelete.add(jCell);
-                }
-            }
-        }
-
-        // Delete the collected cells
-        for (Cell cellToDelete : cellsToDelete) {
-            deleteCell(cellToDelete);
-        }
-    }
-
-    /**
-     * Delete a cell in the Dancing Links matrix, which involves unlinking it from
-     * its column and row.
-     *
-     * @param cell The cell to be deleted from the matrix.
-     */
-    private void deleteCell(Cell cell) {
-        // Unlink the cell from its column
-        cell.L.R = cell.R;
-        cell.R.L = cell.L;
-        cell.C.size--;
-
-        // Unlink the cell from its row
-        for (Cell current = cell.D; current != cell; current = current.D) {
-            for (Cell jCell = current.R; jCell != current; jCell = jCell.R) {
-                jCell.D.U = jCell.U;
-                jCell.U.D = jCell.D;
-                jCell.C.size--;
-            }
-        }
     }
 
     /**

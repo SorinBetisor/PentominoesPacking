@@ -1,5 +1,7 @@
 package Phase3.Visualizer;
 
+import java.io.IOException;
+
 import Phase1.DX.DancingLinks;
 import Phase3.PiecesDB.ParcelDB;
 import Phase3.Solvers.Greedy;
@@ -9,6 +11,7 @@ import Phase3.Solvers.DancingLinks.DancingLinks2;
 import javafx.application.Application;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Point3D;
 import javafx.scene.Camera;
 import javafx.scene.Group;
@@ -56,11 +59,15 @@ public class FXVisualizer extends Application {
 
     @Override
     public void start(Stage stage) {
+
+        Parent uiRoot = loadUI(); //ROBIN: this loads the UI from FXML
+
         rootGroup.translateXProperty().set(SCREEN_WIDTH / 2.0 + 100);
         rootGroup.translateYProperty().set(SCREEN_HEIGHT / 4 + 25);
         rootGroup.translateZProperty().set(-500);
 
         visualizerScene = new Scene(rootGroup, SCREEN_HEIGHT, SCREEN_WIDTH, true, SceneAntialiasing.BALANCED);
+        // visualizerScene = new Scene(rootGroup, SCREEN_HEIGHT, SCREEN_WIDTH, true, SceneAntialiasing.BALANCED);   ROBIN: you can use this to only load the MENU from FXML, without visualizer
         camera = new PerspectiveCamera();
         visualizerScene.setCamera(camera);
         stage.setTitle("Cargo Visualizer");
@@ -242,5 +249,20 @@ public class FXVisualizer extends Application {
             // Also, make sure to update the layout of the UI elements
             // uiRoot.layout();
         });
+    }
+
+
+    //ROBIN: this loads the UI from FXML
+    private Parent loadUI() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("ui.fxml"));
+            Parent uiRoot = loader.load();
+            Controller controller = loader.getController();
+            // Initialize any properties or methods in the controller if needed
+            return uiRoot;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }

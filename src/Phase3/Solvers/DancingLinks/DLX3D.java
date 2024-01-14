@@ -1,12 +1,10 @@
 package Phase3.Solvers.DancingLinks;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import Phase1.PentominoDatabase;
 import Phase3.PiecesDB.ParcelDB;
 import Phase3.PiecesDB.PentominoesDB;
-import Phase3.Solvers.SearchWrapper;
 import Phase3.Visualizer.FXVisualizer;
 
 public class DLX3D {
@@ -27,20 +25,6 @@ public class DLX3D {
     DancingLinks2 dance = new DancingLinks2(width * height * depth);
     public static List<Row> rows = new ArrayList<Row>();
     public static int value = 0;
-
-
-    public static boolean[] ThreeDto1D (boolean[][][] array3, int width, int height, int depth) {
-        boolean[] array1 = new boolean[width * height * depth];
-        for (int x = 0; x < width; x++) {
-            for (int y = 0; y < height; y++) {
-                for (int z = 0; z < depth; z++) {
-                    array1[height * depth * x + depth * y + z] = array3[z][y][x];
-                }
-            }
-        }
-
-        return array1;
-    }
 
     public boolean isPlaceable(int startX, int startY, int startZ, int[][][] shape){ 
 
@@ -242,9 +226,6 @@ public class DLX3D {
     public static void main(String[] args) {
         DLX3D dlx = new DLX3D();
         dlx.createPositions();
-        // System.out.println(dlx.getOccupiedCellsX(ParcelDB.aRotInt[0], 0, 0, 0).toString());
-        // System.out.println(dlx.getOccupiedCellsY(ParcelDB.aRotInt[0], 0, 0, 0).toString());
-        // System.out.println(dlx.getOccupiedCellsZ(ParcelDB.aRotInt[0], 0, 0, 0).toString());
         
     }
 
