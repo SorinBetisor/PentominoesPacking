@@ -11,27 +11,27 @@ import java.util.ResourceBundle;
 
 public class Controller implements Initializable {
 
-    @FXML
-    private Label label1;
-    @FXML
-    private Label label2;
-    @FXML
-    private ChoiceBox<String> pieces;
-    @FXML
-     private ChoiceBox<String> algorithm;
+//     @FXML
+//     private Label label1;
+//     @FXML
+//     private Label label2;
+//     @FXML
+//     private ChoiceBox<String> pieces;
+//     @FXML
+//      private ChoiceBox<String> algorithm;
 
-     private String[] piecesList = {"Parcels", "Pentomino"};
-     private String[] algorithms = {"Dancing Links", "Greedy Search"};
+//      private String[] piecesList = {"Parcels", "Pentomino"};
+//      private String[] algorithms = {"Dancing Links", "Greedy Search"};
 
-   public Controller(ChoiceBox<String> pieces, ChoiceBox<String> algorithm) {
-        this.pieces = pieces;
-        this.algorithm = algorithm;
-    }
+//    public Controller(ChoiceBox<String> pieces, ChoiceBox<String> algorithm) {
+//         this.pieces = pieces;
+//         this.algorithm = algorithm;
+//     }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-       pieces.getItems().addAll(piecesList);
-       algorithm.getItems().addAll(algorithms);
+    //    pieces.getItems().addAll(piecesList);
+    //    algorithm.getItems().addAll(algorithms);
     }
 }
 

@@ -68,9 +68,6 @@ public class FXVisualizer extends Application {
         rootGroup.translateXProperty().set(SCREEN_WIDTH / 2.0 + 100);
         rootGroup.translateYProperty().set(SCREEN_HEIGHT / 4 + 25);
         rootGroup.translateZProperty().set(-500);
-
-        worldGroup.getChildren().addAll(rootGroup);
-        visualizerScene = new Scene(worldGroup, SCREEN_HEIGHT, SCREEN_WIDTH, true, SceneAntialiasing.BALANCED);
         worldGroup.getChildren().addAll(rootGroup);
         visualizerScene = new Scene(worldGroup, SCREEN_HEIGHT, SCREEN_WIDTH, true, SceneAntialiasing.BALANCED);
         visualizerScene.setCamera(camera);
@@ -84,14 +81,8 @@ public class FXVisualizer extends Application {
         primaryStage.setResizable(false);
         worldGroup.getChildren().add(uiScene);
         
-        primaryStage.setScene(visualizerScene);
-
-        SubScene uiScene = new SubScene(uiRoot, SCREEN_HEIGHT, SCREEN_WIDTH, true, SceneAntialiasing.BALANCED);
-        primaryStage.setTitle("3D Container Visualizer");
-        primaryStage.setResizable(false);
-        worldGroup.getChildren().add(uiScene);
-        
         primaryStage.show();
+
     }
 
 
