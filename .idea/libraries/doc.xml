@@ -12,8 +12,10 @@
       <root url="jar://$USER_HOME$/Desktop/javafx-sdk-21.0.1/lib/javafx.media.jar!/" />
       <root url="jar://$USER_HOME$/Desktop/javafx-sdk-21.0.1/lib/javafx.swing.jar!/" />
       <root url="jar://$USER_HOME$/Desktop/javafx-sdk-21.0.1/lib/javafx.web.jar!/" />
+      <root url="file://$USER_HOME$/Desktop/javafx-sdk-21.0.1/lib" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />
+    <jarDirectory url="file://$USER_HOME$/Desktop/javafx-sdk-21.0.1/lib" recursive="false" />
   </library>
 </component>
