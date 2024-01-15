@@ -2,12 +2,10 @@ package Phase3.Visualizer;
 
 import java.io.IOException;
 
-import Phase1.DX.DancingLinks;
 import Phase3.PiecesDB.ParcelDB;
 import Phase3.Solvers.Greedy;
 import Phase3.Solvers.SearchWrapper;
 import Phase3.Solvers.DancingLinks.DLX3D;
-import Phase3.Solvers.DancingLinks.DancingLinks2;
 import javafx.application.Application;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
@@ -20,6 +18,8 @@ import javafx.scene.PerspectiveCamera;
 import javafx.scene.Scene;
 import javafx.scene.SceneAntialiasing;
 import javafx.scene.input.ScrollEvent;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.Box;
@@ -58,25 +58,26 @@ public class FXVisualizer extends Application {
     Parent uiRoot;
 
     @Override
-    public void start(Stage stage) {
+    public void start(Stage primaryStage) {
 
-        Parent uiRoot = loadUI(); //ROBIN: this loads the UI from FXML
+        BorderPane uiRoot = loadUI(); //ROBIN: this loads the UI from FXML
 
         rootGroup.translateXProperty().set(SCREEN_WIDTH / 2.0 + 100);
         rootGroup.translateYProperty().set(SCREEN_HEIGHT / 4 + 25);
         rootGroup.translateZProperty().set(-500);
 
         visualizerScene = new Scene(rootGroup, SCREEN_HEIGHT, SCREEN_WIDTH, true, SceneAntialiasing.BALANCED);
+        Scene uiScene = new Scene(uiRoot, SCREEN_HEIGHT, SCREEN_WIDTH, true, SceneAntialiasing.BALANCED);
         // visualizerScene = new Scene(rootGroup, SCREEN_HEIGHT, SCREEN_WIDTH, true, SceneAntialiasing.BALANCED);   ROBIN: you can use this to only load the MENU from FXML, without visualizer
         camera = new PerspectiveCamera();
         visualizerScene.setCamera(camera);
-        stage.setTitle("Cargo Visualizer");
-        this.stage = stage;
-        stage.setScene(visualizerScene);
+        primaryStage.setTitle("3D Container Visualizer");
+        primaryStage.setScene(uiScene);
+        primaryStage.setResizable(false);
         initializeVisualizer();
-        addMouseRotationHandler(visualizerScene, rootGroup, stage, camera);
+        addMouseRotationHandler(visualizerScene, rootGroup, primaryStage, camera);
         addKeyRotationHandlers(visualizerScene, rootGroup, camera, uiRoot);
-        stage.show();
+        primaryStage.show();
     }
 
     public void initializeVisualizer() {
@@ -253,16 +254,17 @@ public class FXVisualizer extends Application {
 
 
     //ROBIN: this loads the UI from FXML
-    private Parent loadUI() {
+    private BorderPane loadUI() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("ui.fxml"));
-            Parent uiRoot = loader.load();
-            Controller controller = loader.getController();
-            // Initialize any properties or methods in the controller if needed
+            BorderPane uiRoot = loader.load(); // Here, the loaded root is a BorderPane
+            // Other code...
             return uiRoot;
         } catch (IOException e) {
             e.printStackTrace();
             return null;
         }
     }
+    
+
 }

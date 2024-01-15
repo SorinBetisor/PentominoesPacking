@@ -9,7 +9,6 @@ import Phase3.Visualizer.FXVisualizer;
 
 public class DLX3D {
 
-    public static boolean[][] exactCoverMatrix;
     public static int depth = FXVisualizer.CARGO_DEPTH;
     public static int height = FXVisualizer.CARGO_HEIGHT;
     public static int width = FXVisualizer.CARGO_WIDTH;
