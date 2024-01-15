@@ -17,6 +17,7 @@ import javafx.scene.Parent;
 import javafx.scene.PerspectiveCamera;
 import javafx.scene.Scene;
 import javafx.scene.SceneAntialiasing;
+import javafx.scene.SubScene;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
@@ -59,24 +60,27 @@ public class FXVisualizer extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-
+        camera = new PerspectiveCamera();
         BorderPane uiRoot = loadUI(); //ROBIN: this loads the UI from FXML
+        Group worldGroup = new Group();
 
         rootGroup.translateXProperty().set(SCREEN_WIDTH / 2.0 + 100);
         rootGroup.translateYProperty().set(SCREEN_HEIGHT / 4 + 25);
         rootGroup.translateZProperty().set(-500);
 
-        visualizerScene = new Scene(rootGroup, SCREEN_HEIGHT, SCREEN_WIDTH, true, SceneAntialiasing.BALANCED);
-        Scene uiScene = new Scene(uiRoot, SCREEN_HEIGHT, SCREEN_WIDTH, true, SceneAntialiasing.BALANCED);
-        // visualizerScene = new Scene(rootGroup, SCREEN_HEIGHT, SCREEN_WIDTH, true, SceneAntialiasing.BALANCED);   ROBIN: you can use this to only load the MENU from FXML, without visualizer
-        camera = new PerspectiveCamera();
+        worldGroup.getChildren().addAll(rootGroup);
+        visualizerScene = new Scene(worldGroup, SCREEN_HEIGHT, SCREEN_WIDTH, true, SceneAntialiasing.BALANCED);
         visualizerScene.setCamera(camera);
-        primaryStage.setTitle("3D Container Visualizer");
-        primaryStage.setScene(uiScene);
-        primaryStage.setResizable(false);
         initializeVisualizer();
         addMouseRotationHandler(visualizerScene, rootGroup, primaryStage, camera);
         addKeyRotationHandlers(visualizerScene, rootGroup, camera, uiRoot);
+        primaryStage.setScene(visualizerScene);
+
+        SubScene uiScene = new SubScene(uiRoot, SCREEN_HEIGHT, SCREEN_WIDTH, true, SceneAntialiasing.BALANCED);
+        primaryStage.setTitle("3D Container Visualizer");
+        primaryStage.setResizable(false);
+        worldGroup.getChildren().add(uiScene);
+        
         primaryStage.show();
     }
 
@@ -137,6 +141,7 @@ public class FXVisualizer extends Application {
             }
         }
         rootGroup.getChildren().add(piecesGroup);
+        piecesGroup.toBack();
     }
 
     private void drawLine(Point3D origin, Point3D target, Group rootGroup) {
