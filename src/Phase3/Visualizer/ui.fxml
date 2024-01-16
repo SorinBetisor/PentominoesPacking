@@ -1,44 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ChoiceBox?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.SplitPane?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Phase3.Visualizer.Controller">
-   <center>
-      <SplitPane dividerPositions="0.7790178571428572" BorderPane.alignment="CENTER">
-        <items>
-          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="397.0" prefWidth="226.0">
-               <children>
-                  <AnchorPane layoutX="161.0" layoutY="-1.0" prefHeight="400.0" prefWidth="111.0" />
-               </children>
-            </AnchorPane>
-          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="397.0" prefWidth="402.0" style="-fx-background-color: black;">
-               <children>
-                  <ChoiceBox id="pieces" layoutX="14.0" layoutY="131.0" prefWidth="150.0" />
-                  <Label id="label1" layoutX="22.0" layoutY="99.0" prefHeight="32.0" prefWidth="154.0" text="PIECES" textFill="WHITE">
-                     <font>
-                        <Font name="AGA Arabesque Desktop" size="21.0" />
-                     </font>
-                  </Label>
-                  <ChoiceBox id="algorithm" layoutX="176.0" layoutY="131.0" prefWidth="150.0" />
-                  <Label id="algorithmLabel" layoutX="176.0" layoutY="99.0" prefHeight="32.0" prefWidth="154.0" text="ALGORITHM" textFill="WHITE">
-                     <font>
-                        <Font name="AGA Arabesque Desktop" size="21.0" />
-                     </font>
-                  </Label>
-                  <Button layoutX="65.0" layoutY="338.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="222.0" text="START">
-                     <font>
-                        <Font name="Algerian" size="12.0" />
-                     </font>
-                  </Button>
-               </children>
-            </AnchorPane>
-        </items>
-      </SplitPane>
-   </center>
-</BorderPane>
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="790.0" prefWidth="208.0" style="-fx-background-color: WHITE;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Phase3.Visualizer.Controller">
+   <children>
+      <Button fx:id="computeButton" layoutX="63.0" layoutY="141.0" mnemonicParsing="false" onAction="#onComputeButtonPressed" text="Compute" />
+      <ComboBox fx:id="algorithmComboBox" layoutX="26.0" layoutY="42.0" prefWidth="150.0" />
+      <ComboBox fx:id="typeOfPiecesComboBox" layoutX="26.0" layoutY="95.0" prefWidth="150.0" />
+      <Text layoutX="58.0" layoutY="38.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Type of pieces" />
+      <Text layoutX="69.0" layoutY="91.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Algorithm" />
+      <Text fx:id="valueText" layoutY="739.0" strokeType="OUTSIDE" strokeWidth="0.0" text=" Total Value: ">
+         <font>
+            <Font name="Arial Black" size="18.0" />
+         </font>
+      </Text>
+   </children>
+</Pane>

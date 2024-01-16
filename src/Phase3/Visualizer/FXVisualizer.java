@@ -19,7 +19,7 @@ import javafx.scene.Scene;
 import javafx.scene.SceneAntialiasing;
 import javafx.scene.SubScene;
 import javafx.scene.input.ScrollEvent;
-import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.PhongMaterial;
@@ -55,15 +55,22 @@ public class FXVisualizer extends Application {
     public Camera camera;
 
     public static int[][][] field = new int[CARGO_DEPTH][CARGO_HEIGHT][CARGO_WIDTH];
-
     Parent uiRoot;
+
+    public static String selectedTypeOfPieces;
+    public static String selectedAlgorithm;
 
     @Override
     public void start(Stage primaryStage) {
 
         camera = new PerspectiveCamera();
-        BorderPane uiRoot = loadUI(); //ROBIN: this loads the UI from FXML
+        uiRoot = loadUI();
         Group worldGroup = new Group();
+
+        if (uiRoot == null) {
+            System.err.println("Error loading UI. Exiting application.");
+            return;
+        }
 
         rootGroup.translateXProperty().set(SCREEN_WIDTH / 2.0 + 100);
         rootGroup.translateYProperty().set(SCREEN_HEIGHT / 4 + 25);
@@ -261,11 +268,11 @@ public class FXVisualizer extends Application {
 
 
     //ROBIN: this loads the UI from FXML
-    private BorderPane loadUI() {
+    private Pane loadUI() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("ui.fxml"));
-            BorderPane uiRoot = loader.load(); // Here, the loaded root is a BorderPane
-            // Other code...
+            Pane uiRoot = loader.load(); // Here, the loaded root is a BorderPane
+            Controller controller = loader.getController();
             return uiRoot;
         } catch (IOException e) {
             e.printStackTrace();
