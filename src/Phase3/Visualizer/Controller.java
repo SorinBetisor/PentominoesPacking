@@ -8,6 +8,8 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.text.Text;
 
 public class Controller {
+    @FXML
+    private Text fullCovertext;
 
     @FXML
     private Button computeButton;

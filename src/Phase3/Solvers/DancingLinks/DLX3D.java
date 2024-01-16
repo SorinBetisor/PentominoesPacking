@@ -88,7 +88,6 @@ public class DLX3D {
             {
                 limit = shapeDepth*shapeHeight*shapeWidth;
             }
-            System.out.println(limit);
             currentPieceValue = values[typeNumber-1];
             for(int[][][] shape : typeOfShape){
                 for(int zPlacementStart=0; zPlacementStart < depth; zPlacementStart++){

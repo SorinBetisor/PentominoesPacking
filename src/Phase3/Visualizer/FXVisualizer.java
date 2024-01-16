@@ -5,6 +5,7 @@ import java.io.IOException;
 import Phase3.PiecesDB.ParcelDB;
 import Phase3.PiecesDB.PentominoesDB;
 import Phase3.Solvers.Greedy;
+import Phase3.Solvers.SearchWrapper;
 import Phase3.Solvers.DancingLinks.DLX3D;
 import Phase3.Solvers.DancingLinks.DancingLinks2;
 import javafx.application.Application;
@@ -122,6 +123,7 @@ public class FXVisualizer extends Application {
         ComboBox<String> typeOfPiecesComboBox = (ComboBox<String>) uiRoot.lookup("#typeOfPiecesComboBox");
         ComboBox<String> algorithmComboBox = (ComboBox<String>) uiRoot.lookup("#algorithmComboBox");
         Text totalValueText = (Text) uiRoot.lookup("#valueText");
+        Text fullCoverText = (Text) uiRoot.lookup("#fullCovertext");
         EventHandler<ActionEvent> submitHandler = new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -155,9 +157,11 @@ public class FXVisualizer extends Application {
                 if (selectedAlgorithm.equals("Greedy")) {
                     Greedy.fillParcels(field);
                     totalValueText.setText("Total value: " + Greedy.currentValue);
+                    fullCoverText.setText("Full cover: " + SearchWrapper.checkFullCover(field));
                 } else if (selectedAlgorithm.equals("3D Dancing Links")) {                    
                     dlx3D.createPositions();
                     totalValueText.setText("Total value: "+DLX3D.totalValue);
+                    fullCoverText.setText("Full cover: " + SearchWrapper.checkFullCover(field));
                 }
                 rootGroup.getChildren().clear();
                 drawContainer(field, rootGroup);
@@ -171,11 +175,6 @@ public class FXVisualizer extends Application {
 
     public void initializeVisualizer() {
         createCargoContainerOutlines(rootGroup);
-        // Greedy.fillParcels(field);
-        // DLX3D dlx3D = new DLX3D();
-        // dlx3D.createPositions();
-        // Greedy.fillParcels(field);
-        // System.out.println("Fully covered: " + SearchWrapper.checkFullCover(field));
         drawContainer(field, rootGroup);
     }
     public static void main(String args[]) {

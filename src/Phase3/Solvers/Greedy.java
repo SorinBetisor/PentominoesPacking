@@ -35,7 +35,6 @@ public class Greedy {
             }
             values[bestValueIndex] = 0;
         }
-        System.out.println("Greedy: "+currentValue);
         return null;
     }
     

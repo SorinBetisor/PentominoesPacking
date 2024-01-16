@@ -18,5 +18,10 @@
             <Font name="Arial Black" size="18.0" />
          </font>
       </Text>
+      <Text fx:id="fullCovertext" layoutY="712.0" strokeType="OUTSIDE" strokeWidth="0.0" text=" Full Cover: ">
+         <font>
+            <Font name="Arial Black" size="18.0" />
+         </font>
+      </Text>
    </children>
 </Pane>
