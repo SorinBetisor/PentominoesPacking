@@ -22,6 +22,14 @@ public class DancingLinks2 {
     public static int height = FXVisualizer.CARGO_HEIGHT;
     public static int width = FXVisualizer.CARGO_WIDTH;
     public static int[][][] field = new int[depth][height][width];
+    public static boolean c = false;
+
+
+    public static void refreshDLX2()
+    {
+        field = new int[depth][height][width];
+        c = false;
+    }
 
     /**
      * Constructs a DancingLinks object with the specified number of columns.
@@ -109,7 +117,6 @@ public class DancingLinks2 {
      *             problems like pentominoes.
      */
 
-    public static boolean c = false;
 
     public void algorithmX(int step) {
         if(c) return;

@@ -6,6 +6,7 @@ import Phase3.PiecesDB.ParcelDB;
 import Phase3.Solvers.Greedy;
 import Phase3.Solvers.SearchWrapper;
 import Phase3.Solvers.DancingLinks.DLX3D;
+import Phase3.Solvers.DancingLinks.DancingLinks2;
 import javafx.application.Application;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
@@ -18,6 +19,9 @@ import javafx.scene.PerspectiveCamera;
 import javafx.scene.Scene;
 import javafx.scene.SceneAntialiasing;
 import javafx.scene.SubScene;
+import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.TextField;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -25,9 +29,12 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.Box;
 import javafx.scene.shape.Cylinder;
+import javafx.scene.text.Text;
 import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Translate;
 import javafx.stage.Stage;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 
 public class FXVisualizer extends Application {
 
@@ -53,19 +60,18 @@ public class FXVisualizer extends Application {
     public Scene visualizerScene;
     public Stage stage;
     public Camera camera;
+    private Group worldGroup = new Group();
+    private SubScene uiScene;
 
     public static int[][][] field = new int[CARGO_DEPTH][CARGO_HEIGHT][CARGO_WIDTH];
     Parent uiRoot;
 
-    public static String selectedTypeOfPieces;
-    public static String selectedAlgorithm;
 
     @Override
     public void start(Stage primaryStage) {
 
         camera = new PerspectiveCamera();
         uiRoot = loadUI();
-        Group worldGroup = new Group();
 
         if (uiRoot == null) {
             System.err.println("Error loading UI. Exiting application.");
@@ -75,20 +81,82 @@ public class FXVisualizer extends Application {
         rootGroup.translateXProperty().set(SCREEN_WIDTH / 2.0 + 100);
         rootGroup.translateYProperty().set(SCREEN_HEIGHT / 4 + 25);
         rootGroup.translateZProperty().set(-500);
-        worldGroup.getChildren().addAll(rootGroup);
         visualizerScene = new Scene(worldGroup, SCREEN_HEIGHT, SCREEN_WIDTH, true, SceneAntialiasing.BALANCED);
+        worldGroup.getChildren().addAll(rootGroup);
         visualizerScene.setCamera(camera);
         initializeVisualizer();
         addMouseRotationHandler(visualizerScene, rootGroup, primaryStage, camera);
         addKeyRotationHandlers(visualizerScene, rootGroup, camera, uiRoot);
         primaryStage.setScene(visualizerScene);
 
-        SubScene uiScene = new SubScene(uiRoot, SCREEN_HEIGHT, SCREEN_WIDTH, true, SceneAntialiasing.BALANCED);
+        uiScene = new SubScene(uiRoot, SCREEN_HEIGHT, SCREEN_WIDTH, true, SceneAntialiasing.BALANCED);
         primaryStage.setTitle("3D Container Visualizer");
         primaryStage.setResizable(false);
         worldGroup.getChildren().add(uiScene);
         
+        handleComputeButtonPressed();
         primaryStage.show();
+
+    }
+
+    public void clearCargoVisualization()
+    {
+        worldGroup.getChildren().remove(rootGroup);
+    }
+
+    public void wipeField()
+    {
+        for(int z=0;z<field.length;z++)
+        {
+            for(int y=0;y<field[z].length;y++)
+            {
+                for(int x=0;x<field[z][y].length;x++)
+                {
+                    field[z][y][x] = 0;
+                }
+            }
+        }
+    }
+
+    public void handleComputeButtonPressed() {
+        // Retrieve the selected options
+        Button compute = (Button) uiRoot.lookup("#computeButton");
+        ComboBox<String> typeOfPiecesComboBox = (ComboBox<String>) uiRoot.lookup("#typeOfPiecesComboBox");
+        ComboBox<String> algorithmComboBox = (ComboBox<String>) uiRoot.lookup("#algorithmComboBox");
+        Text totalValueText = (Text) uiRoot.lookup("#valueText");
+        EventHandler<ActionEvent> submitHandler = new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                wipeField();
+                Greedy.currentValue = 0;
+
+
+                String selectedTypeOfPieces = typeOfPiecesComboBox.getValue();
+                String selectedAlgorithm = algorithmComboBox.getValue();
+                System.out.println("Selected type of pieces: " + selectedTypeOfPieces);
+                System.out.println("Selected algorithm: " + selectedAlgorithm);
+
+                if(selectedAlgorithm == null || selectedTypeOfPieces == null)
+                {
+                    return;
+                }
+
+                if (selectedAlgorithm.equals("Greedy")) {
+                    Greedy.fillParcels(field);
+                    totalValueText.setText("Total value: " + Greedy.currentValue);
+                } else if (selectedAlgorithm.equals("3D Dancing Links")) {
+                    // DancingLinks2.field = field;
+                    DancingLinks2.refreshDLX2();
+                    DLX3D dlx3D = new DLX3D();
+                    dlx3D.createPositions();
+                    totalValueText.setText("Total value: "+DLX3D.totalValue);
+                }
+                rootGroup.getChildren().clear();
+                drawContainer(field, rootGroup);
+                createCargoContainerOutlines(rootGroup);
+            }
+        };
+        compute.setOnAction(submitHandler);
 
     }
 
@@ -96,13 +164,12 @@ public class FXVisualizer extends Application {
     public void initializeVisualizer() {
         createCargoContainerOutlines(rootGroup);
         // Greedy.fillParcels(field);
-        DLX3D dlx3D = new DLX3D();
-        dlx3D.createPositions();
+        // DLX3D dlx3D = new DLX3D();
+        // dlx3D.createPositions();
         // Greedy.fillParcels(field);
-        System.out.println("Fully covered: " + SearchWrapper.checkFullCover(field));
+        // System.out.println("Fully covered: " + SearchWrapper.checkFullCover(field));
         drawContainer(field, rootGroup);
     }
-
     public static void main(String args[]) {
         launch(args);
     }

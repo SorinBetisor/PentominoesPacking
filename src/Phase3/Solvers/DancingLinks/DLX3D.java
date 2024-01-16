@@ -25,6 +25,12 @@ public class DLX3D {
     public static List<Row> rows = new ArrayList<Row>();
     public static int value = 0;
 
+    public static void refreshDLX()
+    {
+        rows = new ArrayList<Row>();
+        value = 0;
+    }
+
     public boolean isPlaceable(int startX, int startY, int startZ, int[][][] shape){ 
 
         int shapeWidth = shape[0][0].length;

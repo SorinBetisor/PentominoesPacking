@@ -9,8 +9,8 @@
 <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="790.0" prefWidth="208.0" style="-fx-background-color: WHITE;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Phase3.Visualizer.Controller">
    <children>
       <Button fx:id="computeButton" layoutX="63.0" layoutY="141.0" mnemonicParsing="false" onAction="#onComputeButtonPressed" text="Compute" />
-      <ComboBox fx:id="algorithmComboBox" layoutX="26.0" layoutY="42.0" prefWidth="150.0" />
-      <ComboBox fx:id="typeOfPiecesComboBox" layoutX="26.0" layoutY="95.0" prefWidth="150.0" />
+      <ComboBox fx:id="typeOfPiecesComboBox" layoutX="26.0" layoutY="42.0" prefWidth="150.0" />
+      <ComboBox fx:id="algorithmComboBox" layoutX="26.0" layoutY="95.0" prefWidth="150.0" />
       <Text layoutX="58.0" layoutY="38.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Type of pieces" />
       <Text layoutX="69.0" layoutY="91.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Algorithm" />
       <Text fx:id="valueText" layoutY="739.0" strokeType="OUTSIDE" strokeWidth="0.0" text=" Total Value: ">
