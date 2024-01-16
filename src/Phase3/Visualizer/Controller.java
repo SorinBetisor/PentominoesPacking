@@ -1,6 +1,6 @@
 package Phase3.Visualizer;
 
-import Phase3.Solvers.Greedy;
+// import Phase3.Solvers.Greedy;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -33,8 +33,8 @@ public class Controller {
      @FXML
     private void onComputeButtonPressed(ActionEvent event) {
         // Retrieve the selected options
-        String selectedTypeOfPieces = typeOfPiecesComboBox.getValue();
-        String selectedAlgorithm = algorithmComboBox.getValue();
+        // String selectedTypeOfPieces = typeOfPiecesComboBox.getValue();
+        // String selectedAlgorithm = algorithmComboBox.getValue();
         // System.out.println("Selected type of pieces: " + selectedTypeOfPieces);
         // System.out.println("Selected algorithm: " + selectedAlgorithm);
         // FXVisualizer.selectedTypeOfPieces = selectedTypeOfPieces;

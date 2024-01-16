@@ -2,7 +2,6 @@ package Phase3.Solvers.DancingLinks;
 
 import java.util.ArrayList;
 import java.util.List;
-import Phase1.PentominoDatabase;
 import Phase3.PiecesDB.ParcelDB;
 import Phase3.PiecesDB.PentominoesDB;
 import Phase3.Visualizer.FXVisualizer;
@@ -13,22 +12,45 @@ public class DLX3D {
     public static int height = FXVisualizer.CARGO_HEIGHT;
     public static int width = FXVisualizer.CARGO_WIDTH;
     public static int totalValue = 0;
-    // int[][][][] A = PentominoesDB.lPentInt;
-    // int[][][][] B = PentominoesDB.pPentInt;
-    // int[][][][] C = PentominoesDB.tPentInt;
-    int[][][][] A = ParcelDB.aRotInt;
-    int[][][][] B = ParcelDB.bRotInt;
-    int[][][][] C = ParcelDB.cRotInt;
-    public int[][][][][] shapes = new int[][][][][]{C,A,B};
-    public int[] values = new int[]{5,4,3};
-    DancingLinks2 dance = new DancingLinks2(width * height * depth);
+    public static int[][][][] A;
+    public static int[][][][] B;
+    public static int[][][][] C;
+    public static int[][][][][] shapes;
+    public int[] values;
+    DancingLinks2 dance;
     public static List<Row> rows = new ArrayList<Row>();
     public static int value = 0;
+    public static boolean pent = false;
+
+    public DLX3D(String typeOfPieces)
+    {
+        refreshDLX();
+        if(typeOfPieces.equals("Pentominoes"))
+        {
+            A = PentominoesDB.lPentInt;
+            B = PentominoesDB.pPentInt;
+            C = PentominoesDB.tPentInt;
+            pent = true;
+        }
+        else if(typeOfPieces.equals("Parcels"))
+        {
+            A = ParcelDB.aRotInt;
+            B = ParcelDB.bRotInt;
+            C = ParcelDB.cRotInt;
+            pent = false;
+        }
+        shapes = new int[][][][][]{C,A,B};
+        values = new int[]{5,4,3};
+        dance = new DancingLinks2(depth*height*width);
+
+    }
 
     public static void refreshDLX()
     {
         rows = new ArrayList<Row>();
         value = 0;
+        totalValue = 0;
+        pieceCount = 0;
     }
 
     public boolean isPlaceable(int startX, int startY, int startZ, int[][][] shape){ 
@@ -47,7 +69,7 @@ public class DLX3D {
 
         return startZ + shapeDepth <= depth;
     }
-
+    public static int limit = 0;
     public static int pieceCount = 0;
     public void createPositions(){ 
         int currentPieceValue = 0;
@@ -57,6 +79,16 @@ public class DLX3D {
             int shapeWidth = typeOfShape[0][0][0].length;
             int shapeHeight = typeOfShape[0][0].length;
             int shapeDepth = typeOfShape[0].length;
+            limit = 0;
+            if(pent)
+            {
+                limit = 5;
+            }
+            else
+            {
+                limit = shapeDepth*shapeHeight*shapeWidth;
+            }
+            System.out.println(limit);
             currentPieceValue = values[typeNumber-1];
             for(int[][][] shape : typeOfShape){
                 for(int zPlacementStart=0; zPlacementStart < depth; zPlacementStart++){
@@ -70,7 +102,7 @@ public class DLX3D {
                             List<Integer> ys = getOccupiedCellsY(shape, xPlacementStart, yPlacementStart, zPlacementStart);
                             List<Integer> zs = getOccupiedCellsZ(shape, xPlacementStart, yPlacementStart, zPlacementStart);
 
-                            int[] dobavkaFinal = new int[shapeDepth * shapeHeight * shapeWidth];
+                            int[] dobavkaFinal = new int[limit];
                             int[] dobavkaX = new int[xs.size() ];
                             int[] dobavkaY = new int[ys.size() ];
                             int[] dobavkaZ = new int[zs.size() ];
@@ -229,7 +261,7 @@ public class DLX3D {
 
 
     public static void main(String[] args) {
-        DLX3D dlx = new DLX3D();
+        DLX3D dlx = new DLX3D("Pentominoes");
         dlx.createPositions();
         
     }

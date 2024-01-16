@@ -1,7 +1,5 @@
 package Phase3.Solvers.DancingLinks;
-
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Stack;
 import Phase3.Solvers.SearchWrapper;
@@ -117,12 +115,9 @@ public class DancingLinks2 {
      *             problems like pentominoes.
      */
 
-
+    public static int limitDL2;
     public void algorithmX(int step) {
         if(c) return;
-        if (root.R == root) {
-            System.out.println("Solution found!");
-        }
         List<Row> rows = new ArrayList<Row>();
         if(answer.size() > 1){
             DLX3D.pieceCount = 0;
@@ -137,17 +132,13 @@ public class DancingLinks2 {
             for(var row : rows)
             {
                 int[] coords = new int[]{row.z0,row.y0,row.x0};
-                // System.out.println(Arrays.toString(coords));
                 SearchWrapper.addPiece(field, row.shape, coords);
                 DLX3D.pieceCount++;
                 DLX3D.totalValue += row.pieceValue;
             }
-            // if(DLX3D.totalValue < 1000){return;}
             FXVisualizer.field = field;
-            System.out.println("Solution found!");
-            System.out.println("Total value: " + DLX3D.totalValue);
-            System.out.println("Piece count: " + DLX3D.pieceCount);
-            if(DLX3D.totalValue > 255){ //TODO: change to dynamic
+            if(DLX3D.totalValue > limitDL2)
+            {
                 c = true;
                 return;
             }

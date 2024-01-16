@@ -3,8 +3,8 @@ package Phase3.Visualizer;
 import java.io.IOException;
 
 import Phase3.PiecesDB.ParcelDB;
+import Phase3.PiecesDB.PentominoesDB;
 import Phase3.Solvers.Greedy;
-import Phase3.Solvers.SearchWrapper;
 import Phase3.Solvers.DancingLinks.DLX3D;
 import Phase3.Solvers.DancingLinks.DancingLinks2;
 import javafx.application.Application;
@@ -21,10 +21,8 @@ import javafx.scene.SceneAntialiasing;
 import javafx.scene.SubScene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.TextField;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.Box;
@@ -129,25 +127,35 @@ public class FXVisualizer extends Application {
             public void handle(ActionEvent event) {
                 wipeField();
                 Greedy.currentValue = 0;
-
-
                 String selectedTypeOfPieces = typeOfPiecesComboBox.getValue();
                 String selectedAlgorithm = algorithmComboBox.getValue();
                 System.out.println("Selected type of pieces: " + selectedTypeOfPieces);
                 System.out.println("Selected algorithm: " + selectedAlgorithm);
-
+                
                 if(selectedAlgorithm == null || selectedTypeOfPieces == null)
                 {
                     return;
                 }
 
+                if(selectedTypeOfPieces.equals("Parcels"))
+                {
+                    DLX3D.pent = false;
+                    DancingLinks2.limitDL2 = 255;
+                    Greedy.parcels = new int[][][][][]{ParcelDB.aRotInt,ParcelDB.bRotInt,ParcelDB.cRotInt};
+                }
+                else if(selectedTypeOfPieces.equals("Pentominoes"))
+                {
+                    DLX3D.pent = true;
+                    DancingLinks2.limitDL2 = 1178;
+                    Greedy.parcels = new int[][][][][]{PentominoesDB.lPentInt,PentominoesDB.pPentInt,PentominoesDB.tPentInt};
+                }
+                DancingLinks2.refreshDLX2();
+                DLX3D dlx3D = new DLX3D(selectedTypeOfPieces);
+
                 if (selectedAlgorithm.equals("Greedy")) {
                     Greedy.fillParcels(field);
                     totalValueText.setText("Total value: " + Greedy.currentValue);
-                } else if (selectedAlgorithm.equals("3D Dancing Links")) {
-                    // DancingLinks2.field = field;
-                    DancingLinks2.refreshDLX2();
-                    DLX3D dlx3D = new DLX3D();
+                } else if (selectedAlgorithm.equals("3D Dancing Links")) {                    
                     dlx3D.createPositions();
                     totalValueText.setText("Total value: "+DLX3D.totalValue);
                 }
@@ -327,9 +335,6 @@ public class FXVisualizer extends Application {
                     yRotate,
                     new Translate(camera.getTranslateX(), camera.getTranslateY(), camera.getTranslateZ()),
                     cameraTranslate);
-
-            // Also, make sure to update the layout of the UI elements
-            // uiRoot.layout();
         });
     }
 
@@ -338,8 +343,7 @@ public class FXVisualizer extends Application {
     private Pane loadUI() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("ui.fxml"));
-            Pane uiRoot = loader.load(); // Here, the loaded root is a BorderPane
-            Controller controller = loader.getController();
+            Pane uiRoot = loader.load(); 
             return uiRoot;
         } catch (IOException e) {
             e.printStackTrace();
