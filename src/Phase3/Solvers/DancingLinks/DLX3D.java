@@ -22,7 +22,7 @@ public class DLX3D {
     public static int value = 0;
     public static boolean pent = false;
 
-    public DLX3D(String typeOfPieces)
+    public DLX3D(String typeOfPieces, int[] newValues)
     {
         refreshDLX();
         if(typeOfPieces.equals("Pentominoes"))
@@ -40,9 +40,26 @@ public class DLX3D {
             pent = false;
         }
         shapes = new int[][][][][]{C,A,B};
-        values = new int[]{5,4,3};
+        invertArray(newValues);
+        values = newValues;
         dance = new DancingLinks2(depth*height*width);
 
+    }
+
+    private static void invertArray(int[] arr) {
+        int start = 0;
+        int end = arr.length - 1;
+
+        while (start < end) {
+            // Swap elements at start and end indices
+            int temp = arr[start];
+            arr[start] = arr[end];
+            arr[end] = temp;
+
+            // Move indices towards the center
+            start++;
+            end--;
+        }
     }
 
     public static void refreshDLX()
@@ -260,7 +277,7 @@ public class DLX3D {
 
 
     public static void main(String[] args) {
-        DLX3D dlx = new DLX3D("Pentominoes");
+        DLX3D dlx = new DLX3D("Pentominoes", new int[]{5,4,3});
         dlx.createPositions();
         
     }

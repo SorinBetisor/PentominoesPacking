@@ -21,7 +21,9 @@ import javafx.scene.Scene;
 import javafx.scene.SceneAntialiasing;
 import javafx.scene.SubScene;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.TextField;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
@@ -35,6 +37,11 @@ import javafx.stage.Stage;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 
+/**
+ * The FXVisualizer class is a JavaFX application that visualizes a 3D container and allows users to interact with it.
+ * It provides methods for handling user interface events, computing results based on selected options, and updating the UI.
+ * The class extends the Application class from JavaFX and overrides the start() method as the entry point of the application.
+ */
 public class FXVisualizer extends Application {
 
     private final int SCREEN_WIDTH = 750;
@@ -54,6 +61,7 @@ public class FXVisualizer extends Application {
     private double anchorAngleY = 0;
     private final DoubleProperty angleX = new SimpleDoubleProperty(0);
     private final DoubleProperty angleY = new SimpleDoubleProperty(70);
+
     private RotatableGroup piecesGroup = new RotatableGroup();
     public RotatableGroup rootGroup = new RotatableGroup();
     public Scene visualizerScene;
@@ -61,11 +69,23 @@ public class FXVisualizer extends Application {
     public Camera camera;
     private Group worldGroup = new Group();
     private SubScene uiScene;
+    private Parent uiRoot;
 
     public static int[][][] field = new int[CARGO_DEPTH][CARGO_HEIGHT][CARGO_WIDTH];
-    Parent uiRoot;
+    public static int quantity1;
+    public static int quantity2;
+    public static int quantity3;
+    public static int valueAL;
+    public static int valueBP;
+    public static int valueCT;
+    public static boolean unlimited = false;
 
-
+    /**
+     * This method is the entry point of the JavaFX application.
+     * It initializes the UI components, sets up the scene, and handles user interactions.
+     *
+     * @param primaryStage the primary stage of the JavaFX application
+     */
     @Override
     public void start(Stage primaryStage) {
 
@@ -87,100 +107,53 @@ public class FXVisualizer extends Application {
         addMouseRotationHandler(visualizerScene, rootGroup, primaryStage, camera);
         addKeyRotationHandlers(visualizerScene, rootGroup, camera, uiRoot);
         primaryStage.setScene(visualizerScene);
-
         uiScene = new SubScene(uiRoot, SCREEN_HEIGHT, SCREEN_WIDTH, true, SceneAntialiasing.BALANCED);
         primaryStage.setTitle("3D Container Visualizer");
         primaryStage.setResizable(false);
         worldGroup.getChildren().add(uiScene);
-        
-        handleComputeButtonPressed();
+        handleUI();
         primaryStage.show();
 
     }
 
-    public void clearCargoVisualization()
+    /**
+     * Handles the user interface by calling the necessary methods to handle button presses,
+     * quantities, parcel types, and unlimited DLX.
+     */
+    public void handleUI()
     {
-        worldGroup.getChildren().remove(rootGroup);
-    }
-
-    public void wipeField()
-    {
-        for(int z=0;z<field.length;z++)
-        {
-            for(int y=0;y<field[z].length;y++)
-            {
-                for(int x=0;x<field[z][y].length;x++)
-                {
-                    field[z][y][x] = 0;
-                }
-            }
-        }
-    }
-
-    public void handleComputeButtonPressed() {
-        // Retrieve the selected options
-        Button compute = (Button) uiRoot.lookup("#computeButton");
-        ComboBox<String> typeOfPiecesComboBox = (ComboBox<String>) uiRoot.lookup("#typeOfPiecesComboBox");
-        ComboBox<String> algorithmComboBox = (ComboBox<String>) uiRoot.lookup("#algorithmComboBox");
-        Text totalValueText = (Text) uiRoot.lookup("#valueText");
-        Text fullCoverText = (Text) uiRoot.lookup("#fullCovertext");
-        EventHandler<ActionEvent> submitHandler = new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                wipeField();
-                Greedy.currentValue = 0;
-                String selectedTypeOfPieces = typeOfPiecesComboBox.getValue();
-                String selectedAlgorithm = algorithmComboBox.getValue();
-                System.out.println("Selected type of pieces: " + selectedTypeOfPieces);
-                System.out.println("Selected algorithm: " + selectedAlgorithm);
-                
-                if(selectedAlgorithm == null || selectedTypeOfPieces == null)
-                {
-                    return;
-                }
-
-                if(selectedTypeOfPieces.equals("Parcels"))
-                {
-                    DLX3D.pent = false;
-                    DancingLinks2.limitDL2 = 255;
-                    Greedy.parcels = new int[][][][][]{ParcelDB.aRotInt,ParcelDB.bRotInt,ParcelDB.cRotInt};
-                }
-                else if(selectedTypeOfPieces.equals("Pentominoes"))
-                {
-                    DLX3D.pent = true;
-                    DancingLinks2.limitDL2 = 1178;
-                    Greedy.parcels = new int[][][][][]{PentominoesDB.lPentInt,PentominoesDB.pPentInt,PentominoesDB.tPentInt};
-                }
-                DancingLinks2.refreshDLX2();
-                DLX3D dlx3D = new DLX3D(selectedTypeOfPieces);
-
-                if (selectedAlgorithm.equals("Greedy")) {
-                    Greedy.fillParcels(field);
-                    totalValueText.setText("Total value: " + Greedy.currentValue);
-                    fullCoverText.setText("Full cover: " + SearchWrapper.checkFullCover(field));
-                } else if (selectedAlgorithm.equals("3D Dancing Links")) {                    
-                    dlx3D.createPositions();
-                    totalValueText.setText("Total value: "+DLX3D.totalValue);
-                    fullCoverText.setText("Full cover: " + SearchWrapper.checkFullCover(field));
-                }
-                rootGroup.getChildren().clear();
-                drawContainer(field, rootGroup);
-                createCargoContainerOutlines(rootGroup);
-            }
-        };
-        compute.setOnAction(submitHandler);
-
+        handleComputeButtonPressed();
+        handleStopButtonPressed();
+        handleQuantities();
+        handleParcelTypesText();
+        handleUnlimitedDLX();
     }
 
 
+    /**
+     * Clears the field by setting all elements to 0.
+     */
+    
+
+   
+
+    /**
+     * Initializes the visualizer by creating cargo container outlines and drawing the container on the field.
+     */
     public void initializeVisualizer() {
         createCargoContainerOutlines(rootGroup);
         drawContainer(field, rootGroup);
     }
+
     public static void main(String args[]) {
         launch(args);
     }
 
+    /**
+     * Creates the outlines of a cargo container using the specified dimensions and adds them to the root group.
+     * 
+     * @param rootGroup the root group to which the outlines will be added
+     */
     public void createCargoContainerOutlines(Group rootGroup) {
         int cargoWidth = CARGO_X * 2;
         int cargoHeight = CARGO_Y * 2;
@@ -205,6 +178,15 @@ public class FXVisualizer extends Application {
         }
     }
 
+    /**
+     * Draws the container based on the given field array.
+     * Each non-zero value in the field array represents a block to be drawn.
+     * The blocks are represented by Box objects and added to the piecesGroup.
+     * The piecesGroup is then added to the rootGroup.
+     * 
+     * @param field The 3D array representing the field.
+     * @param rootGroup The root group to which the piecesGroup will be added.
+     */
     private void drawContainer(int[][][] field, RotatableGroup rootGroup) {
         piecesGroup.getChildren().clear();
         for (int z = 0; z < field.length; z++) {
@@ -227,6 +209,14 @@ public class FXVisualizer extends Application {
         piecesGroup.toBack();
     }
 
+    /**
+     * Draws a line between the specified origin and target points in 3D space.
+     * The line is added to the specified root group.
+     *
+     * @param origin    the starting point of the line
+     * @param target    the ending point of the line
+     * @param rootGroup the group to which the line will be added
+     */
     private void drawLine(Point3D origin, Point3D target, Group rootGroup) {
         double lineWidth = 1.0;
         Point3D yAxis = new Point3D(0, 1, 0);
@@ -243,51 +233,19 @@ public class FXVisualizer extends Application {
         rootGroup.getChildren().addAll(line);
     }
 
-    public void addMouseRotationHandler(Scene scene, RotatableGroup rootGroup, Stage stage, Camera camera) {
-        Rotate xRotate;
-        Rotate yRotate;
-        rootGroup.getTransforms().addAll(
-                xRotate = new Rotate(0, Rotate.X_AXIS),
-                yRotate = new Rotate(0, Rotate.Y_AXIS));
-        xRotate.angleProperty().bind(angleX);
-        yRotate.angleProperty().bind(angleY);
+   
+    //CARGO ROTATION HANDLERS
 
-        scene.setOnMousePressed(event -> {
-            anchorX = event.getSceneX();
-            anchorY = event.getSceneY();
-            anchorAngleX = angleX.get();
-            anchorAngleY = angleY.get();
-        });
-
-        scene.setOnMouseDragged(event -> {
-            angleX.set(anchorAngleX - ROTATION_SPEED * (anchorY - event.getSceneY()));
-            angleY.set(anchorAngleY + ROTATION_SPEED * (anchorX - event.getSceneX()));
-        });
-
-        stage.addEventHandler(ScrollEvent.SCROLL, event -> {
-            double delta = event.getDeltaY();
-            rootGroup.translateZProperty().set(rootGroup.getTranslateZ() + delta);
-        });
-    }
-
-    private Color getColor(int i) {
-        if (i == 1) {
-            return Color.RED;
-        }
-        if (i == 2) {
-            return Color.BLUE;
-        }
-        if (i == 3) {
-            return Color.GREEN.darker();
-        }
-        return null;
-    }
-
-    public void setState(int[][][] field) {
-        rootGroup.getChildren().clear();
-        drawContainer(field, piecesGroup);
-    }
-
+    /**
+     * Adds key rotation handlers to the scene.
+     * This method allows the user to rotate the camera using the keyboard keys W, S, A, D, Q, and E.
+     * The rotation is applied to the specified rootGroup and camera.
+     * 
+     * @param scene    the scene to add the key rotation handlers to
+     * @param rootGroup    the root group to apply the rotation to
+     * @param camera    the camera to rotate
+     * @param uiRoot    the parent UI root
+     */
     public void addKeyRotationHandlers(Scene scene, RotatableGroup rootGroup, Camera camera, Parent uiRoot) {
         Translate cameraTranslate = new Translate();
         scene.setOnKeyPressed(event -> {
@@ -337,18 +295,292 @@ public class FXVisualizer extends Application {
         });
     }
 
+     /**
+     * Adds a mouse rotation handler to the specified scene, allowing the user to rotate the 3D visualizer.
+     * 
+     * @param scene     The scene to attach the mouse rotation handler to.
+     * @param rootGroup The root group of the 3D visualizer.
+     * @param stage     The stage containing the scene.
+     * @param camera    The camera used for the 3D visualizer.
+     */
+    public void addMouseRotationHandler(Scene scene, RotatableGroup rootGroup, Stage stage, Camera camera) {
+        Rotate xRotate;
+        Rotate yRotate;
+        rootGroup.getTransforms().addAll(
+                xRotate = new Rotate(0, Rotate.X_AXIS),
+                yRotate = new Rotate(0, Rotate.Y_AXIS));
+        xRotate.angleProperty().bind(angleX);
+        yRotate.angleProperty().bind(angleY);
 
-    //ROBIN: this loads the UI from FXML
+        scene.setOnMousePressed(event -> {
+            anchorX = event.getSceneX();
+            anchorY = event.getSceneY();
+            anchorAngleX = angleX.get();
+            anchorAngleY = angleY.get();
+        });
+
+        scene.setOnMouseDragged(event -> {
+            angleX.set(anchorAngleX - ROTATION_SPEED * (anchorY - event.getSceneY()));
+            angleY.set(anchorAngleY + ROTATION_SPEED * (anchorX - event.getSceneX()));
+        });
+
+        stage.addEventHandler(ScrollEvent.SCROLL, event -> {
+            double delta = event.getDeltaY();
+            rootGroup.translateZProperty().set(rootGroup.getTranslateZ() + delta);
+        });
+    }
+
+    //HANDLERS FOR UI
+     /**
+     * Handles the event when the compute button is pressed.
+     * Retrieves the selected options from the UI elements and performs the corresponding actions based on the selected algorithm and type of pieces.
+     * Updates the UI with the computed results.
+     */
+    private void handleComputeButtonPressed() {
+        // Retrieve the selected options
+        Button compute = (Button) uiRoot.lookup("#computeButton");
+        @SuppressWarnings("unchecked")
+        ComboBox<String> typeOfPiecesComboBox = (ComboBox<String>) uiRoot.lookup("#typeOfPiecesComboBox");
+        @SuppressWarnings("unchecked")
+        ComboBox<String> algorithmComboBox = (ComboBox<String>) uiRoot.lookup("#algorithmComboBox");
+        Text totalValueText = (Text) uiRoot.lookup("#valueText");
+        Text fullCoverText = (Text) uiRoot.lookup("#fullCovertext");
+        TextField ALparcelValueInput = (TextField) uiRoot.lookup("#ALparcelValueInput");
+        TextField BPparcelValueInput = (TextField) uiRoot.lookup("#BPparcelValueInput");
+        TextField CTparcelValueInput = (TextField) uiRoot.lookup("#CTparcelValueInput");
+        TextField quantityFieldAL = (TextField) uiRoot.lookup("#ALparcelTextInput");
+        TextField quantityFieldBP = (TextField) uiRoot.lookup("#BPparcelTextInput");
+        TextField quantityFieldCT = (TextField) uiRoot.lookup("#CTparcelTextInput");
+        EventHandler<ActionEvent> submitHandler = new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                SearchWrapper.wipeField(field);
+                Greedy.currentValue = 0;
+                String selectedTypeOfPieces = typeOfPiecesComboBox.getValue();
+                String selectedAlgorithm = algorithmComboBox.getValue();
+                System.out.println("Selected type of pieces: " + selectedTypeOfPieces);
+                System.out.println("Selected algorithm: " + selectedAlgorithm);
+
+                valueAL = Integer.parseInt(ALparcelValueInput.getText());
+                valueBP = Integer.parseInt(BPparcelValueInput.getText());
+                valueCT = Integer.parseInt(CTparcelValueInput.getText());
+                int[] values = new int[] { valueAL, valueBP, valueCT };
+                Greedy.values = values;
+
+                if (unlimited == false) {
+                    quantity1 = Integer.parseInt(quantityFieldAL.getText());
+                    quantity2 = Integer.parseInt(quantityFieldBP.getText());
+                    quantity3 = Integer.parseInt(quantityFieldCT.getText());
+                    Greedy.quantities = new int[] { quantity1, quantity2, quantity3 };
+                    Greedy.unlimited = false;
+                } else {
+                    Greedy.unlimited = true;
+                }
+
+                if (selectedAlgorithm == null || selectedTypeOfPieces == null) {
+                    return;
+                }
+
+                if (selectedTypeOfPieces.equals("Parcels")) {
+                    DLX3D.pent = false;
+                    DancingLinks2.limitDL2 = 255;
+                    Greedy.parcels = new int[][][][][] { ParcelDB.aRotInt, ParcelDB.bRotInt, ParcelDB.cRotInt };
+                } else if (selectedTypeOfPieces.equals("Pentominoes")) {
+                    DLX3D.pent = true;
+                    DancingLinks2.limitDL2 = 1178;
+                    Greedy.parcels = new int[][][][][] { PentominoesDB.lPentInt, PentominoesDB.pPentInt,
+                            PentominoesDB.tPentInt };
+                }
+                DancingLinks2.refreshDLX2();
+
+                if (selectedAlgorithm.equals("Greedy")) {
+                    Greedy.fillParcels(field);
+                    totalValueText.setText("Total value: " + Greedy.currentValue);
+                    fullCoverText.setText("Full cover: " + SearchWrapper.checkFullCover(field));
+                } else if (selectedAlgorithm.equals("3D Dancing Links")) {
+                    DancingLinks2.c = false;
+                    Thread thread = new Thread(() -> {
+                        DLX3D dlx3D = new DLX3D(selectedTypeOfPieces, values);
+                        dlx3D.createPositions();
+                    });
+                    thread.start();
+                    compute.setDisable(true);
+                }
+                rootGroup.getChildren().clear();
+                drawContainer(field, rootGroup);
+                createCargoContainerOutlines(rootGroup);
+            }
+        };
+        compute.setOnAction(submitHandler);
+    }
+
+    /**
+     * Handles the event when the stop button is pressed.
+     */
+    private void handleStopButtonPressed() {
+        Button stop = (Button) uiRoot.lookup("#stopButton");
+        Button compute = (Button) uiRoot.lookup("#computeButton");
+        Text totalValueText = (Text) uiRoot.lookup("#valueText");
+        Text fullCoverText = (Text) uiRoot.lookup("#fullCovertext");
+        EventHandler<ActionEvent> stopHandler = new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                if(DancingLinks2.c == false){
+                totalValueText.setText("Total value: " + DancingLinks2.oldBestValue);}
+                else
+                {
+                    totalValueText.setText("Total value: " + Greedy.currentValue);
+                }
+                fullCoverText.setText("Full cover: " + SearchWrapper.checkFullCover(field));
+
+                DancingLinks2.c = true;
+                compute.setDisable(false);
+                rootGroup.getChildren().clear();
+                drawContainer(field, rootGroup);
+                createCargoContainerOutlines(rootGroup);
+                
+            }
+        };
+        stop.setOnAction(stopHandler);
+    }
+
+    /**
+     * Handles the quantities of parcels in the visualizer.
+     * If the unlimitedCheckBox is selected, it disables the text fields for parcel quantities.
+     * Otherwise, it enables the text fields for parcel quantities.
+     */
+    private void handleQuantities() {
+        CheckBox unlimitedCheckBox = (CheckBox) uiRoot.lookup("#unlimitedCheckBox");
+        TextField ALparcelTextInput = (TextField) uiRoot.lookup("#ALparcelTextInput");
+        TextField BPparcelTextInput = (TextField) uiRoot.lookup("#BPparcelTextInput");
+        TextField CTparcelTextInput = (TextField) uiRoot.lookup("#CTparcelTextInput");
+
+        EventHandler<ActionEvent> comboBoxDisablerHander = new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                if (unlimitedCheckBox.isSelected()) {
+                    ALparcelTextInput.setDisable(true);
+                    BPparcelTextInput.setDisable(true);
+                    CTparcelTextInput.setDisable(true);
+                    unlimited = true;
+                } else {
+                    ALparcelTextInput.setDisable(false);
+                    BPparcelTextInput.setDisable(false);
+                    CTparcelTextInput.setDisable(false);
+                    unlimited = false;
+                }
+            }
+        };
+        unlimitedCheckBox.setOnAction(comboBoxDisablerHander);
+
+    }
+
+    /**
+     * Handles the logic for updating the parcel types and values based on the selected item in the typeOfPiecesComboBox.
+     */
+    private void handleParcelTypesText() {
+        @SuppressWarnings("unchecked")
+        ComboBox<String> typeOfPiecesComboBox = (ComboBox<String>) uiRoot.lookup("#typeOfPiecesComboBox");
+        Text parcelTypeText1 = (Text) uiRoot.lookup("#parcelTypeText1");
+        Text parcelTypeText2 = (Text) uiRoot.lookup("#parcelTypeText2");
+        Text parcelTypeText3 = (Text) uiRoot.lookup("#parcelTypeText3");
+        Text parcelValueText1 = (Text) uiRoot.lookup("#parcelValueText1");
+        Text parcelValueText2 = (Text) uiRoot.lookup("#parcelValueText2");
+        Text parcelValueText3 = (Text) uiRoot.lookup("#parcelValueText3");
+        EventHandler<ActionEvent> comboBoxDisablerHander = new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                if (typeOfPiecesComboBox.getValue().equals("Parcels")) {
+                    parcelTypeText1.setText("A");
+                    parcelTypeText2.setText("B");
+                    parcelTypeText3.setText("C");
+                    parcelValueText1.setText("vA");
+                    parcelValueText2.setText("vB");
+                    parcelValueText3.setText("vC");
+                } else if (typeOfPiecesComboBox.getValue().equals("Pentominoes")) {
+                    parcelTypeText1.setText("L");
+                    parcelTypeText2.setText("P");
+                    parcelTypeText3.setText("T");
+                    parcelValueText1.setText("vL");
+                    parcelValueText2.setText("vP");
+                    parcelValueText3.setText("vT");
+                }
+            }
+        };
+        typeOfPiecesComboBox.setOnAction(comboBoxDisablerHander);
+    }
+
+    /**
+     * Handles the functionality for enabling/disabling unlimited DLX mode.
+     * If the selected algorithm is "3D Dancing Links", it disables the input fields and sets the unlimited checkbox to true.
+     * Otherwise, it enables the input fields and the unlimited checkbox.
+     */
+    private void handleUnlimitedDLX()
+    {
+        @SuppressWarnings("unchecked")
+        ComboBox<String> algorithmComboBox = (ComboBox<String>) uiRoot.lookup("#algorithmComboBox");
+        TextField ALparcelTextInput = (TextField) uiRoot.lookup("#ALparcelTextInput");
+        TextField BPparcelTextInput = (TextField) uiRoot.lookup("#BPparcelTextInput");
+        TextField CTparcelTextInput = (TextField) uiRoot.lookup("#CTparcelTextInput");
+        CheckBox unlimitedCheckBox = (CheckBox) uiRoot.lookup("#unlimitedCheckBox");
+        EventHandler<ActionEvent> comboBoxDisablerHander = new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                if (algorithmComboBox.getValue().equals("3D Dancing Links")) {
+                    ALparcelTextInput.setDisable(true);
+                    BPparcelTextInput.setDisable(true);
+                    CTparcelTextInput.setDisable(true);
+                    unlimitedCheckBox.setSelected(true);
+                    unlimitedCheckBox.setDisable(true);
+                    unlimited = true;
+                } else {
+                    unlimitedCheckBox.setDisable(false);
+                    unlimitedCheckBox.setSelected(false);
+                    ALparcelTextInput.setDisable(false);
+                    BPparcelTextInput.setDisable(false);
+                    CTparcelTextInput.setDisable(false);
+                    Greedy.unlimited = false;
+                    unlimited = false;
+                }
+            }
+        };
+        algorithmComboBox.setOnAction(comboBoxDisablerHander);
+    }
+
+    /**
+     * Loads the UI from the FXML file and returns the root pane.
+     *
+     * @return The root pane of the loaded UI.
+     */
     private Pane loadUI() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("ui.fxml"));
-            Pane uiRoot = loader.load(); 
+            Pane uiRoot = loader.load();
             return uiRoot;
         } catch (IOException e) {
             e.printStackTrace();
             return null;
         }
     }
-    
+
+    /**
+     * Returns the color based on the given index.
+     *
+     * @param i the index of the color
+     * @return the color corresponding to the index, or null if the index is invalid
+     */
+    private Color getColor(int i) {
+        if (i == 1) {
+            return Color.RED;
+        }
+        if (i == 2) {
+            return Color.BLUE;
+        }
+        if (i == 3) {
+            return Color.GREEN.darker();
+        }
+        return null;
+    }
+
 
 }

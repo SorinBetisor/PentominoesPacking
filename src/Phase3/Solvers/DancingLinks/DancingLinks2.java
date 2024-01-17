@@ -25,6 +25,7 @@ public class DancingLinks2 {
 
     public static void refreshDLX2()
     {
+        oldBestValue = 0;
         field = new int[depth][height][width];
         c = false;
     }
@@ -116,6 +117,7 @@ public class DancingLinks2 {
      */
 
     public static int limitDL2;
+    public static int oldBestValue = 0;
     public void algorithmX(int step) {
         if(c) return;
         List<Row> rows = new ArrayList<Row>();
@@ -136,12 +138,13 @@ public class DancingLinks2 {
                 DLX3D.pieceCount++;
                 DLX3D.totalValue += row.pieceValue;
             }
+            if(DLX3D.totalValue > oldBestValue){
+            oldBestValue = DLX3D.totalValue;
             FXVisualizer.field = field;
-            if(DLX3D.totalValue > limitDL2)
-            {
-                c = true;
-                return;
+            System.out.println("New best value: " + oldBestValue);
             }
+            
+            if(c) return;
         }
         {
             
