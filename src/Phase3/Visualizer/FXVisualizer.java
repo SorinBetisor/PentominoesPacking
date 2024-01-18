@@ -20,6 +20,8 @@ import javafx.scene.PerspectiveCamera;
 import javafx.scene.Scene;
 import javafx.scene.SceneAntialiasing;
 import javafx.scene.SubScene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
@@ -38,9 +40,12 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 
 /**
- * The FXVisualizer class is a JavaFX application that visualizes a 3D container and allows users to interact with it.
- * It provides methods for handling user interface events, computing results based on selected options, and updating the UI.
- * The class extends the Application class from JavaFX and overrides the start() method as the entry point of the application.
+ * The FXVisualizer class is a JavaFX application that visualizes a 3D container
+ * and allows users to interact with it.
+ * It provides methods for handling user interface events, computing results
+ * based on selected options, and updating the UI.
+ * The class extends the Application class from JavaFX and overrides the start()
+ * method as the entry point of the application.
  */
 public class FXVisualizer extends Application {
 
@@ -55,6 +60,7 @@ public class FXVisualizer extends Application {
     private final int CARGO_X = (CARGO_WIDTH * BLOCK_SIZE) / 2;
     private final int CARGO_Y = (CARGO_HEIGHT * BLOCK_SIZE) / 2;
     private final int CARGO_Z = (CARGO_DEPTH * BLOCK_SIZE) / 2;
+    private final int CARGO_VOLUME = 1320;
 
     private double anchorX, anchorY;
     private double anchorAngleX = 0;
@@ -82,7 +88,8 @@ public class FXVisualizer extends Application {
 
     /**
      * This method is the entry point of the JavaFX application.
-     * It initializes the UI components, sets up the scene, and handles user interactions.
+     * It initializes the UI components, sets up the scene, and handles user
+     * interactions.
      *
      * @param primaryStage the primary stage of the JavaFX application
      */
@@ -117,11 +124,11 @@ public class FXVisualizer extends Application {
     }
 
     /**
-     * Handles the user interface by calling the necessary methods to handle button presses,
+     * Handles the user interface by calling the necessary methods to handle button
+     * presses,
      * quantities, parcel types, and unlimited DLX.
      */
-    public void handleUI()
-    {
+    public void handleUI() {
         handleComputeButtonPressed();
         handleStopButtonPressed();
         handleQuantities();
@@ -129,16 +136,13 @@ public class FXVisualizer extends Application {
         handleUnlimitedDLX();
     }
 
-
     /**
      * Clears the field by setting all elements to 0.
      */
-    
-
-   
 
     /**
-     * Initializes the visualizer by creating cargo container outlines and drawing the container on the field.
+     * Initializes the visualizer by creating cargo container outlines and drawing
+     * the container on the field.
      */
     public void initializeVisualizer() {
         createCargoContainerOutlines(rootGroup);
@@ -150,7 +154,8 @@ public class FXVisualizer extends Application {
     }
 
     /**
-     * Creates the outlines of a cargo container using the specified dimensions and adds them to the root group.
+     * Creates the outlines of a cargo container using the specified dimensions and
+     * adds them to the root group.
      * 
      * @param rootGroup the root group to which the outlines will be added
      */
@@ -184,7 +189,7 @@ public class FXVisualizer extends Application {
      * The blocks are represented by Box objects and added to the piecesGroup.
      * The piecesGroup is then added to the rootGroup.
      * 
-     * @param field The 3D array representing the field.
+     * @param field     The 3D array representing the field.
      * @param rootGroup The root group to which the piecesGroup will be added.
      */
     private void drawContainer(int[][][] field, RotatableGroup rootGroup) {
@@ -233,16 +238,16 @@ public class FXVisualizer extends Application {
         rootGroup.getChildren().addAll(line);
     }
 
-   
-    //CARGO ROTATION HANDLERS
+    // CARGO ROTATION HANDLERS
 
     /**
      * Adds key rotation handlers to the scene.
-     * This method allows the user to rotate the camera using the keyboard keys W, S, A, D, Q, and E.
+     * This method allows the user to rotate the camera using the keyboard keys W,
+     * S, A, D, Q, and E.
      * The rotation is applied to the specified rootGroup and camera.
      * 
-     * @param scene    the scene to add the key rotation handlers to
-     * @param rootGroup    the root group to apply the rotation to
+     * @param scene     the scene to add the key rotation handlers to
+     * @param rootGroup the root group to apply the rotation to
      * @param camera    the camera to rotate
      * @param uiRoot    the parent UI root
      */
@@ -295,8 +300,9 @@ public class FXVisualizer extends Application {
         });
     }
 
-     /**
-     * Adds a mouse rotation handler to the specified scene, allowing the user to rotate the 3D visualizer.
+    /**
+     * Adds a mouse rotation handler to the specified scene, allowing the user to
+     * rotate the 3D visualizer.
      * 
      * @param scene     The scene to attach the mouse rotation handler to.
      * @param rootGroup The root group of the 3D visualizer.
@@ -330,10 +336,11 @@ public class FXVisualizer extends Application {
         });
     }
 
-    //HANDLERS FOR UI
-     /**
+    // HANDLERS FOR UI
+    /**
      * Handles the event when the compute button is pressed.
-     * Retrieves the selected options from the UI elements and performs the corresponding actions based on the selected algorithm and type of pieces.
+     * Retrieves the selected options from the UI elements and performs the
+     * corresponding actions based on the selected algorithm and type of pieces.
      * Updates the UI with the computed results.
      */
     private void handleComputeButtonPressed() {
@@ -364,13 +371,40 @@ public class FXVisualizer extends Application {
                 valueAL = Integer.parseInt(ALparcelValueInput.getText());
                 valueBP = Integer.parseInt(BPparcelValueInput.getText());
                 valueCT = Integer.parseInt(CTparcelValueInput.getText());
+                String q1Text = quantityFieldAL.getText();
+                String q2Text = quantityFieldBP.getText();
+                String q3Text = quantityFieldCT.getText();
+                if(q1Text.equals(""))
+                {
+                    quantity1 = 0;
+                }
+                else
+                {
+                    quantity1 = Integer.parseInt(q1Text);
+                }
+                if(q2Text.equals(""))
+                {
+                    quantity2 = 0;
+                }
+                else
+                {
+                    quantity2 = Integer.parseInt(q2Text);
+                }
+                if(q3Text.equals(""))
+                {
+                    quantity3 = 0;
+                }
+                else
+                {
+                    quantity3 = Integer.parseInt(q3Text);
+                }
                 int[] values = new int[] { valueAL, valueBP, valueCT };
                 Greedy.values = values;
 
                 if (unlimited == false) {
-                    quantity1 = Integer.parseInt(quantityFieldAL.getText());
-                    quantity2 = Integer.parseInt(quantityFieldBP.getText());
-                    quantity3 = Integer.parseInt(quantityFieldCT.getText());
+                    // quantity1 = Integer.parseInt(quantityFieldAL.getText());
+                    // quantity2 = Integer.parseInt(quantityFieldBP.getText());
+                    // quantity3 = Integer.parseInt(quantityFieldCT.getText());
                     Greedy.quantities = new int[] { quantity1, quantity2, quantity3 };
                     Greedy.unlimited = false;
                 } else {
@@ -395,6 +429,24 @@ public class FXVisualizer extends Application {
 
                 if (selectedAlgorithm.equals("Greedy")) {
                     Greedy.fillParcels(field);
+                    if (Greedy.unlimited == false) {
+                        int totalVolume = 0;
+                        if (selectedTypeOfPieces.equals("Parcels")) {
+                            totalVolume = quantity1 * ParcelDB.aVolume + quantity2 * ParcelDB.bVolume
+                                    + quantity3 * ParcelDB.cVolume;
+                        } else if (selectedTypeOfPieces.equals("Pentominoes")) {
+                            totalVolume = quantity1 * PentominoesDB.lVolume + quantity2 * PentominoesDB.pVolume
+                                    + quantity3 * PentominoesDB.tVolume;
+                        }
+
+                        if (totalVolume > CARGO_VOLUME) {
+                            Alert alert = new Alert(AlertType.WARNING);
+                            alert.setTitle("Warning");
+                            alert.setHeaderText(null);
+                            alert.setContentText("Total volume exceeds cargo volume! \n Some parcels will be unused.");
+                            alert.showAndWait();
+                        }
+                    }
                     totalValueText.setText("Total value: " + Greedy.currentValue);
                     fullCoverText.setText("Full cover: " + SearchWrapper.checkFullCover(field));
                 } else if (selectedAlgorithm.equals("3D Dancing Links")) {
@@ -425,10 +477,9 @@ public class FXVisualizer extends Application {
         EventHandler<ActionEvent> stopHandler = new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                if(DancingLinks2.c == false){
-                totalValueText.setText("Total value: " + DancingLinks2.oldBestValue);}
-                else
-                {
+                if (DancingLinks2.c == false) {
+                    totalValueText.setText("Total value: " + DancingLinks2.oldBestValue);
+                } else {
                     totalValueText.setText("Total value: " + Greedy.currentValue);
                 }
                 fullCoverText.setText("Full cover: " + SearchWrapper.checkFullCover(field));
@@ -438,7 +489,7 @@ public class FXVisualizer extends Application {
                 rootGroup.getChildren().clear();
                 drawContainer(field, rootGroup);
                 createCargoContainerOutlines(rootGroup);
-                
+
             }
         };
         stop.setOnAction(stopHandler);
@@ -446,7 +497,8 @@ public class FXVisualizer extends Application {
 
     /**
      * Handles the quantities of parcels in the visualizer.
-     * If the unlimitedCheckBox is selected, it disables the text fields for parcel quantities.
+     * If the unlimitedCheckBox is selected, it disables the text fields for parcel
+     * quantities.
      * Otherwise, it enables the text fields for parcel quantities.
      */
     private void handleQuantities() {
@@ -476,7 +528,8 @@ public class FXVisualizer extends Application {
     }
 
     /**
-     * Handles the logic for updating the parcel types and values based on the selected item in the typeOfPiecesComboBox.
+     * Handles the logic for updating the parcel types and values based on the
+     * selected item in the typeOfPiecesComboBox.
      */
     private void handleParcelTypesText() {
         @SuppressWarnings("unchecked")
@@ -491,16 +544,16 @@ public class FXVisualizer extends Application {
             @Override
             public void handle(ActionEvent event) {
                 if (typeOfPiecesComboBox.getValue().equals("Parcels")) {
-                    parcelTypeText1.setText("A");
-                    parcelTypeText2.setText("B");
-                    parcelTypeText3.setText("C");
+                    parcelTypeText1.setText("qA");
+                    parcelTypeText2.setText("qB");
+                    parcelTypeText3.setText("qC");
                     parcelValueText1.setText("vA");
                     parcelValueText2.setText("vB");
                     parcelValueText3.setText("vC");
                 } else if (typeOfPiecesComboBox.getValue().equals("Pentominoes")) {
-                    parcelTypeText1.setText("L");
-                    parcelTypeText2.setText("P");
-                    parcelTypeText3.setText("T");
+                    parcelTypeText1.setText("qL");
+                    parcelTypeText2.setText("qP");
+                    parcelTypeText3.setText("qT");
                     parcelValueText1.setText("vL");
                     parcelValueText2.setText("vP");
                     parcelValueText3.setText("vT");
@@ -512,11 +565,11 @@ public class FXVisualizer extends Application {
 
     /**
      * Handles the functionality for enabling/disabling unlimited DLX mode.
-     * If the selected algorithm is "3D Dancing Links", it disables the input fields and sets the unlimited checkbox to true.
+     * If the selected algorithm is "3D Dancing Links", it disables the input fields
+     * and sets the unlimited checkbox to true.
      * Otherwise, it enables the input fields and the unlimited checkbox.
      */
-    private void handleUnlimitedDLX()
-    {
+    private void handleUnlimitedDLX() {
         @SuppressWarnings("unchecked")
         ComboBox<String> algorithmComboBox = (ComboBox<String>) uiRoot.lookup("#algorithmComboBox");
         TextField ALparcelTextInput = (TextField) uiRoot.lookup("#ALparcelTextInput");
@@ -581,6 +634,5 @@ public class FXVisualizer extends Application {
         }
         return null;
     }
-
 
 }

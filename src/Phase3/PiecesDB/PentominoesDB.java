@@ -4,6 +4,9 @@ public class PentominoesDB {
 	public static int lValue = 3;
 	public static int pValue = 4;
 	public static int tValue = 5;
+	public static int lVolume = 5;
+	public static int pVolume = 5;
+	public static int tVolume = 5;
 
 	public static int[][][][] lPentInt = { // L int
 			{ { { 1 }, { 0 } }, { { 1 }, { 0 } }, { { 1 }, { 0 } }, { { 1 }, { 1 } } },

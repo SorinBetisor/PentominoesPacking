@@ -4,6 +4,9 @@ public class ParcelDB {
     public static int aValue = 3;
     public static int bValue = 4;
     public static int cValue = 5;
+    public static int aVolume = 16;
+    public static int bVolume = 24;
+    public static int cVolume = 27;
 
     // A Int
     public static int[][][][] aRotInt = {

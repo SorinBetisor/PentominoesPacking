@@ -141,7 +141,7 @@ public class DancingLinks2 {
             if(DLX3D.totalValue > oldBestValue){
             oldBestValue = DLX3D.totalValue;
             FXVisualizer.field = field;
-            System.out.println("New best value: " + oldBestValue);
+            // System.out.println("New best value: " + oldBestValue);
             }
             
             if(c) return;
