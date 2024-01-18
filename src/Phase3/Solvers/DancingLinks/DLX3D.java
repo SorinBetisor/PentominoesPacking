@@ -4,24 +4,38 @@ import java.util.ArrayList;
 import java.util.List;
 import Phase3.PiecesDB.ParcelDB;
 import Phase3.PiecesDB.PentominoesDB;
+import Phase3.Solvers.SearchWrapper;
 import Phase3.Visualizer.FXVisualizer;
 
+/**
+ * The DLX3D class represents a solver for a 3D placement problem using Dancing Links algorithm.
+ * It provides methods to create positions, check if a piece is placeable, and get occupied cells.
+ * The solver supports two types of pieces: Pentominoes and Parcels.
+ */
 public class DLX3D {
 
-    public static int depth = FXVisualizer.CARGO_DEPTH;
-    public static int height = FXVisualizer.CARGO_HEIGHT;
-    public static int width = FXVisualizer.CARGO_WIDTH;
+    private int depth = FXVisualizer.CARGO_DEPTH;
+    private int height = FXVisualizer.CARGO_HEIGHT;
+    private int width = FXVisualizer.CARGO_WIDTH;
     public static int totalValue = 0;
     public static int[][][][] A;
     public static int[][][][] B;
     public static int[][][][] C;
     public static int[][][][][] shapes;
     public int[] values;
-    DancingLinks2 dance;
+    private DancingLinks2 dance;
     public static List<Row> rows = new ArrayList<Row>();
     public static int value = 0;
     public static boolean pent = false;
+    public static int limit = 0;
+    public static int pieceCount = 0;
 
+    /**
+     * Constructs a new DLX3D object with the specified type of pieces and values.
+     * 
+     * @param typeOfPieces the type of pieces ("Pentominoes" or "Parcels")
+     * @param newValues an array of Piece values
+     */
     public DLX3D(String typeOfPieces, int[] newValues)
     {
         refreshDLX();
@@ -40,28 +54,15 @@ public class DLX3D {
             pent = false;
         }
         shapes = new int[][][][][]{C,A,B};
-        invertArray(newValues);
+        SearchWrapper.invertArray(newValues);
         values = newValues;
         dance = new DancingLinks2(depth*height*width);
 
     }
 
-    private static void invertArray(int[] arr) {
-        int start = 0;
-        int end = arr.length - 1;
-
-        while (start < end) {
-            // Swap elements at start and end indices
-            int temp = arr[start];
-            arr[start] = arr[end];
-            arr[end] = temp;
-
-            // Move indices towards the center
-            start++;
-            end--;
-        }
-    }
-
+    /**
+     * Refreshes the Dancing Links solver by resetting the necessary variables.
+     */
     public static void refreshDLX()
     {
         rows = new ArrayList<Row>();
@@ -69,25 +70,13 @@ public class DLX3D {
         totalValue = 0;
         pieceCount = 0;
     }
-
-    public boolean isPlaceable(int startX, int startY, int startZ, int[][][] shape){ 
-
-        int shapeWidth = shape[0][0].length;
-        int shapeHeight = shape[0].length;
-        int shapeDepth = shape.length;
-
-        if(startX+shapeWidth > width){
-            return false;
-        }
-
-        if(startY+shapeHeight > height){
-            return false;
-        }
-
-        return startZ + shapeDepth <= depth;
-    }
-    public static int limit = 0;
-    public static int pieceCount = 0;
+ 
+    /**
+     * Creates positions for the shapes in the Dancing Links solver.
+     * This method iterates over the shapes and their placements to determine valid positions.
+     * It populates the rows list and adds rows to the dance object.
+     * Finally, it invokes the algorithmX method of the dance object.
+     */
     public void createPositions(){ 
         int currentPieceValue = 0;
         int typeNumber = 1;
@@ -134,7 +123,6 @@ public class DLX3D {
                             for(int i = 0; i < dobavkaX.length; i++){
                                 dobavkaFinal[i] = depth * height * dobavkaX[i] + depth * dobavkaY[i] + dobavkaZ[i];
                             }
-                            // System.out.println(Arrays.toString(dobavkaFinal));
                             rows.add(new Row(nr, xPlacementStart, yPlacementStart, zPlacementStart, typeNumber, shape, currentPieceValue));
                             dance.AddRow(nr,typeNumber,dobavkaFinal,shape);
                             nr++;
@@ -147,6 +135,15 @@ public class DLX3D {
         dance.algorithmX(0);
     }
 
+    /**
+     * Returns a list of occupied cells in the x-axis for a given piece to place.
+     * 
+     * @param pieceToPlace the 3D array representing the piece to place
+     * @param x0 the starting x-coordinate
+     * @param y0 the starting y-coordinate
+     * @param z0 the starting z-coordinate
+     * @return a list of occupied cells in the x-axis
+     */
     public List<Integer> getOccupiedCellsX(int[][][] pieceToPlace, int x0, int y0, int z0)
     {
         List<Integer> xs = new ArrayList<Integer>();
@@ -190,6 +187,15 @@ public class DLX3D {
 
     }
 
+    /**
+     * Returns a list of occupied cell positions in the Y-axis for a given piece to place.
+     * 
+     * @param pieceToPlace The 3D array representing the piece to be placed.
+     * @param x0 The starting X-coordinate of the piece.
+     * @param y0 The starting Y-coordinate of the piece.
+     * @param z0 The starting Z-coordinate of the piece.
+     * @return A list of Y-coordinates of the occupied cells.
+     */
     public List<Integer> getOccupiedCellsY(int[][][] pieceToPlace, int x0 ,int y0, int z0)
     {
         List<Integer> ys = new ArrayList<Integer>();
@@ -232,6 +238,15 @@ public class DLX3D {
         return ys;
     }
 
+    /**
+     * Returns a list of occupied cells in the Z-axis for a given piece to place.
+     * 
+     * @param pieceToPlace the 3D array representing the piece to place
+     * @param x0 the starting x-coordinate
+     * @param y0 the starting y-coordinate
+     * @param z0 the starting z-coordinate
+     * @return a list of occupied cells in the Z-axis
+     */
     public List<Integer> getOccupiedCellsZ(int[][][] pieceToPlace, int x0,int y0,int z0)
     {
         List<Integer> zs = new ArrayList<Integer>();
@@ -275,7 +290,39 @@ public class DLX3D {
         return zs;
     }
 
+     /**
+     * Checks if a given shape can be placed at the specified starting position in a 3D grid.
+     * 
+     * @param startX the x-coordinate of the starting position
+     * @param startY the y-coordinate of the starting position
+     * @param startZ the z-coordinate of the starting position
+     * @param shape the shape to be placed in the grid
+     * @return true if the shape can be placed, false otherwise
+     */
+    public boolean isPlaceable(int startX, int startY, int startZ, int[][][] shape){ 
 
+        int shapeWidth = shape[0][0].length;
+        int shapeHeight = shape[0].length;
+        int shapeDepth = shape.length;
+
+        if(startX+shapeWidth > width){
+            return false;
+        }
+
+        if(startY+shapeHeight > height){
+            return false;
+        }
+
+        return startZ + shapeDepth <= depth;
+    }
+
+
+    /**
+     * The main method is the entry point of the program.
+     * It creates an instance of the DLX3D class and calls the createPositions method.
+     *
+     * @param args the command line arguments
+     */
     public static void main(String[] args) {
         DLX3D dlx = new DLX3D("Pentominoes", new int[]{5,4,3});
         dlx.createPositions();

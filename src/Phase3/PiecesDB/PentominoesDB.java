@@ -1,5 +1,11 @@
 package Phase3.PiecesDB;
 
+/**
+ * The PentominoesDB class represents a database of pentomino pieces.
+ * It contains static fields that store the values and configurations of different pentomino pieces.
+ * The values and configurations are stored as multi-dimensional arrays.
+ * The class provides access to these values and configurations through its public static fields.
+ */
 public class PentominoesDB {
 	public static int lValue = 3;
 	public static int pValue = 4;

@@ -6,8 +6,8 @@ import Phase3.Solvers.SearchWrapper;
 import Phase3.Visualizer.FXVisualizer;
 
 /**
- * A class that implements the Dancing Links algorithm to solve the pentomino
- * puzzle.
+ * The DancingLinks2 class represents a solver using the Dancing Links technique
+ * to efficiently search for solutions to the 3D exact cover problem.
  */
 public class DancingLinks2 {
 
@@ -21,19 +21,13 @@ public class DancingLinks2 {
     public static int width = FXVisualizer.CARGO_WIDTH;
     public static int[][][] field = new int[depth][height][width];
     public static boolean c = false;
-
-
-    public static void refreshDLX2()
-    {
-        oldBestValue = 0;
-        field = new int[depth][height][width];
-        c = false;
-    }
+    public static int limitDL2;
+    public static int oldBestValue = 0;
 
     /**
-     * Constructs a DancingLinks object with the specified number of columns.
+     * Constructs a DancingLinks2 object with the specified number of columns.
      *
-     * @param columns The number of columns in the Dancing Links matrix.
+     * @param columns the number of columns in the DancingLinks2 object
      */
     public DancingLinks2(int columns) {
         answer = new Stack<Integer>();
@@ -49,6 +43,26 @@ public class DancingLinks2 {
         }
     }
 
+    /**
+     * Refreshes the Dancing Links solver by resetting the old best value, 
+     * creating a new field, and setting the 'c' flag to false.
+     */
+    public static void refreshDLX2()
+    {
+        oldBestValue = 0;
+        field = new int[depth][height][width];
+        c = false;
+    }
+
+    /**
+     * Adds a row to the Dancing Links matrix.
+     * 
+     * @param row     The row index.
+     * @param pentId  The ID of the pentomino.
+     * @param ones    An array of column indexes with value 1.
+     * @param piece   The shape of the pentomino.
+     * @throws IllegalArgumentException if the column indexes are not in increasing order.
+     */
     public void AddRow(int row, int pentId, int[] ones, int[][][] piece) {
         int last = -1;
         Cell first = null;
@@ -74,50 +88,11 @@ public class DancingLinks2 {
     }
 
     /**
-     * Algorithm X implementation for solving the exact cover problem using Dancing
-     * Links.
-     * This method recursively searches for solutions to the exact cover problem
-     * represented
-     * by the given data structure. It utilizes the Dancing Links technique to
-     * efficiently
-     * explore possible solutions.
+     * Executes the Algorithm X for solving the exact cover problem.
+     * This method uses the Dancing Links technique to efficiently search for solutions.
      *
-     * @param step The current step of the algorithm, which tracks the progress of
-     *             the search.
-     *             It is used to identify and display progress in finding solutions.
-     *
-     *             The method operates as follows:
-     *             1. If the root node's right neighbor is itself, it means that the
-     *             entire matrix has
-     *             been covered, indicating a potential solution. In this case, the
-     *             method checks for
-     *             duplicate solutions and displays a unique one if found.
-     *             2. If duplicates are not found, it visualizes and displays the
-     *             solution on the user
-     *             interface using the provided `ui` object.
-     *             3. Otherwise, the method proceeds with the search.
-     *             4. It selects the column (constraint) with the fewest
-     *             possibilities (heuristic for
-     *             efficiency) and covers it, effectively reducing the search space.
-     *             5. For each row in the selected column, the method recursively
-     *             explores possible
-     *             solutions by covering other columns and rows affected by this
-     *             choice.
-     *             6. If a valid solution is found, it is stored in the `answer`
-     *             stack, and the search
-     *             continues for the next step.
-     *             7. If the solution is not valid, the choices are unmade
-     *             (uncovered), and the search
-     *             backtracks to explore other possibilities.
-     *
-     *             The method uses the Dancing Links data structure and efficient
-     *             techniques to manage the
-     *             exact cover problem, making it an optimal choice for solving
-     *             problems like pentominoes.
+     * @param step The current step in the algorithm.
      */
-
-    public static int limitDL2;
-    public static int oldBestValue = 0;
     public void algorithmX(int step) {
         if(c) return;
         List<Row> rows = new ArrayList<Row>();

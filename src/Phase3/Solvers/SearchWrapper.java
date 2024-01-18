@@ -89,5 +89,22 @@ public class SearchWrapper {
         return field;
     }
 
+    /**
+     * Inverts the elements of the given array in place.
+     * 
+     * @param arr the array to be inverted
+     */
+    public static void invertArray(int[] arr) {
+        int start = 0;
+        int end = arr.length - 1;
+        while (start < end) {
+            int temp = arr[start];
+            arr[start] = arr[end];
+            arr[end] = temp;
+            start++;
+            end--;
+        }
+    }
+
     
 }

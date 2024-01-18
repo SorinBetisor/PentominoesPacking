@@ -1,5 +1,10 @@
 package Phase3.PiecesDB;
 
+/**
+ * The ParcelDB class represents a database of parcel information.
+ * It contains static variables for storing values and arrays for different parcel types.
+ * The class provides access to the parcel data through public static fields.
+ */
 public class ParcelDB {
     public static int aValue = 3;
     public static int bValue = 4;
