@@ -39,5 +39,8 @@
       <Text fx:id="parcelValueText2" layoutX="114.0" layoutY="190.0" strokeType="OUTSIDE" strokeWidth="0.0" text="vB/P" />
       <Text fx:id="parcelValueText3" layoutX="114.0" layoutY="238.0" strokeType="OUTSIDE" strokeWidth="0.0" text="vC/T" />
       <Button fx:id="stopButton" layoutX="61.0" layoutY="370.0" mnemonicParsing="false" onAction="#onComputeButtonPressed" text="Stop Search" />
+      <CheckBox fx:id="ALCheckBox" disable="true" layoutX="26.0" layoutY="149.0" mnemonicParsing="false" />
+      <CheckBox fx:id="BPCheckBox" disable="true" layoutX="26.0" layoutY="198.0" mnemonicParsing="false" />
+      <CheckBox fx:id="CTCheckBox" disable="true" layoutX="26.0" layoutY="246.0" mnemonicParsing="false" />
    </children>
 </Pane>

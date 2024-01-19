@@ -343,6 +343,7 @@ public class FXVisualizer extends Application {
      * corresponding actions based on the selected algorithm and type of pieces.
      * Updates the UI with the computed results.
      */
+    public static long startTime;
     private void handleComputeButtonPressed() {
         // Retrieve the selected options
         Button compute = (Button) uiRoot.lookup("#computeButton");
@@ -374,6 +375,10 @@ public class FXVisualizer extends Application {
                 String q1Text = quantityFieldAL.getText();
                 String q2Text = quantityFieldBP.getText();
                 String q3Text = quantityFieldCT.getText();
+
+                CheckBox ALCheckBox = (CheckBox) uiRoot.lookup("#ALCheckBox");
+                CheckBox BPCheckBox = (CheckBox) uiRoot.lookup("#BPCheckBox");
+                CheckBox CTCheckBox = (CheckBox) uiRoot.lookup("#CTCheckBox");
                 if(q1Text.equals(""))
                 {
                     quantity1 = 0;
@@ -417,11 +422,9 @@ public class FXVisualizer extends Application {
 
                 if (selectedTypeOfPieces.equals("Parcels")) {
                     DLX3D.pent = false;
-                    DancingLinks2.limitDL2 = 255;
                     Greedy.parcels = new int[][][][][] { ParcelDB.aRotInt, ParcelDB.bRotInt, ParcelDB.cRotInt };
                 } else if (selectedTypeOfPieces.equals("Pentominoes")) {
                     DLX3D.pent = true;
-                    DancingLinks2.limitDL2 = 1178;
                     Greedy.parcels = new int[][][][][] { PentominoesDB.lPentInt, PentominoesDB.pPentInt,
                             PentominoesDB.tPentInt };
                 }
@@ -447,16 +450,37 @@ public class FXVisualizer extends Application {
                             alert.showAndWait();
                         }
                     }
-                    totalValueText.setText("Total value: " + Greedy.currentValue);
+                    totalValueText.setText("Total value: " + (Greedy.currentValue));
                     fullCoverText.setText("Full cover: " + SearchWrapper.checkFullCover(field));
                 } else if (selectedAlgorithm.equals("3D Dancing Links")) {
                     DancingLinks2.c = false;
+                    boolean a = ALCheckBox.isSelected();
+                    boolean b = BPCheckBox.isSelected();
+                    boolean c = CTCheckBox.isSelected();
+                    if(a && !b && !c)
+                    {
+                        showAlert();
+                        return;
+                    }
+                    else if(!a && b && !c)
+                    {
+                        showAlert();
+                        return;
+                    }
+                    else if(!a && !b && c)
+                    {
+                        showAlert();
+                        return;
+                    }
+                    else{
                     Thread thread = new Thread(() -> {
-                        DLX3D dlx3D = new DLX3D(selectedTypeOfPieces, values);
+                        //start new timer to measure execution time
+                        startTime = System.currentTimeMillis();
+                        DLX3D dlx3D = new DLX3D(selectedTypeOfPieces, values,a,b,c);
                         dlx3D.createPositions();
                     });
                     thread.start();
-                    compute.setDisable(true);
+                    compute.setDisable(true);}
                 }
                 rootGroup.getChildren().clear();
                 drawContainer(field, rootGroup);
@@ -495,6 +519,14 @@ public class FXVisualizer extends Application {
         stop.setOnAction(stopHandler);
     }
 
+    public void showAlert()
+    {
+        Alert alert = new Alert(AlertType.WARNING);
+        alert.setTitle("Warning");
+        alert.setHeaderText(null);
+        alert.setContentText("Please select at least 2 pieces");   
+        alert.showAndWait();
+    }
     /**
      * Handles the quantities of parcels in the visualizer.
      * If the unlimitedCheckBox is selected, it disables the text fields for parcel
@@ -506,6 +538,9 @@ public class FXVisualizer extends Application {
         TextField ALparcelTextInput = (TextField) uiRoot.lookup("#ALparcelTextInput");
         TextField BPparcelTextInput = (TextField) uiRoot.lookup("#BPparcelTextInput");
         TextField CTparcelTextInput = (TextField) uiRoot.lookup("#CTparcelTextInput");
+        CheckBox ALCheckBox = (CheckBox) uiRoot.lookup("#ALCheckBox");
+        CheckBox BPCheckBox = (CheckBox) uiRoot.lookup("#BPCheckBox");
+        CheckBox CTCheckBox = (CheckBox) uiRoot.lookup("#CTCheckBox");
 
         EventHandler<ActionEvent> comboBoxDisablerHander = new EventHandler<ActionEvent>() {
             @Override
@@ -514,11 +549,23 @@ public class FXVisualizer extends Application {
                     ALparcelTextInput.setDisable(true);
                     BPparcelTextInput.setDisable(true);
                     CTparcelTextInput.setDisable(true);
+                    ALCheckBox.setDisable(false);
+                    BPCheckBox.setDisable(false);
+                    CTCheckBox.setDisable(false);
+                    ALCheckBox.setSelected(true);
+                    BPCheckBox.setSelected(true);
+                    CTCheckBox.setSelected(true);
                     unlimited = true;
                 } else {
                     ALparcelTextInput.setDisable(false);
                     BPparcelTextInput.setDisable(false);
                     CTparcelTextInput.setDisable(false);
+                    ALCheckBox.setDisable(true);
+                    BPCheckBox.setDisable(true);
+                    CTCheckBox.setDisable(true);
+                    ALCheckBox.setSelected(false);
+                    BPCheckBox.setSelected(false);
+                    CTCheckBox.setSelected(false);
                     unlimited = false;
                 }
             }
@@ -572,10 +619,15 @@ public class FXVisualizer extends Application {
     private void handleUnlimitedDLX() {
         @SuppressWarnings("unchecked")
         ComboBox<String> algorithmComboBox = (ComboBox<String>) uiRoot.lookup("#algorithmComboBox");
+        @SuppressWarnings("unchecked")
+        ComboBox<String> typeOfPiecesComboBox = (ComboBox<String>) uiRoot.lookup("#typeOfPiecesComboBox");
         TextField ALparcelTextInput = (TextField) uiRoot.lookup("#ALparcelTextInput");
         TextField BPparcelTextInput = (TextField) uiRoot.lookup("#BPparcelTextInput");
         TextField CTparcelTextInput = (TextField) uiRoot.lookup("#CTparcelTextInput");
         CheckBox unlimitedCheckBox = (CheckBox) uiRoot.lookup("#unlimitedCheckBox");
+        CheckBox ALCheckBox = (CheckBox) uiRoot.lookup("#ALCheckBox");
+        CheckBox BPCheckBox = (CheckBox) uiRoot.lookup("#BPCheckBox");
+        CheckBox CTCheckBox = (CheckBox) uiRoot.lookup("#CTCheckBox");
         EventHandler<ActionEvent> comboBoxDisablerHander = new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -585,6 +637,13 @@ public class FXVisualizer extends Application {
                     CTparcelTextInput.setDisable(true);
                     unlimitedCheckBox.setSelected(true);
                     unlimitedCheckBox.setDisable(true);
+                    ALCheckBox.setDisable(false);
+                    BPCheckBox.setDisable(false);
+                    CTCheckBox.setDisable(false);
+                    ALCheckBox.setSelected(true);
+                    BPCheckBox.setSelected(true);
+                    CTCheckBox.setSelected(true);
+                    typeOfPiecesComboBox.getItems().remove("Parcels");
                     unlimited = true;
                 } else {
                     unlimitedCheckBox.setDisable(false);
@@ -592,6 +651,13 @@ public class FXVisualizer extends Application {
                     ALparcelTextInput.setDisable(false);
                     BPparcelTextInput.setDisable(false);
                     CTparcelTextInput.setDisable(false);
+                    ALCheckBox.setDisable(true);
+                    BPCheckBox.setDisable(true);
+                    CTCheckBox.setDisable(true);
+                    ALCheckBox.setSelected(false);
+                    BPCheckBox.setSelected(false);
+                    CTCheckBox.setSelected(false);
+                    typeOfPiecesComboBox.getItems().add("Parcels");
                     Greedy.unlimited = false;
                     unlimited = false;
                 }

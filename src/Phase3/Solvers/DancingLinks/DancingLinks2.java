@@ -116,7 +116,11 @@ public class DancingLinks2 {
             if(DLX3D.totalValue > oldBestValue){
             oldBestValue = DLX3D.totalValue;
             FXVisualizer.field = field;
-            // System.out.println("New best value: " + oldBestValue);
+            //end the timer from fxvisualizer startTime = System.currentTimeMillis();
+            long endtime = System.currentTimeMillis() - FXVisualizer.startTime;
+            System.out.println("Time taken: " + endtime + "ms");
+            FXVisualizer.startTime = System.currentTimeMillis();
+            System.out.println("New best value: " + oldBestValue);
             }
             
             if(c) return;

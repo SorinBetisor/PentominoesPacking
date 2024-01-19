@@ -19,6 +19,15 @@ public class Controller {
     private TextField BPparcelTextInput;
 
     @FXML
+    private CheckBox ALCheckBox;
+
+    @FXML
+    private CheckBox BPCheckBox;
+
+    @FXML
+    private CheckBox CTCheckBox;
+
+    @FXML
     private TextField CTparcelTextInput;
 
     @FXML

@@ -7,6 +7,7 @@ public class Constants {
 	public static char[] INPUT = { 'T', 'U', 'P', 'I', 'V', 'L', 'F', 'W', 'X', 'Y', 'Z', 'N'};
 
 	public static void inputGameInfo() {
+		@SuppressWarnings("resource")
 		Scanner scanner = new Scanner(System.in);
 
 		// Ask the user for the horizontal size

@@ -115,7 +115,7 @@ public class GeneticAlgorithm {
             if(tetris.score >= 8){
                 System.out.println(botName + " Score: " + tetris.score);
                 System.out.println(botName + " Weights: " + arrayToString(bot.weights));
-                System.out.println("Sequence: " + Arrays.toString(tetris.PIECES));
+                System.out.println("Sequence: " + Arrays.toString(Tetris.PIECES));
             }
         }
     }
