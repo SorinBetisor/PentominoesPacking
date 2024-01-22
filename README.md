@@ -84,6 +84,14 @@ Once the algorithm has completed its execution, the results will be displayed. H
 - Run `Menu.java`.
 - Select the game mode (Play, Bot, Sequence), click the corresponding button.
 
+# Phase 3
+
+* Make sure JavaFX is installed and the path properly linked to the project's configurations.
+* Run FXVisualizer.java
+* Select algorithm and types of parcels.
+* Click on compute, and visualize the answer
+* Additional modifications to the solution can be made using the provided ComboBoxes and TextFields in the GUI.
+
 ## Authors:
 
 * [Sorin Betisor](https://www.linkedin.com/in/sorin-be%C8%9Bi%C8%99or-722188244/)
