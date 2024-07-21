@@ -10,7 +10,6 @@ The Pentominoes project provides an interactive platform for solving these puzzl
 
 ## Used Algorithms:
 
-* Random Search
 * Pruned Brute Force (with special case testing)
 * Flood Fill
 * Algorithm X with Dancing Links data structure
